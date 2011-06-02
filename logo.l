@@ -1,5 +1,5 @@
 %{
-#lientProtocol.Timeout Property
+#include "y.tab.h"
 
 %}
 
@@ -48,9 +48,9 @@ string						\"([^"\n]|\\\")*\"
 "else"						{ return ELSE; }
 "while"						{ return WHILE; }
 
-{number}					{ yyval.intvalue = atoi(yytext); return number; }
-{identifier}				{ yyval.stringvalue = strdup(yytext); return identifier; }
-{string}					{ yyval.stringvalue = strdup(yytext); return string; }
+number						{ yyval.intvalue = atoi(yytext); return number; }
+identifier					{ yyval.stringvalue = strdup(yytext); return identifier; }
+string						{ yyval.stringvalue = strdup(yytext); return string; }
 [<=>\-,;!?/()\[\]{}* +|&]   { return yytext[0]; }
 [\n\t]						{ ; }
 
