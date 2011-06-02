@@ -58,7 +58,6 @@ string						\"([^"\n]|\\\")*\"
 number						{ yylval.intvalue = atoi(yytext); return number; }
 identifier					{ yylval.stringvalue = strdup(yytext); return identifier; }
 string						{ yylval.stringvalue = strdup(yytext); return string; }
-
 [\n\t]						{ ; }
 
 %%
