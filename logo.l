@@ -48,9 +48,9 @@ string						\"([^"\n]|\\\")*\"
 "else"						{ return ELSE; }
 "while"						{ return WHILE; }
 
-number						{ yyval.intvalue = atoi(yytext); return number; }
-identifier					{ yyval.stringvalue = strdup(yytext); return identifier; }
-string						{ yyval.stringvalue = strdup(yytext); return string; }
+number						{ yylval.intvalue = atoi(yytext); return number; }
+identifier					{ yylval.stringvalue = strdup(yytext); return identifier; }
+string						{ yylval.stringvalue = strdup(yytext); return string; }
 [<=>\-,;!?/()\[\]{}* +|&]   { return yytext[0]; }
 [\n\t]						{ ; }
 

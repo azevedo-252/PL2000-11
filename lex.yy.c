@@ -1011,17 +1011,17 @@ YY_RULE_SETUP
 case 37:
 YY_RULE_SETUP
 #line 51 "logo.l"
-{ yyval.intvalue = atoi(yytext); return number; }
+{ yylval.intvalue = atoi(yytext); return number; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
 #line 52 "logo.l"
-{ yyval.stringvalue = strdup(yytext); return identifier; }
+{ yylval.stringvalue = strdup(yytext); return identifier; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
 #line 53 "logo.l"
-{ yyval.stringvalue = strdup(yytext); return string; }
+{ yylval.stringvalue = strdup(yytext); return string; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
