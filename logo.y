@@ -4,7 +4,7 @@
 
 %union{
 	int intvalue;
-	char* stringvalue;
+char* stringvalue;
 }
 
 //%option lineno
