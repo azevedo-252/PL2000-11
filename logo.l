@@ -13,8 +13,8 @@ string						\"([^"\n]|\\\")*\"
 
 "body"						{ return BODY; }
 "program"					{ return PROGRAM; }
-"declarations"				{ return DECLARATIONS; }
-"statements"				{ return STATEMENTS; }
+"declarations"					{ return DECLARATIONS; }
+"statements"					{ return STATEMENTS; }
 "->"						{ return ARROW; }
 "integer"					{ return INTEGER; }
 "boolean"					{ return BOOLEAN; }
@@ -51,7 +51,7 @@ string						\"([^"\n]|\\\")*\"
 number						{ yylval.intvalue = atoi(yytext); return number; }
 identifier					{ yylval.stringvalue = strdup(yytext); return identifier; }
 string						{ yylval.stringvalue = strdup(yytext); return string; }
-[<=>\-,;!?/()\[\]{}* +|&]   { return yytext[0]; }
+[<=>\-,;!?/()\[\]{}*+|&] 			{ return yytext[0]; }
 [\n\t]						{ ; }
 
 %%
