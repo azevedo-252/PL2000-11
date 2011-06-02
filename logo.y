@@ -20,8 +20,6 @@
 	VarTipo varTipo;
 }
 
-//%option lineno
-
 
 %token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN ARRAY SIZE <stringvalue>TRUE <stringvalue>FALSE FORWARD BACKWARD RRIGHT RLEFT
 %token PEN UP DOWN GOTO WHERE OR AND POW EQUAL DIF MINOREQUAL MAJOREQUAL IN <stringvalue>SUCC <stringvalue>PRED SAY ASK IF THEN ELSE WHILE
@@ -34,7 +32,7 @@
 
 // TODO verficiar depois o que é e nao é preciso
 %type <constTipo>Constant <constTipo>Value_Var <constTipo>Inic_Var <constTipo>Factor <constTipo>Term <constTipo>Single_Expression <cosntTipo>Expression
-%type <stringvalue>Sign <stringvalue>SuccPred
+%type <stringvalue>SuccPred
 %type <varTipo>Var 
 %type <intvalue>Type <intvalue>SuccOrPred <intvalue>Add_Op <intvalue>Mul_Op
 

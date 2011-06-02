@@ -55,9 +55,10 @@ string						\"([^"\n]|\\\")*\"
 "else"						{ return ELSE; }
 "while"						{ return WHILE; }
 
-number						{ yylval.intvalue = atoi(yytext); return number; }
-identifier					{ yylval.stringvalue = strdup(yytext); return identifier; }
-string						{ yylval.stringvalue = strdup(yytext); return string; }
+{number}					{ yylval.intvalue = atoi(yytext); return number; }
+{identifier}					{ yylval.stringvalue = strdup(yytext); return identifier; }
+{string}					{ yylval.stringvalue = strdup(yytext); return string; }
+
 [\n\t]						{ ; }
 
 %%
