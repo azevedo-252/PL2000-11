@@ -31,14 +31,9 @@ string						\"([^"\n]|\\\")*\"
 "down"						{ return DOWN; }
 "goto"						{ return GOTO; }
 "where"						{ return WHERE; }
-"||"						{ return OR; }
-"&&"						{ return AND; }
-"**"						{ return POW; }
-"=="						{ return DOUBLEEQUAL; }
-"!="						{ return DIFFERENT; }
-"<="						{ return MENOREQUAL; }
-">="						{ return MAIOREQUAL; }
-"in"						{ return IN; }
+(+|-|\|\|)					{ yylval.stringvalue = strdup(yytext); return ADD_OP;}
+(*|/|**|&&)					{ yylval.stringvalue = strdup(yytext); return MUL_OP;}
+(==|!=|<|>|<=|>=|in)				{ yylval.stringvalue = strdup(yytext); return REL_OP;}
 "succ"						{ return SUCC; }
 "pred"						{ return PRED; }
 "say"						{ return SAY; }
