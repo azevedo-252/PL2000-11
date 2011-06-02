@@ -1,22 +1,42 @@
 %{
-#include <stdio.h>
+	#include <stdio.h>
+
+	typedef struct {
+		int cInt;
+		char* cString;
+	}ConstTipo;
+
+	typedef struct {
+		char* id;
+		char* atrib;
+	}VarTipo;
+
 %}
 
 %union{
 	int intvalue;
-char* stringvalue;
+	char* stringvalue;
+	ConstTipo constTipo;
+	VarTipo varTipo;
 }
 
 //%option lineno
 
 
-%token BODY PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN ARRAY SIZE TRUE FALSE FORWARD BACKWARD RRIGHT RLEFT
-%token PEN UP DOWN GOTO WHERE OR AND POW DOUBLEEQUAL DIFFERENT MENOREQUAL MAIOREQUAL IN SUCC PRED SAY ASK IF THEN ELSE
-%token WHILE identifier number string
+%token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN ARRAY SIZE <stringvalue>TRUE <stringvalue>FALSE FORWARD BACKWARD RRIGHT RLEFT
+%token PEN UP DOWN GOTO WHERE OR AND POW EQUAL DIF MINOREQUAL MAJOREQUAL IN <stringvalue>SUCC <stringvalue>PRED SAY ASK IF THEN ELSE WHILE
+%token <stringvalue>identifier <intvalue>number <stringvalue>string
+
+%left '<' '>' MINOREQUAL MAJOREQUAL EQUAL AND POW DIF OR
+%left <vals>'+' '-'
+%left '*' '/'
 
 
-%type <stringvalue> Mul_Op Add_Op Rel_Op Factor identifier string
-%type <intvalue> number
+// TODO verficiar depois o que é e nao é preciso
+%type <constTipo>Constant <constTipo>Value_Var <constTipo>Inic_Var <constTipo>Factor <constTipo>Term <constTipo>Single_Expression <cosntTipo>Expression
+%type <stringvalue>Sign <stringvalue>SuccPred
+%type <varTipo>Var 
+%type <intvalue>Type <intvalue>SuccOrPred <intvalue>Add_Op <intvalue>Mul_Op
 
 
 %start Liss
@@ -164,7 +184,7 @@ Factor : Constant
 	
 
 
-Add_Op : '+'
+ADD_OP  : '+'
 	| '-'
 	| '||'
 	;

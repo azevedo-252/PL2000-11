@@ -11,7 +11,6 @@ string						\"([^"\n]|\\\")*\"
 
 %%
 
-"body"						{ return BODY; }
 "program"					{ return PROGRAM; }
 "declarations"					{ return DECLARATIONS; }
 "statements"					{ return STATEMENTS; }
@@ -20,8 +19,8 @@ string						\"([^"\n]|\\\")*\"
 "boolean"					{ return BOOLEAN; }
 "array"						{ return ARRAY; }
 "size"						{ return SIZE; }
-"true"						{ return TRUE; }
-"false"						{ return FALSE; }
+"true"						{ yylval.stringvalue=(char*)strdup(yytext); return TRUE; }
+"false"						{ yylval.stringvalue=(char*)strdup(yytext); return FALSE; }
 "forward"					{ return FORWARD; }
 "backward"					{ return BACKWARD; }
 "rright"					{ return RRIGHT; }
@@ -31,11 +30,24 @@ string						\"([^"\n]|\\\")*\"
 "down"						{ return DOWN; }
 "goto"						{ return GOTO; }
 "where"						{ return WHERE; }
-(+|-|\|\|)					{ yylval.stringvalue = strdup(yytext); return ADD_OP;}
-(*|/|**|&&)					{ yylval.stringvalue = strdup(yytext); return MUL_OP;}
-(==|!=|<|>|<=|>=|in)				{ yylval.stringvalue = strdup(yytext); return REL_OP;}
-"succ"						{ return SUCC; }
-"pred"						{ return PRED; }
+"||"						{ return OR; }
+"&&"						{ return AND; }
+"**"						{ return POW; }
+"=="						{ return EQUAL; }
+"!="						{ return DIF; }
+"<"						{ return MINOR; }
+">"						{ return MAJOR; }
+"<="						{ return MINOREQUAL; }
+">="						{ return MAJOREQUAL; }
+"in"						{ return IN; }
+[+-]						{ yylval.stringvalue=(char*)strdup(yytext); return yytext[0]; }
+[,;<>]						{ return yytext[0]; }
+[?\[\]()/!*]					{ return yytext[0]; }
+[{]						{ return yytext[0]; }
+[}]						{ return yytext[0]; }
+[=]						{ return yytext[0]; }
+"succ"						{ yylval.stringvalue=(char*)strdup(yytext); return SUCC; }
+"pred"						{ yylval.stringvalue=(char*)strdup(yytext); return PRED; }
 "say"						{ return SAY; }
 "ask"						{ return ASK; }
 "if"						{ return IF; }
@@ -46,7 +58,11 @@ string						\"([^"\n]|\\\")*\"
 number						{ yylval.intvalue = atoi(yytext); return number; }
 identifier					{ yylval.stringvalue = strdup(yytext); return identifier; }
 string						{ yylval.stringvalue = strdup(yytext); return string; }
-[<=>\-,;!?/()\[\]{}* +|&]   { return yytext[0]; }
+
 [\n\t]						{ ; }
 
 %%
+
+int yywrap() {
+ return 1;
+}
