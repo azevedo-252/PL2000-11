@@ -5,9 +5,9 @@
 
 
 
-number 						[0-9]+
-identifier 					[a-zA-Z][a-zA-Z0-9]*
-string						\"([^"\n]|\\\")*\"
+NUMBER 						[0-9]+
+IDENTIFIER 					[a-zA-Z][a-zA-Z0-9]*
+STRING						\"([^"\n]|\\\")*\"
 
 %%
 
@@ -40,7 +40,7 @@ string						\"([^"\n]|\\\")*\"
 "<="						{ return MINOREQUAL; }
 ">="						{ return MAJOREQUAL; }
 "in"						{ return IN; }
-[+-]						{ yylval.stringvalue=(char*)strdup(yytext); return yytext[0]; }
+[+-]						{ yylval.stringvalue=(char*)strdup(yytext); return yytext[0]; }//penso que nao seja preciso o stringvalue
 [,;<>]						{ return yytext[0]; }
 [?\[\]()/!*]					{ return yytext[0]; }
 [{]						{ return yytext[0]; }
@@ -55,9 +55,9 @@ string						\"([^"\n]|\\\")*\"
 "else"						{ return ELSE; }
 "while"						{ return WHILE; }
 
-{number}					{ yylval.intvalue = atoi(yytext); return number; }
-{identifier}					{ yylval.stringvalue = strdup(yytext); return identifier; }
-{string}					{ yylval.stringvalue = strdup(yytext); return string; }
+{NUMBER}					{ yylval.stringvalue = strdup(yytext); return NUMBER; }
+{IDENTIFIER}					{ yylval.stringvalue = strdup(yytext); return IDENTIFIER; }
+{STRING}					{ yylval.stringvalue = strdup(yytext); return STRING; }
 
 [\n\t]						{ ; }
 
