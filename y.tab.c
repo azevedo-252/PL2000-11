@@ -1598,7 +1598,7 @@ yyreduce:
 											if (strcmp(aux->value,"true")==0 || aux->type==-1) {
 												printf("pushi 1\n");
 											}
-											else (strcmp(aux->value, "false")==0) {
+											else if (strcmp(aux->value, "false")==0) {
 												printf("pushi 0\n");
 											}
 										break;
