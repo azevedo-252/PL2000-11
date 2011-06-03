@@ -4,13 +4,15 @@
 
 	int addressG = 0;
 
+	ListaVars *nodo;
+
 %}
 
 
 /*%token ARRAY SIZE*/
-%token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN FORWARD BACKWARD RRIGHT RLEFT
+%token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN STRING FORWARD BACKWARD RRIGHT RLEFT
 %token PEN UP DOWN GOTO WHERE OR AND POW EQUAL DIF MINOREQUAL MAJOREQUAL IN SAY ASK IF THEN ELSE WHILE
-%token <stringvalue>TRUE FALSE IDENTIFIER NUMBER STRING SUCC PRED
+%token <stringvalue>TRUE FALSE IDENTIFIER NUMBER STR SUCC PRED
 
 %left MINOR MAJOR MINOREQUAL MAJOREQUAL EQUAL AND POW DIF OR
 %left <stringvalue>'+' '-'
@@ -55,22 +57,41 @@ Declaration 		: Variable_Declaration
 
 
 
-Variable_Declaration 	: Vars ARROW Type ';' {}
+Variable_Declaration 	: Vars ARROW Type ';' 	{
+							ListaVars *aux = nodo;
+							while(aux) {
+								// verficiar na hashtable se ja existe uma variavel com este nome, se ja passa para a proxima var
+								// insere nome, tipo e address na hashtable
+								switch($3) {
+									case 0:
+									break;
+								}
+							}
+						}
 			;
 
-Vars 			: Var {/**/}
-			| Vars ',' Var {/*penso que seja o mesmo (tirado de $3)*/}
+Vars 			: Var 	{insereEmListaVars($1, 0);
+				}
+			| Vars ',' Var 	{insereEmListaVars($3, 1);
+					}
 			;
 
-Var 			: IDENTIFIER Value_Var {/*preencher o $$ (VarTipo) com o id ($1) ,o value (de $2) o type (de $2) o address (var global address)*/}
+Var 			: IDENTIFIER Value_Var {
+							$$->id=$1;
+							$$->type=$2->type;
+							if ($2->type != -1) {
+								$$->value=$2->value;
+							}
+					       }
 			;
 	
-Value_Var 		: {}
-			| '=' Inic_Var
+Value_Var 		: {$$->type=-1;}
+			| '=' Inic_Var {$$=$2;}
 			;
 
-Type 			: INTEGER
-			| BOOLEAN	
+Type 			: INTEGER {$$ = 0;}
+			| BOOLEAN {$$ = 1;}	
+			| STRING  {$$ = 2;}
 			/*| ARRAY SIZE NUMBER*/
 			;
 	
@@ -79,9 +100,9 @@ Inic_Var 		: Constant {$$ = $1;}
 			;
 	
 Constant	 	: NUMBER {$$->value = $1; $$->type=0;}
-			| STRING {$$->value = $1; $$->type=1;}
-			| TRUE {$$->value = $1; $$->type=2;}
-			| FALSE {$$->value = $1; $$->type=2;}
+			| STR 	 {$$->value = $1; $$->type=1;}
+			| TRUE   {$$->value = $1; $$->type=2;}
+			| FALSE  {$$->value = $1; $$->type=2;}
 			;
 	
 
@@ -211,7 +232,7 @@ SuccPred 		: SUCC
 Say_Statement 		: SAY '(' Expression ')'
 			;
 	
-Ask_Statement 		: ASK '(' STRING ',' Variable ')'
+Ask_Statement 		: ASK '(' STR ',' Variable ')'
 			;
 	
 
@@ -238,7 +259,15 @@ While_Stat 		: WHILE '(' Expression ')' '{' Statements '}'
 
 %%
 
-//#include "lex.yy.c"
+void insereEmListaVars(VarTipo *var, int first){
+	ListaVars *aux = (ListaVars*)malloc(sizeof(ListaVars));
+	aux->id = var->id;
+	aux->value = var->value;
+	aux->type = var->type;
+	if(first == 1){aux->next = NULL;}
+	else {aux->next = nodo;}
+	nodo = aux;
+}
 
 int yyerror(char *s){
 	fprintf(stderr, "ERRO: %s \n", s);

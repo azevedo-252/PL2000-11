@@ -1,8 +1,10 @@
+#ifndef _STRUCTS
+#define _STRUCTS
+
 typedef struct VarTipos {
 	char* id;
 	char* value;
 	int type;
-	int address;
 } VarTipo;
 
 typedef struct ConstTipos {
@@ -10,11 +12,11 @@ typedef struct ConstTipos {
 	int type;
 } ConstTipo;
 
-typedef struct ListasVars {
-	int id;
+typedef struct NodoVar {
+	char* id;
 	char* value;
 	int type;
-	int address;
-	struct ListasVars *next;
+	struct NodoVar *next;
 } ListaVars;
-ListaVars *lVars;
+
+#endif

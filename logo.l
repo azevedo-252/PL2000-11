@@ -18,6 +18,7 @@ STRING						\"([^"\n]|\\\")*\"
 "->"						{ return ARROW; }
 "integer"					{ return INTEGER; }
 "boolean"					{ return BOOLEAN; }
+"string"					{ return STRING; }
 "array"						{ /*return ARRAY;*/ }
 "size"						{ /*return SIZE;*/ }
 "true"						{ yylval.stringvalue=(char*)strdup(yytext); return TRUE; }
@@ -58,7 +59,7 @@ STRING						\"([^"\n]|\\\")*\"
 
 {NUMBER}					{ yylval.stringvalue = strdup(yytext); return NUMBER; }
 {IDENTIFIER}					{ yylval.stringvalue = strdup(yytext); return IDENTIFIER; }
-{STRING}					{ yylval.stringvalue = strdup(yytext); return STRING; }
+{STRING}					{ yylval.stringvalue = strdup(yytext); return STR; }
 
 [\n\t]						{ ; }
 

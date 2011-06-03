@@ -45,38 +45,39 @@
      ARROW = 261,
      INTEGER = 262,
      BOOLEAN = 263,
-     FORWARD = 264,
-     BACKWARD = 265,
-     RRIGHT = 266,
-     RLEFT = 267,
-     PEN = 268,
-     UP = 269,
-     DOWN = 270,
-     GOTO = 271,
-     WHERE = 272,
-     OR = 273,
-     AND = 274,
-     POW = 275,
-     EQUAL = 276,
-     DIF = 277,
-     MINOREQUAL = 278,
-     MAJOREQUAL = 279,
-     IN = 280,
-     SAY = 281,
-     ASK = 282,
-     IF = 283,
-     THEN = 284,
-     ELSE = 285,
-     WHILE = 286,
-     TRUE = 287,
-     FALSE = 288,
-     IDENTIFIER = 289,
-     NUMBER = 290,
-     STRING = 291,
-     SUCC = 292,
-     PRED = 293,
-     MAJOR = 294,
-     MINOR = 295
+     STRING = 264,
+     FORWARD = 265,
+     BACKWARD = 266,
+     RRIGHT = 267,
+     RLEFT = 268,
+     PEN = 269,
+     UP = 270,
+     DOWN = 271,
+     GOTO = 272,
+     WHERE = 273,
+     OR = 274,
+     AND = 275,
+     POW = 276,
+     EQUAL = 277,
+     DIF = 278,
+     MINOREQUAL = 279,
+     MAJOREQUAL = 280,
+     IN = 281,
+     SAY = 282,
+     ASK = 283,
+     IF = 284,
+     THEN = 285,
+     ELSE = 286,
+     WHILE = 287,
+     TRUE = 288,
+     FALSE = 289,
+     IDENTIFIER = 290,
+     NUMBER = 291,
+     STR = 292,
+     SUCC = 293,
+     PRED = 294,
+     MAJOR = 295,
+     MINOR = 296
    };
 #endif
 /* Tokens.  */
@@ -86,38 +87,39 @@
 #define ARROW 261
 #define INTEGER 262
 #define BOOLEAN 263
-#define FORWARD 264
-#define BACKWARD 265
-#define RRIGHT 266
-#define RLEFT 267
-#define PEN 268
-#define UP 269
-#define DOWN 270
-#define GOTO 271
-#define WHERE 272
-#define OR 273
-#define AND 274
-#define POW 275
-#define EQUAL 276
-#define DIF 277
-#define MINOREQUAL 278
-#define MAJOREQUAL 279
-#define IN 280
-#define SAY 281
-#define ASK 282
-#define IF 283
-#define THEN 284
-#define ELSE 285
-#define WHILE 286
-#define TRUE 287
-#define FALSE 288
-#define IDENTIFIER 289
-#define NUMBER 290
-#define STRING 291
-#define SUCC 292
-#define PRED 293
-#define MAJOR 294
-#define MINOR 295
+#define STRING 264
+#define FORWARD 265
+#define BACKWARD 266
+#define RRIGHT 267
+#define RLEFT 268
+#define PEN 269
+#define UP 270
+#define DOWN 271
+#define GOTO 272
+#define WHERE 273
+#define OR 274
+#define AND 275
+#define POW 276
+#define EQUAL 277
+#define DIF 278
+#define MINOREQUAL 279
+#define MAJOREQUAL 280
+#define IN 281
+#define SAY 282
+#define ASK 283
+#define IF 284
+#define THEN 285
+#define ELSE 286
+#define WHILE 287
+#define TRUE 288
+#define FALSE 289
+#define IDENTIFIER 290
+#define NUMBER 291
+#define STR 292
+#define SUCC 293
+#define PRED 294
+#define MAJOR 295
+#define MINOR 296
 
 
 
@@ -127,7 +129,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 26 "logo.y"
+#line 28 "logo.y"
 
 	int intvalue;
 	char* stringvalue;
@@ -137,7 +139,7 @@ typedef union YYSTYPE
 
 
 /* Line 1676 of yacc.c  */
-#line 141 "y.tab.h"
+#line 143 "y.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
