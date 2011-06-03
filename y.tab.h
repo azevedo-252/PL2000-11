@@ -39,87 +39,85 @@
    /* Put the tokens into the symbol table, so that GDB and other debuggers
       know about them.  */
    enum yytokentype {
-     BODY = 258,
-     PROGRAM = 259,
-     DECLARATIONS = 260,
-     STATEMENTS = 261,
-     ARROW = 262,
-     INTEGER = 263,
-     BOOLEAN = 264,
-     ARRAY = 265,
-     SIZE = 266,
-     TRUE = 267,
-     FALSE = 268,
-     FORWARD = 269,
-     BACKWARD = 270,
-     RRIGHT = 271,
-     RLEFT = 272,
-     PEN = 273,
-     UP = 274,
-     DOWN = 275,
-     GOTO = 276,
-     WHERE = 277,
-     OR = 278,
-     AND = 279,
-     POW = 280,
-     DOUBLEEQUAL = 281,
-     DIFFERENT = 282,
-     MENOREQUAL = 283,
-     MAIOREQUAL = 284,
-     IN = 285,
-     SUCC = 286,
-     PRED = 287,
-     SAY = 288,
-     ASK = 289,
-     IF = 290,
-     THEN = 291,
-     ELSE = 292,
-     WHILE = 293,
-     identifier = 294,
-     number = 295,
-     string = 296
+     PROGRAM = 258,
+     DECLARATIONS = 259,
+     STATEMENTS = 260,
+     ARROW = 261,
+     INTEGER = 262,
+     BOOLEAN = 263,
+     FORWARD = 264,
+     BACKWARD = 265,
+     RRIGHT = 266,
+     RLEFT = 267,
+     PEN = 268,
+     UP = 269,
+     DOWN = 270,
+     GOTO = 271,
+     WHERE = 272,
+     OR = 273,
+     AND = 274,
+     POW = 275,
+     EQUAL = 276,
+     DIF = 277,
+     MINOREQUAL = 278,
+     MAJOREQUAL = 279,
+     IN = 280,
+     SAY = 281,
+     ASK = 282,
+     IF = 283,
+     THEN = 284,
+     ELSE = 285,
+     WHILE = 286,
+     TRUE = 287,
+     FALSE = 288,
+     IDENTIFIER = 289,
+     NUMBER = 290,
+     STRING = 291,
+     SUCC = 292,
+     PRED = 293,
+     MAJOR = 294,
+     MINOR = 295
    };
 #endif
 /* Tokens.  */
-#define BODY 258
-#define PROGRAM 259
-#define DECLARATIONS 260
-#define STATEMENTS 261
-#define ARROW 262
-#define INTEGER 263
-#define BOOLEAN 264
-#define ARRAY 265
-#define SIZE 266
-#define TRUE 267
-#define FALSE 268
-#define FORWARD 269
-#define BACKWARD 270
-#define RRIGHT 271
-#define RLEFT 272
-#define PEN 273
-#define UP 274
-#define DOWN 275
-#define GOTO 276
-#define WHERE 277
-#define OR 278
-#define AND 279
-#define POW 280
-#define DOUBLEEQUAL 281
-#define DIFFERENT 282
-#define MENOREQUAL 283
-#define MAIOREQUAL 284
-#define IN 285
-#define SUCC 286
-#define PRED 287
-#define SAY 288
-#define ASK 289
-#define IF 290
-#define THEN 291
-#define ELSE 292
-#define WHILE 293
-#define identifier 294
-#define number 295
-#define string 296
+#define PROGRAM 258
+#define DECLARATIONS 259
+#define STATEMENTS 260
+#define ARROW 261
+#define INTEGER 262
+#define BOOLEAN 263
+#define FORWARD 264
+#define BACKWARD 265
+#define RRIGHT 266
+#define RLEFT 267
+#define PEN 268
+#define UP 269
+#define DOWN 270
+#define GOTO 271
+#define WHERE 272
+#define OR 273
+#define AND 274
+#define POW 275
+#define EQUAL 276
+#define DIF 277
+#define MINOREQUAL 278
+#define MAJOREQUAL 279
+#define IN 280
+#define SAY 281
+#define ASK 282
+#define IF 283
+#define THEN 284
+#define ELSE 285
+#define WHILE 286
+#define TRUE 287
+#define FALSE 288
+#define IDENTIFIER 289
+#define NUMBER 290
+#define STRING 291
+#define SUCC 292
+#define PRED 293
+#define MAJOR 294
+#define MINOR 295
 
 
 
@@ -129,10 +127,12 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 5 "logo.y"
+#line 47 "logo.y"
 
 	int intvalue;
-	char* stringvalue;
+	char *stringvalue;
+	VarTipo varTipo;
+	ConstTipo constTipo;
 
 
 

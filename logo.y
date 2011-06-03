@@ -1,54 +1,55 @@
 %{
 	#include <stdio.h>
 
-	int addressG = 0;i
+	int addressG = 0;
 
-	typedef struct {
+	typedef struct VarTipo {
 		char* id;
 		char* value;
 		int type;
 		int address;
 	}VarTipo;
 
-	typedef struct {
+	typedef struct ConstTipo {
 		char* value;
 		int type;
 	} ConstTipo;
 
-	typedef struct Vars {
+	typedef struct ListaVars {
 		int id;
 		char* value;
 		int type;
 		int address;
 		struct Vars *next;
 	} ListaVars;
-	ListaVars* lVars;
+	ListaVars *lVars;
 
 %}
 
-%union{
-	int intvalue;
-	char* stringvalue;
-	ConstTipo constTipo;
-	VarTipo varTipo;
-}
 
 /*%token ARRAY SIZE*/
-%token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN <stringvalue>TRUE <stringvalue>FALSE FORWARD BACKWARD RRIGHT RLEFT
-%token PEN UP DOWN GOTO WHERE OR AND POW EQUAL DIF MINOREQUAL MAJOREQUAL IN <stringvalue>SUCC <stringvalue>PRED SAY ASK IF THEN ELSE WHILE
-%token <stringvalue>IDENTIFIER <stringvalue>NUMBER <stringvalue>STRING
+%token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN FORWARD BACKWARD RRIGHT RLEFT
+%token PEN UP DOWN GOTO WHERE OR AND POW EQUAL DIF MINOREQUAL MAJOREQUAL IN SAY ASK IF THEN ELSE WHILE
+%token <stringvalue>TRUE FALSE IDENTIFIER NUMBER STRING SUCC PRED
 
 %left MINOR MAJOR MINOREQUAL MAJOREQUAL EQUAL AND POW DIF OR
 %left <stringvalue>'+' '-'
 %left '*' '/'
 
 
-// TODO verficiar depois o que é e nao é preciso
+/* TODO verficiar depois o que é e nao é preciso */
 %type <stringvalue>Factor Term Single_Expression Expression SuccPred
 %type <constTipo>Constant Value_Var Inic_Var
 %type <varTipo>Var 
-%type <intvalue>Type <intvalue>SuccOrPred <intvalue>Add_Op <intvalue>Mul_Op
+%type <intvalue>Type SuccOrPred Add_Op Mul_Op
 
+
+%union{
+	int intvalue;
+	char *stringvalue;
+	VarTipo varTipo;
+	ConstTipo constTipo;
+}
 
 %start Liss
 
@@ -82,7 +83,7 @@ Vars 			: Var {/**/}
 Var 			: IDENTIFIER Value_Var {/*preencher o $$ (VarTipo) com o id ($1) ,o value (de $2) o type (de $2) o address (var global address)*/}
 			;
 	
-Value_Var 		: {$$ = "";}
+Value_Var 		: {}
 			| '=' Inic_Var
 			;
 
@@ -97,8 +98,8 @@ Inic_Var 		: Constant {$$ = $1;}
 	
 Constant	 	: NUMBER {$$.value = $1; $$.type=0;}
 			| STRING {$$.value = $1; $$.type=1;}
-			| 'TRUE' {$$.value = $1; $$.type=2;}
-			| 'FALSE' {$$.value = $1; $$.type=2;}
+			| TRUE {$$.value = $1; $$.type=2;}
+			| FALSE {$$.value = $1; $$.type=2;}
 			;
 	
 
@@ -134,8 +135,8 @@ Turtle_Commands 	: Step
 			| Location
 			;
 
-Step 			: FORWARD Expression {}
-			| BACKWARD Expression {}
+Step 			: FORWARD Expression 
+			| BACKWARD Expression
 			;
 
 Rotate 			: RRIGHT
@@ -194,7 +195,7 @@ Factor 			: Constant
 	
 
 
-ADD_OP  		: '+'
+Add_Op  		: '+'
 			| '-'
 			| OR
 			;
@@ -263,7 +264,7 @@ int yyerror(char *s){
 }
 
 int main() {
-	nodo = NULL;
+	//nodo = NULL;
 	//inithashtab();
 	yyparse();
 	return 0;

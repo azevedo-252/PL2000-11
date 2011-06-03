@@ -17,8 +17,8 @@ STRING						\"([^"\n]|\\\")*\"
 "->"						{ return ARROW; }
 "integer"					{ return INTEGER; }
 "boolean"					{ return BOOLEAN; }
-"array"						{ return ARRAY; }
-"size"						{ return SIZE; }
+"array"						{ /*return ARRAY;*/ }
+"size"						{ /*return SIZE;*/ }
 "true"						{ yylval.stringvalue=(char*)strdup(yytext); return TRUE; }
 "false"						{ yylval.stringvalue=(char*)strdup(yytext); return FALSE; }
 "forward"					{ return FORWARD; }
