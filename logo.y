@@ -8,7 +8,7 @@
 	ListaVars *nodo;
 
 %}
-
+%error-verbose
 
 /*%token ARRAY SIZE*/
 %token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN STRING FORWARD BACKWARD RRIGHT RLEFT
@@ -16,7 +16,7 @@
 %token <stringvalue>TRUE FALSE IDENTIFIER NUMBER STR SUCC PRED
 
 %left MINOR MAJOR MINOREQUAL MAJOREQUAL EQUAL AND POW DIF OR
-%left <stringvalue>'+' '-'
+%left '+' '-'
 %left '*' '/'
 
 
@@ -35,7 +35,6 @@
 
 
 
-
 %start Liss
 
 %%
@@ -45,7 +44,8 @@
 Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("stop\n");}
 			;
 	
-Body 			: DECLARATIONS Declarations STATEMENTS Statements {}
+Body 			: DECLARATIONS Declarations  {printf("Start\n");}
+			 STATEMENTS Statements
 			;
 
 
@@ -58,7 +58,7 @@ Declaration 		: Variable_Declaration
 
 
 
-Variable_Declaration 	: Vars ARROW Type ';' 	{
+Variable_Declaration 	: Vars ARROW Type ';' 	{/*
 							ListaVars *aux = nodo;
 							while(aux) {
 								// verficiar na hashtable se ja existe uma variavel com este nome, se ja passa para a proxima var
@@ -98,12 +98,12 @@ Variable_Declaration 	: Vars ARROW Type ';' 	{
 								aux=aux->next;
 							}
 							nodo = NULL;
-						}
+						*/}
 						;
 
-Vars 			: Var 	{insereEmListaVars($1, 0);
+Vars 			: Var 	{/*insereEmListaVars($1, 0);*/
 				}
-			| Vars ',' Var 	{insereEmListaVars($3, 1);
+			| Vars ',' Var 	{/*insereEmListaVars($3, 1);*/
 					}
 			;
 
@@ -131,7 +131,7 @@ Inic_Var 		: Constant {$$ = $1;}
 			/*| Array_Definition*/
 			;
 	
-Constant	 	: NUMBER {$$.value = $1; $$.type=0;}
+Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/*TODO so pus estes parentises aqui porque ha exemplos que aparecem la*/
 			| STR 	 {$$.value = $1; $$.type=1;}
 			| TRUE   {$$.value = $1; $$.type=2;}
 			| FALSE  {$$.value = $1; $$.type=2;}
@@ -205,7 +205,7 @@ Array_Acess 		:
 
 
 Expression 		: Single_Expression
-			| Expression Rel_Op Single_Expression    //VER ISTO! ESTAVA REL_OPER, MAS ACHO QUE E REL_OP
+			| Expression Rel_Op Single_Expression   
 			;
 	
 
