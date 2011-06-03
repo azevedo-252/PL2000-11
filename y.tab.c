@@ -71,6 +71,7 @@
 #line 1 "logo.y"
 
 	#include <stdio.h>
+	//#include <stdlib.h>
 	#include "structures.h"
 
 	int addressG = 0;
@@ -80,7 +81,7 @@
 
 
 /* Line 189 of yacc.c  */
-#line 84 "y.tab.c"
+#line 85 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -197,17 +198,17 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 28 "logo.y"
+#line 29 "logo.y"
 
 	int intvalue;
 	char* stringvalue;
-	VarTipo *varTipo;
-	ConstTipo *constTipo;
+	VarTipo varTipo;
+	ConstTipo constTipo;
 
 
 
 /* Line 214 of yacc.c  */
-#line 211 "y.tab.c"
+#line 212 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -219,7 +220,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 223 "y.tab.c"
+#line 224 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -534,15 +535,15 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    44,    44,    47,    51,    52,    55,    60,    73,    75,
-      79,    88,    89,    92,    93,    94,    98,   102,   103,   104,
-     105,   122,   123,   126,   127,   128,   129,   134,   135,   136,
-     137,   138,   141,   142,   145,   146,   149,   150,   153,   154,
-     157,   158,   163,   166,   169,   170,   175,   176,   181,   182,
-     187,   188,   193,   194,   195,   196,   201,   202,   203,   206,
-     207,   208,   209,   212,   213,   214,   215,   216,   217,   218,
-     223,   226,   227,   232,   235,   240,   243,   248,   251,   252,
-     257
+       0,    45,    45,    48,    52,    53,    56,    61,   104,   106,
+     110,   120,   121,   124,   125,   126,   130,   134,   135,   136,
+     137,   154,   155,   158,   159,   160,   161,   166,   167,   168,
+     169,   170,   173,   174,   177,   178,   181,   182,   185,   186,
+     189,   190,   195,   198,   201,   202,   207,   208,   213,   214,
+     219,   220,   225,   226,   227,   228,   233,   234,   235,   238,
+     239,   240,   241,   244,   245,   246,   247,   248,   249,   250,
+     255,   258,   259,   264,   267,   272,   275,   280,   283,   284,
+     289
 };
 #endif
 
@@ -1561,38 +1562,68 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 44 "logo.y"
+#line 45 "logo.y"
     {printf("stop\n");}
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 47 "logo.y"
+#line 48 "logo.y"
     {}
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 60 "logo.y"
+#line 61 "logo.y"
     {
 							ListaVars *aux = nodo;
 							while(aux) {
 								// verficiar na hashtable se ja existe uma variavel com este nome, se ja passa para a proxima var
-								// insere nome, tipo e address na hashtable
-								switch((yyvsp[(3) - (4)].intvalue)) {
-									case 0:
-									break;
-								}
+								//if(){//mensagem de erro
+								//}
+								//else {
+									// insere nome, tipo e address na hashtable
+									switch((yyvsp[(3) - (4)].intvalue)) {
+										case 0://INTEGER
+											if (aux->type == -1) {//VAZIO
+												printf("pushi 0\n");
+											}
+											else {
+												printf("pushi %d\n",atoi(aux->value));
+											}
+										break;
+										case 1://BOOLEAN
+											if (strcmp(aux->value,"true")==0 || aux->type==-1) {
+												printf("pushi 1\n");
+											}
+											else (strcmp(aux->value, "false")==0) {
+												printf("pushi 0\n");
+											}
+										break;
+										case 2://STRING
+											if (aux->type == -1) {
+												printf("pushs \"\"\n");
+											}
+											else {
+												printf("pushs %s\n",aux->value);
+											}
+										break;
+										// nao estamos a fazer arrays para ja
+									}
+									addressG++;
+								//}
+								aux=aux->next;
 							}
+							nodo = NULL;
 						}
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 73 "logo.y"
+#line 104 "logo.y"
     {insereEmListaVars((yyvsp[(1) - (1)].varTipo), 0);
 				}
     break;
@@ -1600,7 +1631,7 @@ yyreduce:
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 75 "logo.y"
+#line 106 "logo.y"
     {insereEmListaVars((yyvsp[(3) - (3)].varTipo), 1);
 					}
     break;
@@ -1608,12 +1639,13 @@ yyreduce:
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 79 "logo.y"
+#line 110 "logo.y"
     {
-							(yyval.varTipo)->id=(yyvsp[(1) - (2)].stringvalue);
-							(yyval.varTipo)->type=(yyvsp[(2) - (2)].constTipo)->type;
-							if ((yyvsp[(2) - (2)].constTipo)->type != -1) {
-								(yyval.varTipo)->value=(yyvsp[(2) - (2)].constTipo)->value;
+							//$$ = (VarTipo)malloc(sizeof(struct VarTipos));
+							(yyval.varTipo).id=(yyvsp[(1) - (2)].stringvalue);
+							(yyval.varTipo).type=(yyvsp[(2) - (2)].constTipo).type;
+							if ((yyvsp[(2) - (2)].constTipo).type != -1) {
+								(yyval.varTipo).value=(yyvsp[(2) - (2)].constTipo).value;
 							}
 					       }
     break;
@@ -1621,77 +1653,77 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 88 "logo.y"
-    {(yyval.constTipo)->type=-1;}
+#line 120 "logo.y"
+    {(yyval.constTipo).type=-1;}
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 89 "logo.y"
+#line 121 "logo.y"
     {(yyval.constTipo)=(yyvsp[(2) - (2)].constTipo);}
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 92 "logo.y"
+#line 124 "logo.y"
     {(yyval.intvalue) = 0;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 93 "logo.y"
+#line 125 "logo.y"
     {(yyval.intvalue) = 1;}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 94 "logo.y"
+#line 126 "logo.y"
     {(yyval.intvalue) = 2;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 98 "logo.y"
+#line 130 "logo.y"
     {(yyval.constTipo) = (yyvsp[(1) - (1)].constTipo);}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 102 "logo.y"
-    {(yyval.constTipo)->value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo)->type=0;}
+#line 134 "logo.y"
+    {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=0;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 103 "logo.y"
-    {(yyval.constTipo)->value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo)->type=1;}
+#line 135 "logo.y"
+    {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=1;}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 104 "logo.y"
-    {(yyval.constTipo)->value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo)->type=2;}
+#line 136 "logo.y"
+    {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=2;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 105 "logo.y"
-    {(yyval.constTipo)->value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo)->type=2;}
+#line 137 "logo.y"
+    {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=2;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1695 "y.tab.c"
+#line 1727 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1903,14 +1935,14 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 260 "logo.y"
+#line 292 "logo.y"
 
 
-void insereEmListaVars(VarTipo *var, int first){
+void insereEmListaVars(VarTipo var, int first){
 	ListaVars *aux = (ListaVars*)malloc(sizeof(ListaVars));
-	aux->id = var->id;
-	aux->value = var->value;
-	aux->type = var->type;
+	aux->id = var.id;
+	aux->value = var.value;
+	aux->type = var.type;
 	if(first == 1){aux->next = NULL;}
 	else {aux->next = nodo;}
 	nodo = aux;

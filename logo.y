@@ -1,5 +1,6 @@
 %{
 	#include <stdio.h>
+	//#include <stdlib.h>
 	#include "structures.h"
 
 	int addressG = 0;
@@ -28,8 +29,8 @@
 %union{
 	int intvalue;
 	char* stringvalue;
-	VarTipo *varTipo;
-	ConstTipo *constTipo;
+	VarTipo varTipo;
+	ConstTipo constTipo;
 }
 
 
@@ -61,14 +62,44 @@ Variable_Declaration 	: Vars ARROW Type ';' 	{
 							ListaVars *aux = nodo;
 							while(aux) {
 								// verficiar na hashtable se ja existe uma variavel com este nome, se ja passa para a proxima var
-								// insere nome, tipo e address na hashtable
-								switch($3) {
-									case 0:
-									break;
-								}
+								//if(){//mensagem de erro
+								//}
+								//else {
+									// insere nome, tipo e address na hashtable
+									switch($3) {
+										case 0://INTEGER
+											if (aux->type == -1) {//VAZIO
+												printf("pushi 0\n");
+											}
+											else {
+												printf("pushi %d\n",atoi(aux->value));
+											}
+										break;
+										case 1://BOOLEAN
+											if (strcmp(aux->value,"true")==0 || aux->type==-1) {
+												printf("pushi 1\n");
+											}
+											else (strcmp(aux->value, "false")==0) {
+												printf("pushi 0\n");
+											}
+										break;
+										case 2://STRING
+											if (aux->type == -1) {
+												printf("pushs \"\"\n");
+											}
+											else {
+												printf("pushs %s\n",aux->value);
+											}
+										break;
+										// nao estamos a fazer arrays para ja
+									}
+									addressG++;
+								//}
+								aux=aux->next;
 							}
+							nodo = NULL;
 						}
-			;
+						;
 
 Vars 			: Var 	{insereEmListaVars($1, 0);
 				}
@@ -77,15 +108,16 @@ Vars 			: Var 	{insereEmListaVars($1, 0);
 			;
 
 Var 			: IDENTIFIER Value_Var {
-							$$->id=$1;
-							$$->type=$2->type;
-							if ($2->type != -1) {
-								$$->value=$2->value;
+							//$$ = (VarTipo)malloc(sizeof(struct VarTipos));
+							$$.id=$1;
+							$$.type=$2.type;
+							if ($2.type != -1) {
+								$$.value=$2.value;
 							}
 					       }
 			;
 	
-Value_Var 		: {$$->type=-1;}
+Value_Var 		: {$$.type=-1;}
 			| '=' Inic_Var {$$=$2;}
 			;
 
@@ -99,10 +131,10 @@ Inic_Var 		: Constant {$$ = $1;}
 			/*| Array_Definition*/
 			;
 	
-Constant	 	: NUMBER {$$->value = $1; $$->type=0;}
-			| STR 	 {$$->value = $1; $$->type=1;}
-			| TRUE   {$$->value = $1; $$->type=2;}
-			| FALSE  {$$->value = $1; $$->type=2;}
+Constant	 	: NUMBER {$$.value = $1; $$.type=0;}
+			| STR 	 {$$.value = $1; $$.type=1;}
+			| TRUE   {$$.value = $1; $$.type=2;}
+			| FALSE  {$$.value = $1; $$.type=2;}
 			;
 	
 
@@ -259,11 +291,11 @@ While_Stat 		: WHILE '(' Expression ')' '{' Statements '}'
 
 %%
 
-void insereEmListaVars(VarTipo *var, int first){
+void insereEmListaVars(VarTipo var, int first){
 	ListaVars *aux = (ListaVars*)malloc(sizeof(ListaVars));
-	aux->id = var->id;
-	aux->value = var->value;
-	aux->type = var->type;
+	aux->id = var.id;
+	aux->value = var.value;
+	aux->type = var.type;
 	if(first == 1){aux->next = NULL;}
 	else {aux->next = nodo;}
 	nodo = aux;

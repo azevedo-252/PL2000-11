@@ -129,12 +129,12 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 28 "logo.y"
+#line 29 "logo.y"
 
 	int intvalue;
 	char* stringvalue;
-	VarTipo *varTipo;
-	ConstTipo *constTipo;
+	VarTipo varTipo;
+	ConstTipo constTipo;
 
 
 
