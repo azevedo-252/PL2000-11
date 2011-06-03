@@ -21,10 +21,10 @@
 
 
 /* TODO verficiar depois o que é e nao é preciso */
-%type <stringvalue>Factor Term Single_Expression Expression SuccPred
+%type <stringvalue>SuccPred
 %type <intvalue>Type SuccOrPred Add_Op Mul_Op
 %type <varTipo>Var 
-%type <constTipo>Constant Value_Var Inic_Var
+%type <constTipo>Constant Value_Var Inic_Var Factor Term Single_Expression Expression
 
 %union{
 	int intvalue;
@@ -204,8 +204,8 @@ Array_Acess 		:
 	
 
 
-Expression 		: Single_Expression
-			| Expression Rel_Op Single_Expression    //VER ISTO! ESTAVA REL_OPER, MAS ACHO QUE E REL_OP
+Expression 		: Singlei_Expression
+			| Expression Rel_Op Single_Expression
 			;
 	
 
@@ -222,7 +222,15 @@ Term 			: Factor
 
 
 
-Factor 			: Constant
+Factor 			: Constant		{
+
+
+
+
+
+
+
+						}
 			| Variable
 			| SuccOrPred
 			| '(' Expression ')'
