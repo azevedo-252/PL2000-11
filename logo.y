@@ -103,151 +103,168 @@ Constant	 	: NUMBER {$$.value = $1; $$.type=0;}
 	
 
 
-Array_Definition : '[' Array_Initialization ']'
-	;
+Array_Definition 	: '[' Array_Initialization ']'
+			;
 	
-Array_Initialization : Elem
-	| Array_Initialization ',' Elem
-	;
+Array_Initialization 	: Elem
+			| Array_Initialization ',' Elem
+			;
 	
-Elem : NUMBER
-	;
-	
-
-
-Statements : Statement ';'
-	| Statements Statement ';'
-	;
-	
-Statement : Turtle_Commands
-	| Assignment
-	| Conditional_Statement
-	| Iterative_Statement
-	;
+Elem 			: NUMBER
+			;
 	
 
 
-Turtle_Commands : Step
-	| Rotate
-	| Mode
-	| Dialogue
-	| Location
-	;
-
-Step : 'FORWARD' Expression
-	| 'BACKWARD' Expression
-	;
-
-Rotate : 'RRIGHT'
-	| 'RLEFT'
-	;
+Statements 		: Statement ';'
+			| Statements Statement ';'
+			;
 	
-Mode : 'PEN' 'UP'
-	| 'PEN' 'DOWN'
-	;
-	
-Dialogue : Say_Statement
-	| Ask_Statement
-	;
-	
-Location : 'GOTO' NUMBER ',' NUMBER
-	| 'WHERE' '?'
-	;
+Statement 		: Turtle_Commands
+			| Assignment
+			| Conditional_Statement
+			| Iterative_Statement
+			;
 	
 
 
-Assignment : Variable '=' Expression
-	;
+Turtle_Commands 	: Step
+			| Rotate
+			| Mode
+			| Dialogue
+			| Location
+			;
+
+Step 			: FORWARD Expression {}
+			| BACKWARD Expression {}
+			;
+
+Rotate 			: RRIGHT
+			| RLEFT
+			;
 	
-Variable : IDENTIFIER Array_Acess
-	;
+Mode 			: PEN UP
+			| PEN DOWN
+			;
 	
-Array_Acess :
-	| '[' Single_Expression ']'
-	;
+Dialogue 		: Say_Statement
+			| Ask_Statement
+			;
 	
-
-
-Expression : Single_Expression
-	| Expression Rel_Op Single_Expression    //VER ISTO! ESTAVA REL_OPER, MAS ACHO QUE E REL_OP
-	;
-	
-
-
-Single_Expression : Term
-	| Single_Expression Add_Op Term
-	;
-
-
-
-Term : Factor
-	| Term Mul_Op Factor
-	;
-
-
-
-Factor : Constant
-	| Variable
-	| SuccOrPred
-	| '(' Expression ')'
-	;
+Location 		: GOTO NUMBER ',' NUMBER
+			| WHERE '?'
+			;
 	
 
 
-ADD_OP  : '+'
-	| '-'
-	| '||'
-	;
+Assignment 		: Variable '=' Expression
+			;
 	
-Mul_Op : '*'
-	| '/'
-	| '&&'
-	| '**'
-	;
+Variable 		: IDENTIFIER Array_Acess
+			;
+	
+Array_Acess 		:
+			| '[' Single_Expression ']'
+			;
+	
+
+
+Expression 		: Single_Expression
+			| Expression Rel_Op Single_Expression    //VER ISTO! ESTAVA REL_OPER, MAS ACHO QUE E REL_OP
+			;
+	
+
+
+Single_Expression 	: Term
+			| Single_Expression Add_Op Term
+			;
+
+
+
+Term 			: Factor
+			| Term Mul_Op Factor
+			;	
+
+
+
+Factor 			: Constant
+			| Variable
+			| SuccOrPred
+			| '(' Expression ')'
+			;
+	
+
+
+ADD_OP  		: '+'
+			| '-'
+			| OR
+			;
+	
+Mul_Op 			: '*'
+			| '/'
+			| AND
+			| POW
+			;
 	 
-Rel_Op : '=='
-	| '=!' 
-	| '>' 
-	| '<'
-	| '=>'
-	| '=<'
-	| 'in'
-	;
+Rel_Op 			: EQUAL
+			| DIF 
+			| MAJOR 
+			| MINOR
+			| MAJOREQUAL
+			| MINOREQUAL
+			| IN
+			;
 	
 
 
-SuccOrPred : SuccPred IDENTIFIER
-	;
+SuccOrPred 		: SuccPred IDENTIFIER
+			;
 	
-SuccPred : 'SUCC'
-	| 'PRED'
-	;
+SuccPred 		: SUCC
+			| PRED
+			;
 
 
 
-Say_Statement : 'SAY' '(' Expression ')'
-	;
+Say_Statement 		: SAY '(' Expression ')'
+			;
 	
-Ask_Statement : 'ASK' '(' STRING ',' Variable ')'
-	;
-	
-
-
-Conditional_Statement : IfThenElse_Stat
-	;
-	
-Iterative_Statement : While_Stat
-	;
+Ask_Statement 		: ASK '(' STRING ',' Variable ')'
+			;
 	
 
 
-IfThenElse_Stat : 'IF' Expression 'THEN' '{' Statements '}' Else_Expression
-	;
-
-Else_Expression :
-	| 'ELSE' '{' Statements '}'
-	;
+Conditional_Statement	: IfThenElse_Stat
+			;
+	
+Iterative_Statement 	: While_Stat
+			;
 	
 
 
-While_Stat : 'WHILE' '(' Expression ')' '{' Statements '}'	
+IfThenElse_Stat 	: IF Expression THEN '{' Statements '}' Else_Expression
+			;
+
+Else_Expression 	:
+			| ELSE '{' Statements '}'
+			;
+	
+
+
+While_Stat 		: WHILE '(' Expression ')' '{' Statements '}'
+			;
+
+%%
+
+#include "lex.yy.c"
+
+int yyerror(char *s){
+	fprintf(stderr, "ERRO: %s \n", s);
+	return 0;
+}
+
+int main() {
+	nodo = NULL;
+	//inithashtab();
+	yyparse();
+	return 0;
+}	
