@@ -1,4 +1,5 @@
 %{
+#include "structures.h"
 #include "y.tab.h"
 
 %}

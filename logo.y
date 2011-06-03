@@ -1,28 +1,8 @@
 %{
 	#include <stdio.h>
+	#include "structures.h"
 
 	int addressG = 0;
-
-	typedef struct VarTipo {
-		char* id;
-		char* value;
-		int type;
-		int address;
-	}VarTipo;
-
-	typedef struct ConstTipo {
-		char* value;
-		int type;
-	} ConstTipo;
-
-	typedef struct ListaVars {
-		int id;
-		char* value;
-		int type;
-		int address;
-		struct Vars *next;
-	} ListaVars;
-	ListaVars *lVars;
 
 %}
 
@@ -39,17 +19,19 @@
 
 /* TODO verficiar depois o que é e nao é preciso */
 %type <stringvalue>Factor Term Single_Expression Expression SuccPred
-%type <constTipo>Constant Value_Var Inic_Var
-%type <varTipo>Var 
 %type <intvalue>Type SuccOrPred Add_Op Mul_Op
-
+%type <varTipo>Var 
+%type <constTipo>Constant Value_Var Inic_Var
 
 %union{
 	int intvalue;
-	char *stringvalue;
-	VarTipo varTipo;
-	ConstTipo constTipo;
+	char* stringvalue;
+	VarTipo *varTipo;
+	ConstTipo *constTipo;
 }
+
+
+
 
 %start Liss
 
@@ -96,10 +78,10 @@ Inic_Var 		: Constant {$$ = $1;}
 			/*| Array_Definition*/
 			;
 	
-Constant	 	: NUMBER {$$.value = $1; $$.type=0;}
-			| STRING {$$.value = $1; $$.type=1;}
-			| TRUE {$$.value = $1; $$.type=2;}
-			| FALSE {$$.value = $1; $$.type=2;}
+Constant	 	: NUMBER {$$->value = $1; $$->type=0;}
+			| STRING {$$->value = $1; $$->type=1;}
+			| TRUE {$$->value = $1; $$->type=2;}
+			| FALSE {$$->value = $1; $$->type=2;}
 			;
 	
 
@@ -256,7 +238,7 @@ While_Stat 		: WHILE '(' Expression ')' '{' Statements '}'
 
 %%
 
-#include "lex.yy.c"
+//#include "lex.yy.c"
 
 int yyerror(char *s){
 	fprintf(stderr, "ERRO: %s \n", s);
