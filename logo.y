@@ -1,31 +1,40 @@
 %{
 	#include <stdio.h>
 
-	//typedef struct {
-	//	int cInt;
-	//	char* cString;
-	//}ConstTipo;
-
-	int address = 0;
+	int addressG = 0;i
 
 	typedef struct {
 		char* id;
-		char* atrib;
-		int address;
+		char* value;
 		int type;
+		int address;
 	}VarTipo;
+
+	typedef struct {
+		char* value;
+		int type;
+	} ConstTipo;
+
+	typedef struct Vars {
+		int id;
+		char* value;
+		int type;
+		int address;
+		struct Vars *next;
+	} ListaVars;
+	ListaVars* lVars;
 
 %}
 
 %union{
 	int intvalue;
 	char* stringvalue;
-	//ConstTipo constTipo;
+	ConstTipo constTipo;
 	VarTipo varTipo;
 }
 
-
-%token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN ARRAY SIZE <stringvalue>TRUE <stringvalue>FALSE FORWARD BACKWARD RRIGHT RLEFT
+/*%token ARRAY SIZE*/
+%token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN <stringvalue>TRUE <stringvalue>FALSE FORWARD BACKWARD RRIGHT RLEFT
 %token PEN UP DOWN GOTO WHERE OR AND POW EQUAL DIF MINOREQUAL MAJOREQUAL IN <stringvalue>SUCC <stringvalue>PRED SAY ASK IF THEN ELSE WHILE
 %token <stringvalue>IDENTIFIER <stringvalue>NUMBER <stringvalue>STRING
 
@@ -35,7 +44,8 @@
 
 
 // TODO verficiar depois o que é e nao é preciso
-%type <stringvalue>Constant Value_Var Inic_Var Factor Term Single_Expression Expression SuccPred
+%type <stringvalue>Factor Term Single_Expression Expression SuccPred
+%type <constTipo>Constant Value_Var Inic_Var
 %type <varTipo>Var 
 %type <intvalue>Type <intvalue>SuccOrPred <intvalue>Add_Op <intvalue>Mul_Op
 
@@ -65,31 +75,31 @@ Declaration 		: Variable_Declaration
 Variable_Declaration 	: Vars ARROW Type ';' {}
 			;
 
-Vars 			: Var {/*aqui fazemos push(i ou s tirado do atrib do $1) e depois inserimos o nome e endereco na hashtable*/}
+Vars 			: Var {/**/}
 			| Vars ',' Var {/*penso que seja o mesmo (tirado de $3)*/}
 			;
 
-Var 			: IDENTIFIER Value_Var {/*preencher o $$ (VarTipo) com o id ($1) e o atributo ($2), se $2 for vazio por atributo a ""*/}
+Var 			: IDENTIFIER Value_Var {/*preencher o $$ (VarTipo) com o id ($1) ,o value (de $2) o type (de $2) o address (var global address)*/}
 			;
 	
 Value_Var 		: {$$ = "";}
 			| '=' Inic_Var
 			;
 
-Type : INTEGER
-	| BOOLEAN	
-	| ARRAY SIZE NUMBER
-	;
+Type 			: INTEGER
+			| BOOLEAN	
+			/*| ARRAY SIZE NUMBER*/
+			;
 	
-Inic_Var : Constant
-	| Array_Definition
-	;
+Inic_Var 		: Constant {$$ = $1;}
+			/*| Array_Definition*/
+			;
 	
-Constant : NUMBER
-	| STRING
-	| 'TRUE'
-	| 'FALSE'
-	;
+Constant	 	: NUMBER {$$.value = $1; $$.type=0;}
+			| STRING {$$.value = $1; $$.type=1;}
+			| 'TRUE' {$$.value = $1; $$.type=2;}
+			| 'FALSE' {$$.value = $1; $$.type=2;}
+			;
 	
 
 
