@@ -45,7 +45,7 @@
 
 %%
 
-
+/***************************Program**************/
 
 Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 			;
@@ -92,6 +92,8 @@ Body 			: DECLARATIONS Declarations	{
 			;
 
 
+/***************************Declarations**************/
+
 Declarations		: Declaration
 			| Declarations Declaration
 			;
@@ -100,6 +102,7 @@ Declaration 		: Variable_Declaration
 			;
 
 
+/***************************Declarations: Variables**************/
 
 Variable_Declaration 	: Vars ARROW Type ';' 	{saveVars($3);}
 			;
@@ -134,11 +137,13 @@ Inic_Var 		: Constant {$$ = $1;}
 			;
 	
 Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/* TODO so pus estes parentises aqui porque ha exemplos em que aparecem la */
-			| STR 	 {$$.value = $1; $$.type=1;}
-			| TRUE   {$$.value = $1; $$.type=2;}
-			| FALSE  {$$.value = $1; $$.type=2;}
+			| STR 	 {$$.value = $1; $$.type=2;}
+			| TRUE   {$$.value = $1; $$.type=1;}
+			| FALSE  {$$.value = $1; $$.type=1;}
 			;
 	
+
+/***************************Declarations: Variables: Array_Definition**************/
 
 
 /*Array_Definition 	: '[' Array_Initialization ']'
@@ -153,6 +158,8 @@ Elem 			: NUMBER
 */	
 
 
+/***************************Statements**************/
+
 Statements 		: Statement ';'
 			| Statements Statement ';'
 			;
@@ -163,6 +170,8 @@ Statement 		: Turtle_Commands
 			| Iterative_Statement
 			;
 	
+
+/***************************Turtle Statement**************/
 
 
 Turtle_Commands 	: Step
@@ -204,6 +213,8 @@ Location 		: GOTO NUMBER ',' NUMBER
 			;
 	
 
+/***************************Assignment Statement**************/
+
 
 Assignment 		: Variable '=' Expression
 			;
@@ -216,6 +227,7 @@ Array_Acess 		:
 			;
 	
 
+/***************************Expression**************/
 
 Expression 		: Single_Expression			{ $$ = $1; }
 			| Expression Rel_Op Single_Expression	{
@@ -261,6 +273,7 @@ Expression 		: Single_Expression			{ $$ = $1; }
 			;
 	
 
+/***************************Single Expression**************/
 
 Single_Expression 	: Term					{ $$ = $1; }
 			| Single_Expression Add_Op Term		{
@@ -321,9 +334,11 @@ Term 			: Factor				{ $$ = $1; }
 			;	
 
 
+/***************************Term**************/
 
 Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
 								  $$ = atoi($1.value);       //atoi(const.value);
+
 
 
 								  /*$$->consttipo.value = $1.value;
@@ -331,6 +346,9 @@ Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCUR
 								}
 			| Variable				{ /*TabelaHash *var = procuraLista($1);*/
 								  $$ = atoi($1.value);    //UMA VEZ MAIS, SEM QUALQUER CERTEZA DISTO
+
+/***************************Factor**************/
+
 
 
 								  /*$$->vartipo.id = $1.id; 
@@ -342,6 +360,7 @@ Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCUR
 			;
 	
 
+/***************************Operators**************/
 
 Add_Op  		: '+'			{ $$ = 1; }
 			| '-'			{ $$ = 2; }
@@ -364,6 +383,7 @@ Rel_Op 			: EQUAL			{ $$ = 1; }
 			;
 	
 
+/***************************SuccOrPred**************/
 
 SuccOrPred 		: SuccPred IDENTIFIER		{ VarData var = searchVar ($2);
 							  printf("store %d\n", var->address);
@@ -377,14 +397,42 @@ SuccPred 		: SUCC				{ $$ = "1"; }
 			;
 
 
-
-Say_Statement 		: SAY '(' Expression ')'
+/***************************IO Statements***********/
+	
+Say_Statement 		: SAY '(' Expression ')'		/*{ 
+								  switch($3.type){ // DEPENDE MUITO DE COMO FOR IMPLEMENTADO O EXPRESSION (FACTOR)
+									case 0: //INTEGER
+										printf("writei\n");
+										break;
+									case 1: //BOOLEAN
+										// Não escreve nada
+										break;
+									case 2: //STRING
+										printf("writes\n");
+										break;
+								  }
+								}*/
 			;
 	
-Ask_Statement 		: ASK '(' STR ',' Variable ')'
+Ask_Statement 		: ASK '(' STR ',' Variable ')'		{ 
+							          printf("pushs %s\n",$3); 	// guardar na stack a STR a perguntar
+								  printf("writes\n"); 		// escrever a STR a perguntar
+							 	  printf("read\n"); 		/* lê uma string do teclado (concluída por um "\n") 
+										       		   e arquiva esta string (sem o "\n") na heap e coloca
+                                                                                       		   (empilha) o endereço na pilha..
+									            		*/
+								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
+								  /*if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
+								  else {	
+								  	ListaVars *aux = nodo;
+								  	VarData *var = VarData searchVar($5->id);
+								  	printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
+								  }*/	
+								}
 			;
 	
 
+/***************************Consitional & Iterative Statements*******/
 
 Conditional_Statement	: IfThenElse_Stat
 			;
@@ -393,15 +441,17 @@ Iterative_Statement 	: While_Stat
 			;
 	
 
+/***************************IfThenElse_Stat*********/
 
 IfThenElse_Stat 	: IF Expression THEN '{' Statements '}' Else_Expression
-			;
+			;	
 
 Else_Expression 	:
 			| ELSE '{' Statements '}'
 			;
 	
 
+/***************************While_Stat**************/
 
 While_Stat 		: WHILE '(' Expression ')' '{' Statements '}'
 			;
