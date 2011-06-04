@@ -61,47 +61,8 @@ Declaration 		: Variable_Declaration
 
 
 
-Variable_Declaration 	: Vars ARROW Type ';' 	{//printListaVars();
-
-							ListaVars *aux = nodo;
-							while(aux) {
-								if(!searchVar(aux->id)){
-									// insere nome, tipo e address na hashtable
-									insertVar(aux->id, $3, addressG);
-									switch($3) {
-										case 0://INTEGER
-											if (aux->type == -1) {//VAZIO
-												printf("pushi 0\n");
-											}
-											else {
-												printf("pushi %d\n",atoi(aux->value));
-											}
-										break;
-										case 1://BOOLEAN
-											if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
-												printf("pushi 1\n");
-											}
-											else if (strcmp(aux->value, "FALSE")==0) {
-												printf("pushi 0\n");
-											}
-										break;
-										case 2://STRING
-											if (aux->type == -1) {
-												printf("pushs \"\"\n");
-											}
-											else {
-												printf("pushs %s\n",aux->value);
-											}
-										break;
-										// nao estamos a fazer arrays para ja
-									}
-									addressG++;
-								}
-								aux=aux->next;
-							}
-							nodo = NULL;
-						}
-						;
+Variable_Declaration 	: Vars ARROW Type ';' 	{saveVars($3);}
+			;
 
 Vars 			: Var 	{insertInListaVars($1, 0);
 				}
@@ -303,6 +264,49 @@ void insertInListaVars(VarTipo var, int first){
 	
 }
 
+void saveVars(int type){
+	//printListaVars();
+
+	ListaVars *aux = nodo;
+	while(aux) {
+		if(!searchVar(aux->id)){
+			// insere nome, tipo e address na hashtable
+			insertVar(aux->id, type, addressG);
+			switch(type) {
+				case 0://INTEGER
+					if (aux->type == -1) {//VAZIO
+						printf("pushi 0\n");
+					}
+					else {
+						printf("pushi %d\n",atoi(aux->value));
+					}
+				break;
+				case 1://BOOLEAN
+					if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
+						printf("pushi 1\n");
+					}
+					else if (strcmp(aux->value, "FALSE")==0) {
+						printf("pushi 0\n");
+					}
+				break;
+				case 2://STRING
+					if (aux->type == -1) {
+						printf("pushs \"\"\n");
+					}
+					else {
+						printf("pushs %s\n",aux->value);
+					}
+				break;
+				// nao estamos a fazer arrays para ja
+			}
+			addressG++;
+		}
+		aux=aux->next;
+	}
+	nodo = NULL;
+
+}
+
 /*char *stringToUpper(char* string){
 	int i;
 	char* new;
@@ -326,8 +330,6 @@ int yyerror(char *s){
 }
 
 int main() {
-	//nodo = NULL;
-	//inithashtab();
 	yyparse();
 	return 0;
 }	

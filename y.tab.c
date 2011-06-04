@@ -536,17 +536,17 @@ static const yytype_int8 yyrhs[] =
 };
 
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
-static const yytype_uint16 yyrline[] =
+static const yytype_uint8 yyrline[] =
 {
        0,    47,    47,    50,    51,    50,    55,    56,    59,    64,
-     106,   108,   112,   121,   122,   125,   126,   127,   131,   135,
-     136,   137,   138,   155,   156,   159,   160,   161,   162,   167,
-     168,   169,   170,   171,   174,   175,   178,   179,   182,   183,
-     186,   187,   190,   191,   196,   199,   202,   203,   208,   209,
-     214,   215,   220,   221,   226,   227,   228,   229,   234,   235,
-     236,   239,   240,   241,   242,   245,   246,   247,   248,   249,
-     250,   251,   256,   259,   260,   265,   268,   273,   276,   281,
-     284,   285,   290
+      67,    69,    73,    82,    83,    86,    87,    88,    92,    96,
+      97,    98,    99,   116,   117,   120,   121,   122,   123,   128,
+     129,   130,   131,   132,   135,   136,   139,   140,   143,   144,
+     147,   148,   151,   152,   157,   160,   163,   164,   169,   170,
+     175,   176,   181,   182,   187,   188,   189,   190,   195,   196,
+     197,   200,   201,   202,   203,   206,   207,   208,   209,   210,
+     211,   212,   217,   220,   221,   226,   229,   234,   237,   242,
+     245,   246,   251
 };
 #endif
 
@@ -1589,52 +1589,13 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 64 "logo.y"
-    {//printListaVars();
-
-							ListaVars *aux = nodo;
-							while(aux) {
-								if(!searchVar(aux->id)){
-									// insere nome, tipo e address na hashtable
-									insertVar(aux->id, (yyvsp[(3) - (4)].intvalue), addressG);
-									switch((yyvsp[(3) - (4)].intvalue)) {
-										case 0://INTEGER
-											if (aux->type == -1) {//VAZIO
-												printf("pushi 0\n");
-											}
-											else {
-												printf("pushi %d\n",atoi(aux->value));
-											}
-										break;
-										case 1://BOOLEAN
-											if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
-												printf("pushi 1\n");
-											}
-											else if (strcmp(aux->value, "FALSE")==0) {
-												printf("pushi 0\n");
-											}
-										break;
-										case 2://STRING
-											if (aux->type == -1) {
-												printf("pushs \"\"\n");
-											}
-											else {
-												printf("pushs %s\n",aux->value);
-											}
-										break;
-										// nao estamos a fazer arrays para ja
-									}
-									addressG++;
-								}
-								aux=aux->next;
-							}
-							nodo = NULL;
-						}
+    {saveVars((yyvsp[(3) - (4)].intvalue));}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 106 "logo.y"
+#line 67 "logo.y"
     {insertInListaVars((yyvsp[(1) - (1)].varTipo), 0);
 				}
     break;
@@ -1642,7 +1603,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 108 "logo.y"
+#line 69 "logo.y"
     {insertInListaVars((yyvsp[(3) - (3)].varTipo), 1);
 					}
     break;
@@ -1650,7 +1611,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 112 "logo.y"
+#line 73 "logo.y"
     { 
 							(yyval.varTipo).id=(yyvsp[(1) - (2)].stringvalue);
 							(yyval.varTipo).type=(yyvsp[(2) - (2)].constTipo).type;
@@ -1663,77 +1624,77 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 121 "logo.y"
+#line 82 "logo.y"
     {(yyval.constTipo).type=-1;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 122 "logo.y"
+#line 83 "logo.y"
     {(yyval.constTipo)=(yyvsp[(2) - (2)].constTipo);}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 125 "logo.y"
+#line 86 "logo.y"
     {(yyval.intvalue) = 0;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 126 "logo.y"
+#line 87 "logo.y"
     {(yyval.intvalue) = 1;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 127 "logo.y"
+#line 88 "logo.y"
     {(yyval.intvalue) = 2;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 131 "logo.y"
+#line 92 "logo.y"
     {(yyval.constTipo) = (yyvsp[(1) - (1)].constTipo);}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 135 "logo.y"
+#line 96 "logo.y"
     {(yyval.constTipo).value = (yyvsp[(2) - (3)].stringvalue); (yyval.constTipo).type=0;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 136 "logo.y"
+#line 97 "logo.y"
     {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=1;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 137 "logo.y"
+#line 98 "logo.y"
     {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=2;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 138 "logo.y"
+#line 99 "logo.y"
     {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=2;}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1737 "y.tab.c"
+#line 1698 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1945,7 +1906,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 293 "logo.y"
+#line 254 "logo.y"
 
 
 void insertInListaVars(VarTipo var, int first){
@@ -1957,6 +1918,49 @@ void insertInListaVars(VarTipo var, int first){
 	else {aux->next = nodo;}
 	nodo = aux;
 	
+}
+
+void saveVars(int type){
+	//printListaVars();
+
+	ListaVars *aux = nodo;
+	while(aux) {
+		if(!searchVar(aux->id)){
+			// insere nome, tipo e address na hashtable
+			insertVar(aux->id, type, addressG);
+			switch(type) {
+				case 0://INTEGER
+					if (aux->type == -1) {//VAZIO
+						printf("pushi 0\n");
+					}
+					else {
+						printf("pushi %d\n",atoi(aux->value));
+					}
+				break;
+				case 1://BOOLEAN
+					if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
+						printf("pushi 1\n");
+					}
+					else if (strcmp(aux->value, "FALSE")==0) {
+						printf("pushi 0\n");
+					}
+				break;
+				case 2://STRING
+					if (aux->type == -1) {
+						printf("pushs \"\"\n");
+					}
+					else {
+						printf("pushs %s\n",aux->value);
+					}
+				break;
+				// nao estamos a fazer arrays para ja
+			}
+			addressG++;
+		}
+		aux=aux->next;
+	}
+	nodo = NULL;
+
 }
 
 /*char *stringToUpper(char* string){
@@ -1982,8 +1986,6 @@ int yyerror(char *s){
 }
 
 int main() {
-	//nodo = NULL;
-	//inithashtab();
 	yyparse();
 	return 0;
 }	
