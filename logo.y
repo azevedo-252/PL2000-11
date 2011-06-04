@@ -47,7 +47,7 @@
 Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 			;
 	
-Body 			: DECLARATIONS {printf("START\n");varHashTable = initHash();}Declarations  
+Body 			: DECLARATIONS Declarations  {varHashTable = initHash();/*TODO Aqui é suposto haver algo de inicializao da tartaruga...*/printf("START\n");}
  			  STATEMENTS {/*printHash();*/} Statements
 			;
 
@@ -93,7 +93,7 @@ Inic_Var 		: Constant {$$ = $1;}
 			/*| Array_Definition*/
 			;
 	
-Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/*TODO so pus estes parentises aqui porque ha exemplos em que aparecem la*/
+Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/* TODO so pus estes parentises aqui porque ha exemplos em que aparecem la */
 			| STR 	 {$$.value = $1; $$.type=1;}
 			| TRUE   {$$.value = $1; $$.type=2;}
 			| FALSE  {$$.value = $1; $$.type=2;}
