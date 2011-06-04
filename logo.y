@@ -263,10 +263,13 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
 										       		   e arquiva esta string (sem o "\n") na heap e coloca
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
-								  printf("atoi\n"); 		// variaveis só podem integer ou boolean 	
-								  //ListaVars *aux = nodo;
-								  //VarData *var = VarData searchVar($5->id);
-								  //printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local
+								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
+								  if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
+								  else {	
+								  	//ListaVars *aux = nodo;
+								  	//VarData *var = VarData searchVar($5->id);
+								  	//printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
+								  }	
 								}
 			;
 	
