@@ -264,8 +264,9 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
 								  printf("atoi\n"); 		// variaveis só podem integer ou boolean 	
-								  VarData var = VarData searchVar($5);
-								  printf("storeg %d\n",var->address); // pode ser storef se for uma variavel local
+								  //ListaVars *aux = nodo;
+								  //VarData *var = VarData searchVar($5->id);
+								  //printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local
 								}
 			;
 	
