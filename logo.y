@@ -97,9 +97,9 @@ Inic_Var 		: Constant {$$ = $1;}
 			;
 	
 Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/* TODO so pus estes parentises aqui porque ha exemplos em que aparecem la */
-			| STR 	 {$$.value = $1; $$.type=1;}
-			| TRUE   {$$.value = $1; $$.type=2;}
-			| FALSE  {$$.value = $1; $$.type=2;}
+			| STR 	 {$$.value = $1; $$.type=2;}
+			| TRUE   {$$.value = $1; $$.type=1;}
+			| FALSE  {$$.value = $1; $$.type=1;}
 			;
 	
 
@@ -240,11 +240,33 @@ SuccPred 		: SUCC
 
 
 /***************************IO Statements***********/
-
-Say_Statement 		: SAY '(' Expression ')'
+	
+Say_Statement 		: SAY '(' Expression ')'		{ 
+								  switch($3.type){ // DEPENDE MUITO DE COMO FOR IMPLEMENTADO O EXPRESSION (FACTOR)
+									case 0: //INTEGER
+										printf("writei\n");
+										break;
+									case 1: //BOOLEAN
+										// Não escreve nada
+										break;
+									case 2: //STRING
+										printf("writes\n");
+										break;
+								  }
+								}
 			;
 	
-Ask_Statement 		: ASK '(' STR ',' Variable ')'
+Ask_Statement 		: ASK '(' STR ',' Variable ')'		{ 
+							          printf("pushs %s\n",$3); 	// guardar na stack a STR a perguntar
+								  printf("writes\n"); 		// escrever a STR a perguntar
+							 	  printf("read\n"); 		/* lê uma string do teclado (concluída por um "\n") 
+										       		   e arquiva esta string (sem o "\n") na heap e coloca
+                                                                                       		   (empilha) o endereço na pilha..
+									            		*/
+								  printf("atoi\n"); 		// variaveis só podem integer ou boolean 	
+								  VarData var = VarData searchVar($5);
+								  printf("storeg %d\n",var->address); // pode ser storef se for uma variavel local
+								}
 			;
 	
 
@@ -260,7 +282,7 @@ Iterative_Statement 	: While_Stat
 /***************************IfThenElse_Stat*********/
 
 IfThenElse_Stat 	: IF Expression THEN '{' Statements '}' Else_Expression
-			;
+			;	
 
 Else_Expression 	:
 			| ELSE '{' Statements '}'
