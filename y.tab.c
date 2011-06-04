@@ -1614,7 +1614,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 88 "logo.y"
-    {printHash();}
+    {/*printHash();*/}
     break;
 
   case 9:

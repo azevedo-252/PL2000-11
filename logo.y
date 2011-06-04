@@ -85,7 +85,7 @@ Body 			: DECLARATIONS 	{
 							printf("REFRESH\n");
 							}Declarations
 
- 			  STATEMENTS {printHash();} Statements
+ 			  STATEMENTS {/*printHash();*/} Statements
 			;
 
 
