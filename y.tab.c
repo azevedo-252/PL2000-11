@@ -548,8 +548,8 @@ static const yytype_uint16 yyrline[] =
      209,   210,   213,   214,   221,   227,   230,   231,   237,   238,
      283,   284,   308,   309,   344,   352,   363,   364,   370,   371,
      372,   375,   376,   377,   378,   381,   382,   383,   384,   385,
-     386,   393,   400,   401,   407,   410,   430,   433,   439,   442,
-     443,   449
+     386,   393,   400,   401,   407,   422,   442,   445,   451,   454,
+     455,   461
 };
 #endif
 
@@ -1576,38 +1576,38 @@ yyreduce:
 #line 53 "logo.y"
     {
 							varHashTable = initHash();
-							/*char buffer[10];
+							char buffer[10];
 							VarTipo var;// = (VarTipo) malloc (sizeof(VarTipo));
-							strcpy(var.id, "height");
+							var.id = "height";
 							sprintf(buffer, "%d", height);
-							//itoa(height, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							var.type = 0;
 							insertInListaVars(var, 1);
-							strcpy(var.id, "widht");
+							
+							var.id = "widht";
 							sprintf(buffer, "%d", width);
-							//itoa(width, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							var.type = 0;
 							insertInListaVars(var, 0);
-							strcpy(var.id, "xpos");
+							
+							var.id = "xpos";
 							sprintf(buffer, "%d", xpos);
-							//itoa(xpos, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							var.type = 0;
+							
 							insertInListaVars(var, 0);
-							strcpy(var.id, "ypos");
+							var.id = "ypos";
 							sprintf(buffer, "%d", ypos);
-							//itoa(ypos, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							var.type = 0;
+
 							insertInListaVars(var, 0);
-							strcpy(var.id, "raio");
+							var.id = "raio";
 							sprintf(buffer, "%d", raio);
-							//itoa(raio, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							insertInListaVars(var, 0);
-							saveVars(0);*/
+							
+							saveVars(0);
 							printf("START\n");
 							drawTurtle();
 							printf("REFRESH\n");
@@ -1618,7 +1618,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 92 "logo.y"
-    {printHash();}
+    {/*printHash();*/}
     break;
 
   case 9:
@@ -1741,7 +1741,7 @@ yyreduce:
 										printf("ADD\n");
 										printf("storeg %d\n", aux->address);
 										drawTurtle();
-									}
+								}
 								}
     break;
 
@@ -2059,17 +2059,10 @@ yyreduce:
     { (yyval.stringvalue) = "-1"; }
     break;
 
-  case 74:
-
-/* Line 1455 of yacc.c  */
-#line 407 "logo.y"
-    { printf("writei\n"); }
-    break;
-
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 410 "logo.y"
+#line 422 "logo.y"
     { 
 							          printf("pushs %s\n",(yyvsp[(3) - (6)].stringvalue)); 	// guardar na stack a STR a perguntar
 								  printf("writes\n"); 		// escrever a STR a perguntar
@@ -2078,19 +2071,19 @@ yyreduce:
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
 								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  if(!searchVar((yyvsp[(5) - (6)].varTipo).id)) { printf("Err Variavel %s não existe\n",(yyvsp[(5) - (6)].varTipo).id);}
+								  /*if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
 								  else {	
 								  	ListaVars *aux = nodo;
-								  	VarData var = searchVar((yyvsp[(5) - (6)].varTipo).id);
-								  	printf("storeg %d\n",var->address); // pode ser storef se for uma variavel local								  
-								  }	
+								  	VarData *var = VarData searchVar($5->id);
+								  	printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
+								  }*/	
 								}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2094 "y.tab.c"
+#line 2087 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2302,7 +2295,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 452 "logo.y"
+#line 464 "logo.y"
 
 
 void insertInListaVars(VarTipo var, int first){
@@ -2317,11 +2310,11 @@ void insertInListaVars(VarTipo var, int first){
 }
 
 void saveVars(int type){
-	//printListaVars();
+//	printListaVars();
 
 	ListaVars *aux = nodo;
 	while(aux) {
-		if(!searchVar(aux->id)){
+		if(!searchVar(aux->id)){//printf("AQUI\t%s\thash:%d\n",aux->id,hash(aux->id));
 			// insere nome, tipo e address na hashtable
 			insertVar(aux->id, type, addressG);
 			switch(type) {

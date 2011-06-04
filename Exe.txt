@@ -1,7 +1,7 @@
 PROGRAM logolissExemplo 
 {
   DECLARATIONS 
-    x = (100) , y -> Integer ;
+    x = (300) , y -> Integer ;
     z -> Boolean ;
     w = FALSE -> Boolean ; 
     ww = "teste" -> String ;

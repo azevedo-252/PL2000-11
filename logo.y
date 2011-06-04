@@ -52,44 +52,44 @@ Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 	
 Body 			: DECLARATIONS 	{
 							varHashTable = initHash();
-							/*char buffer[10];
+							char buffer[10];
 							VarTipo var;// = (VarTipo) malloc (sizeof(VarTipo));
-							strcpy(var.id, "height");
+							var.id = "height";
 							sprintf(buffer, "%d", height);
-							//itoa(height, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							var.type = 0;
 							insertInListaVars(var, 1);
-							strcpy(var.id, "widht");
+							
+							var.id = "widht";
 							sprintf(buffer, "%d", width);
-							//itoa(width, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							var.type = 0;
 							insertInListaVars(var, 0);
-							strcpy(var.id, "xpos");
+							
+							var.id = "xpos";
 							sprintf(buffer, "%d", xpos);
-							//itoa(xpos, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							var.type = 0;
+							
 							insertInListaVars(var, 0);
-							strcpy(var.id, "ypos");
+							var.id = "ypos";
 							sprintf(buffer, "%d", ypos);
-							//itoa(ypos, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							var.type = 0;
+
 							insertInListaVars(var, 0);
-							strcpy(var.id, "raio");
+							var.id = "raio";
 							sprintf(buffer, "%d", raio);
-							//itoa(raio, buffer, 10);
-							strcpy(var.value, buffer);
+							var.value = buffer;
 							insertInListaVars(var, 0);
-							saveVars(0);*/
+							
+							saveVars(0);
 							printf("START\n");
 							drawTurtle();
 							printf("REFRESH\n");
 							}Declarations
 
- 			  STATEMENTS {printHash();} Statements
+ 			  STATEMENTS {/*printHash();*/} Statements
 			;
 
 
@@ -193,7 +193,7 @@ Step 			: FORWARD Expression 			{
 										printf("ADD\n");
 										printf("storeg %d\n", aux->address);
 										drawTurtle();
-									}
+								}
 								}
 			| BACKWARD Expression
 			;
@@ -404,7 +404,19 @@ SuccPred 		: SUCC				{ $$ = "1"; }
 
 /***************************IO Statements***********/
 	
-Say_Statement 		: SAY '(' Expression ')'		{ printf("writei\n"); }
+Say_Statement 		: SAY '(' Expression ')'		/*{ 
+								  switch($3.type){ // DEPENDE MUITO DE COMO FOR IMPLEMENTADO O EXPRESSION (FACTOR)
+									case 0: //INTEGER
+										printf("writei\n");
+										break;
+									case 1: //BOOLEAN
+										// Não escreve nada
+										break;
+									case 2: //STRING
+										printf("writes\n");
+										break;
+								  }
+								}*/
 			;
 	
 Ask_Statement 		: ASK '(' STR ',' Variable ')'		{ 
@@ -415,12 +427,12 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
 								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  if(!searchVar($5.id)) { printf("Err Variavel %s não existe\n",$5.id);}
+								  /*if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
 								  else {	
 								  	ListaVars *aux = nodo;
-								  	VarData var = searchVar($5.id);
-								  	printf("storeg %d\n",var->address); // pode ser storef se for uma variavel local								  
-								  }	
+								  	VarData *var = VarData searchVar($5->id);
+								  	printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
+								  }*/	
 								}
 			;
 	
@@ -463,11 +475,11 @@ void insertInListaVars(VarTipo var, int first){
 }
 
 void saveVars(int type){
-	//printListaVars();
+//	printListaVars();
 
 	ListaVars *aux = nodo;
 	while(aux) {
-		if(!searchVar(aux->id)){
+		if(!searchVar(aux->id)){//printf("AQUI\t%s\thash:%d\n",aux->id,hash(aux->id));
 			// insere nome, tipo e address na hashtable
 			insertVar(aux->id, type, addressG);
 			switch(type) {

@@ -20,7 +20,7 @@ int hash(char* s) {
 	for (i = 0; i < n; i++) {
 		h = 31*h + s[i];
 	}
-	return h%HASH_SIZE;
+	return abs(h%HASH_SIZE);
 }
 
 VarData searchVar(char* id){
@@ -34,21 +34,14 @@ VarData searchVar(char* id){
 
 int insertVar(char* id, int type, int address) {
 	int h = hash(id);
-	VarData aux = searchVar(id);
-	if (!searchVar(id)){
-		VarData new, var;
-		new = (VarData)malloc(sizeof(struct varData));
-		var = varHashTable[h];
-		varHashTable[h]=new;
-		new->id=id;
-		new->type=type;
-		new->address=address;
-		new->next=var;
-	}
-	else {
-		aux->type=type;
-		aux->address=address;
-	}
+	VarData new, var;
+	new = (VarData)malloc(sizeof(struct varData));
+	var = varHashTable[h];
+	varHashTable[h]=new;
+	new->id=id;
+	new->type=type;
+	new->address=address;
+	new->next=var;
 	return 1;
 }
 
