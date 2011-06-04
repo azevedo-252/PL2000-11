@@ -3,7 +3,7 @@
 
 #include "structures.h"
 
-/*typedef struct NodoVar {
+typedef struct NodoVar {
 	int id;
 	char* value;
 	int type;
@@ -11,6 +11,6 @@
 	struct NodoVar *next;
 } ListaVars;
 
-ListaVars *criaNodo(VarTipo var, ListaVars** nodo);*/
+ListaVars *criaNodo(VarTipo var, ListaVars** nodo);
 
 #endif

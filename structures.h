@@ -19,4 +19,10 @@ typedef struct NodoVar {
 	struct NodoVar *next;
 } ListaVars;
 
+typedef struct Expressions {
+	ConstTipo consttipo;
+	VarTipo vartipo;
+	struct Expressions *next;
+} Expression;
+
 #endif

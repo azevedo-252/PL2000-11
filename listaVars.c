@@ -9,6 +9,10 @@
 	//aux->value = (char*)malloc(sizeof(strlen(var->value)));
 	//strcpy(aux->value, var->value)i;
 	aux->value = var->value;
-	aux->next = 
+	aux->next = *nodo;
 	
 }*/
+
+
+
+

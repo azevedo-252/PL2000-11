@@ -8,23 +8,24 @@
 	ListaVars *nodo;
 
 %}
+%error-verbose
 
-
-/*%token ARRAY SIZE*/
+/*%token ARRAY SIZE*/i
 %token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN STRING FORWARD BACKWARD RRIGHT RLEFT
 %token PEN UP DOWN GOTO WHERE OR AND POW EQUAL DIF MINOREQUAL MAJOREQUAL IN SAY ASK IF THEN ELSE WHILE
 %token <stringvalue>TRUE FALSE IDENTIFIER NUMBER STR SUCC PRED
 
 %left MINOR MAJOR MINOREQUAL MAJOREQUAL EQUAL AND POW DIF OR
-%left <stringvalue>'+' '-'
+%left '+' '-'
 %left '*' '/'
 
 
 /* TODO verficiar depois o que é e nao é preciso */
 %type <stringvalue>SuccPred
-%type <intvalue>Type SuccOrPred Add_Op Mul_Op
-%type <varTipo>Var 
-%type <constTipo>Constant Value_Var Inic_Var Factor Term Single_Expression Expression
+%type <intvalue>Type SuccOrPred Add_Op Mul_Op Factor
+%type <varTipo>Var Variable
+%type <constTipo>Constant Value_Var Inic_Var
+%type <expression>Term Single_Expression Expression
 
 %union{
 	int intvalue;
@@ -32,7 +33,6 @@
 	VarTipo varTipo;
 	ConstTipo constTipo;
 }
-
 
 
 
@@ -45,7 +45,8 @@
 Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("stop\n");}
 			;
 	
-Body 			: DECLARATIONS Declarations STATEMENTS Statements {}
+Body 			: DECLARATIONS Declarations  {printf("Start\n");}
+			 STATEMENTS Statements
 			;
 
 
@@ -58,7 +59,7 @@ Declaration 		: Variable_Declaration
 
 
 
-Variable_Declaration 	: Vars ARROW Type ';' 	{
+Variable_Declaration 	: Vars ARROW Type ';' 	{/*
 							ListaVars *aux = nodo;
 							while(aux) {
 								// verficiar na hashtable se ja existe uma variavel com este nome, se ja passa para a proxima var
@@ -98,12 +99,12 @@ Variable_Declaration 	: Vars ARROW Type ';' 	{
 								aux=aux->next;
 							}
 							nodo = NULL;
-						}
+						*/}
 						;
 
-Vars 			: Var 	{insereEmListaVars($1, 0);
+Vars 			: Var 	{/*insereEmListaVars($1, 0);*/
 				}
-			| Vars ',' Var 	{insereEmListaVars($3, 1);
+			| Vars ',' Var 	{/*insereEmListaVars($3, 1);*/
 					}
 			;
 
@@ -131,7 +132,7 @@ Inic_Var 		: Constant {$$ = $1;}
 			/*| Array_Definition*/
 			;
 	
-Constant	 	: NUMBER {$$.value = $1; $$.type=0;}
+Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/*TODO so pus estes parentises aqui porque ha exemplos que aparecem la*/
 			| STR 	 {$$.value = $1; $$.type=1;}
 			| TRUE   {$$.value = $1; $$.type=2;}
 			| FALSE  {$$.value = $1; $$.type=2;}
@@ -195,7 +196,7 @@ Location 		: GOTO NUMBER ',' NUMBER
 Assignment 		: Variable '=' Expression
 			;
 	
-Variable 		: IDENTIFIER Array_Acess
+Variable 		: IDENTIFIER Array_Acess		{ $$ = $1; }   //NAO TENHO CERTEZA NENHUMA DISTO
 			;
 	
 Array_Acess 		:
@@ -204,7 +205,7 @@ Array_Acess 		:
 	
 
 
-Expression 		: Singlei_Expression
+Expression 		: Single_Expression
 			| Expression Rel_Op Single_Expression
 			;
 	
@@ -216,24 +217,52 @@ Single_Expression 	: Term
 
 
 
-Term 			: Factor
-			| Term Mul_Op Factor
+Term 			: Factor				{ $$ = $1; }
+			| Term Mul_Op Factor			{ 
+								switch($2){
+									case('*'):
+										$$ = $1 * $3;
+										break;
+									case('/'):
+										if($3 == 0){
+											yyerror("Divide by 0\n");
+											exit(0);
+										}
+										$$ = $1 / $3;
+										break;
+									case(AND):
+										//FAZER ISTO COM PUSHES E FAZER O RESTO
+										
+
+
+
+
+								
+
+
+
+								}
 			;	
 
 
 
-Factor 			: Constant		{
+Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
+								  $$ = atoi($1.value);       //atoi(const.value);
 
 
+								  /*$$->consttipo.value = $1.value;
+								  $$->consttipo.type = $1.type;*/
+								}
+			| Variable				{ /*TabelaHash *var = procuraLista($1);*/
+								  $$ = atoi($1.value);
 
 
-
-
-
-						}
-			| Variable
-			| SuccOrPred
-			| '(' Expression ')'
+								  /*$$->vartipo.id = $1.id; 
+								  $$->vartipo.value = $1.value;
+								  $$->vartipo.type = $1.type;*/
+								}
+			| SuccOrPred		{ $$ = $1; }
+			| '(' Expression ')'	{ $$ = $2; }
 			;
 	
 
@@ -250,7 +279,7 @@ Mul_Op 			: '*'
 			;
 	 
 Rel_Op 			: EQUAL
-			| DIF 
+i			| DIF 
 			| MAJOR 
 			| MINOR
 			| MAJOREQUAL
@@ -260,11 +289,14 @@ Rel_Op 			: EQUAL
 	
 
 
-SuccOrPred 		: SuccPred IDENTIFIER
+SuccOrPred 		: SuccPred IDENTIFIER		{ /*TabelaHash *var = procurarLista ($2);   ->   PROCURAR NA TABELA DE HASH ESTE ID*/
+							  $$ = atoi(var.value) + atoi($1);
+
+							}
 			;
 	
-SuccPred 		: SUCC
-			| PRED
+SuccPred 		: SUCC				{ $$ = "1"; }
+			| PRED				{ $$ = "-1"; }
 			;
 
 

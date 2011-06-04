@@ -1,37 +1,69 @@
 %{
 #include "structures.h"
 #include "y.tab.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 
 %}
 
+%option yylineno
 
+PROGRAM 	[Pp][Rr][Oo][Gg][Rr][Aa][Mm]
+DECLARATIONS 	[Dd][Ee][Cc][Ll][Aa][Rr][Aa][Tt][Ii][Oo][Nn][Ss]
+STATEMENTS 	[Ss][Tt][Aa][Tt][Ee][Mm][Ee][Nn][Tt][Ss]
+SUCC 		[Ss][Uu][Cc][Cc]
+PRED 		[Pp][Rr][Ee][Dd]
+IF 			[Ii][Ff]
+ELSE		[Ee][Ll][Ss][Ee]
+THEN		[Tt][Hh][Ee][Nn]
+WHILE		[Ww][Hh][Ii][Ll][Ee]
+INTEGER		[Ii][Nn][Tt][Ee][Gg][Ee][Rr]
+BOOLEAN		[Bb][Oo][Oo][Ll][Ee][Aa][Nn]
+STRING		[Ss][Tt][Rr][Ii][Nn][Gg]
+ARRAY		[Aa][Rr][Rr][Aa][Yy]
+SIZE		[Ss][Ii][Zz][Ee]
+TRUE		[T][R][U][E]
+FALSE		[F][A][L][S][E]
+FORWARD		[Ff][Oo][Rr][Ww][Aa][Rr][Dd]
+BACKWARD	[Bb][Aa][Cc][Kk][Ww][Aa][Rr][Dd]
+RRIGHT		[Rr][Rr][Ii][Gg][Hh][Tt]
+RLEFT		[Rr][Ll][Ee][Ff][Tt]
+PEN			[Pp][Ee][Nn]
+UP			[Uu][Pp]
+DOWN		[Dd][Oo][Ww][Nn]
+GOTO		[Gg][Oo][Tt][Oo]
+WHERE		[Ww][Hh][Ee][Rr][Ee]
+SAY			[Ss][Aa][Yy]
+ASK			[Aa][Ss][Kk]
+IN			[Ii][Nn]
 
 NUMBER 						[0-9]+
 IDENTIFIER 					[a-zA-Z][a-zA-Z0-9]*
-STRING						\"([^"\n]|\\\")*\"
+STR						\"([^"\n]|\\\")*\"
 
 %%
 
-"program"					{ return PROGRAM; }
-"declarations"					{ return DECLARATIONS; }
-"statements"					{ return STATEMENTS; }
+{PROGRAM}					{ return PROGRAM; }
+{DECLARATIONS}					{ return DECLARATIONS; }
+{STATEMENTS}					{ return STATEMENTS; }
 "->"						{ return ARROW; }
-"integer"					{ return INTEGER; }
-"boolean"					{ return BOOLEAN; }
-"string"					{ return STRING; }
-"array"						{ /*return ARRAY;*/ }
-"size"						{ /*return SIZE;*/ }
-"true"						{ yylval.stringvalue=(char*)strdup(yytext); return TRUE; }
-"false"						{ yylval.stringvalue=(char*)strdup(yytext); return FALSE; }
-"forward"					{ return FORWARD; }
-"backward"					{ return BACKWARD; }
-"rright"					{ return RRIGHT; }
-"rleft"						{ return RLEFT; }
-"pen"						{ return PEN; }
-"up"						{ return UP; }
-"down"						{ return DOWN; }
-"goto"						{ return GOTO; }
-"where"						{ return WHERE; }
+{INTEGER}					{ return INTEGER; }
+{BOOLEAN}					{ return BOOLEAN; }
+{STRING}					{ return STRING; }
+{ARRAY}						{ /*return ARRAY;*/ }
+{SIZE}						{ /*return SIZE;*/ }
+{TRUE}						{ yylval.stringvalue=(char*)strdup(yytext); return TRUE; }
+{FALSE}						{ yylval.stringvalue=(char*)strdup(yytext); return FALSE; }
+{FORWARD}					{ return FORWARD; }
+{BACKWARD}					{ return BACKWARD; }
+{RRIGHT}					{ return RRIGHT; }
+{RLEFT}						{ return RLEFT; }
+{PEN}						{ return PEN; }
+{UP}						{ return UP; }
+{DOWN}						{ return DOWN; }
+{GOTO}						{ return GOTO; }
+{WHERE}						{ return WHERE; }
 "||"						{ return OR; }
 "&&"						{ return AND; }
 "**"						{ return POW; }
@@ -41,30 +73,32 @@ STRING						\"([^"\n]|\\\")*\"
 ">"						{ return MAJOR; }
 "<="						{ return MINOREQUAL; }
 ">="						{ return MAJOREQUAL; }
-"in"						{ return IN; }
-[+-]						{ yylval.stringvalue=(char*)strdup(yytext); return yytext[0]; }//penso que nao seja preciso o stringvalue
-[,;<>]						{ return yytext[0]; }
-[?\[\]()/!*]					{ return yytext[0]; }
-[{]						{ return yytext[0]; }
-[}]						{ return yytext[0]; }
-[=]						{ return yytext[0]; }
-"succ"						{ yylval.stringvalue=(char*)strdup(yytext); return SUCC; }
-"pred"						{ yylval.stringvalue=(char*)strdup(yytext); return PRED; }
-"say"						{ return SAY; }
-"ask"						{ return ASK; }
-"if"						{ return IF; }
-"then"						{ return THEN; }
-"else"						{ return ELSE; }
-"while"						{ return WHILE; }
+{IN}						{ return IN; }
+[=\-,;!?/()\[\]\{\}*+]				{return(yytext[0]);}
+{SUCC}						{ yylval.stringvalue=(char*)strdup(yytext); return SUCC; }
+{PRED}						{ yylval.stringvalue=(char*)strdup(yytext); return PRED; }
+{SAY}						{ return SAY; }
+{ASK}						{ return ASK; }
+{IF}						{ return IF; }
+{THEN}						{ return THEN; }
+{ELSE}						{ return ELSE; }
+{WHILE}						{ return WHILE; }
 
 {NUMBER}					{ yylval.stringvalue = strdup(yytext); return NUMBER; }
 {IDENTIFIER}					{ yylval.stringvalue = strdup(yytext); return IDENTIFIER; }
-{STRING}					{ yylval.stringvalue = strdup(yytext); return STR; }
+{STR}						{ yylval.stringvalue = strdup(yytext); return STR; }
 
-[\n\t]						{ ; }
+[\ \n\t\r]+					{;}
+
+<*>.|\n						{ fprintf(stderr,"ERRO: %d '%s'\n",yylineno, yytext);}
 
 %%
 
 int yywrap() {
  return 1;
 }
+
+/*int yyerror(char *s){
+	fprintf(stderr,"ERRO: %d %s\n",yylineno, s);
+	return 0;
+}*/

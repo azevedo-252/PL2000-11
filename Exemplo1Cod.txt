@@ -5,13 +5,13 @@ PROGRAM logolissExemplo
     z -> Boolean ;
     w = TRUE -> Boolean ; 
   STATEMENTS
-    FORWARD x
-    RRIGHT
-    y = (100)
-    FORWARD e
-    RRIGHT
-    x = x - (100) + (20)
-    FORWARD x + (100) 
-    RRIGHT
-    FORWARD (100)
+    FORWARD x ;
+    RRIGHT ;
+    y = (100) ;
+    FORWARD e ;
+    RRIGHT ;
+    x = x - (100) + (20) ;
+    FORWARD x + (100) ;
+    RRIGHT ;
+    FORWARD (100) ;
 }
