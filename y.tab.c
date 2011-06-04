@@ -548,8 +548,8 @@ static const yytype_uint16 yyrline[] =
      207,   208,   211,   212,   219,   222,   225,   226,   232,   233,
      278,   279,   303,   304,   339,   347,   358,   359,   365,   366,
      367,   370,   371,   372,   373,   376,   377,   378,   379,   380,
-     381,   388,   395,   396,   402,   417,   437,   440,   446,   449,
-     450,   456
+     381,   388,   395,   396,   402,   405,   425,   428,   434,   437,
+     438,   444
 };
 #endif
 
@@ -1740,7 +1740,7 @@ yyreduce:
 										printf("ADD\n");
 										printf("storeg %d\n", aux->address);
 										drawTurtle();
-								}
+									}
 								}
     break;
 
@@ -2048,10 +2048,17 @@ yyreduce:
     { (yyval.stringvalue) = "-1"; }
     break;
 
+  case 74:
+
+/* Line 1455 of yacc.c  */
+#line 402 "logo.y"
+    { printf("writei\n"); }
+    break;
+
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 417 "logo.y"
+#line 405 "logo.y"
     { 
 							          printf("pushs %s\n",(yyvsp[(3) - (6)].stringvalue)); 	// guardar na stack a STR a perguntar
 								  printf("writes\n"); 		// escrever a STR a perguntar
@@ -2060,19 +2067,19 @@ yyreduce:
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
 								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  /*if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
+								  if(!searchVar((yyvsp[(5) - (6)].varTipo).id)) { printf("Err Variavel %s não existe\n",(yyvsp[(5) - (6)].varTipo).id);}
 								  else {	
 								  	ListaVars *aux = nodo;
-								  	VarData *var = VarData searchVar($5->id);
-								  	printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
-								  }*/	
+								  	VarData var = searchVar((yyvsp[(5) - (6)].varTipo).id);
+								  	printf("storeg %d\n",var->address); // pode ser storef se for uma variavel local								  
+								  }	
 								}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2076 "y.tab.c"
+#line 2083 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2284,7 +2291,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 459 "logo.y"
+#line 447 "logo.y"
 
 
 void insertInListaVars(VarTipo var, int first){

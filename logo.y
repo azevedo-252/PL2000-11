@@ -191,7 +191,7 @@ Step 			: FORWARD Expression 			{
 										printf("ADD\n");
 										printf("storeg %d\n", aux->address);
 										drawTurtle();
-								}
+									}
 								}
 			| BACKWARD Expression
 			;
@@ -399,19 +399,7 @@ SuccPred 		: SUCC				{ $$ = "1"; }
 
 /***************************IO Statements***********/
 	
-Say_Statement 		: SAY '(' Expression ')'		/*{ 
-								  switch($3.type){ // DEPENDE MUITO DE COMO FOR IMPLEMENTADO O EXPRESSION (FACTOR)
-									case 0: //INTEGER
-										printf("writei\n");
-										break;
-									case 1: //BOOLEAN
-										// Não escreve nada
-										break;
-									case 2: //STRING
-										printf("writes\n");
-										break;
-								  }
-								}*/
+Say_Statement 		: SAY '(' Expression ')'		{ printf("writei\n"); }
 			;
 	
 Ask_Statement 		: ASK '(' STR ',' Variable ')'		{ 
@@ -422,12 +410,12 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
 								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  /*if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
+								  if(!searchVar($5.id)) { printf("Err Variavel %s não existe\n",$5.id);}
 								  else {	
 								  	ListaVars *aux = nodo;
-								  	VarData *var = VarData searchVar($5->id);
-								  	printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
-								  }*/	
+								  	VarData var = searchVar($5.id);
+								  	printf("storeg %d\n",var->address); // pode ser storef se for uma variavel local								  
+								  }	
 								}
 			;
 	
