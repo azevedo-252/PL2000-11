@@ -165,10 +165,13 @@ Location 		: GOTO NUMBER ',' NUMBER
 /***************************Assignment Statement**************/
 
 
-Assignment 		: Variable '=' Expression
+Assignment 		: Variable '=' Expression 	{
+								DataVar var =  searchVar($1.id);
+								if (var) printf("store %d",var->address); //nao sei qual store usar
+							}
 			;
 	
-Variable 		: IDENTIFIER Array_Acess
+Variable 		: IDENTIFIER Array_Acess {$$.id = $1;}
 			;
 	
 Array_Acess 		:
