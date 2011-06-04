@@ -34,14 +34,21 @@ VarData searchVar(char* id){
 
 int insertVar(char* id, int type, int address) {
 	int h = hash(id);
-	VarData new, var;
-	new = (VarData)malloc(sizeof(struct varData));
-	var = varHashTable[h];
-	varHashTable[h]=new;
-	new->id=id;
-	new->type=type;
-	new->address=address;
-	new->next=var;
+	VarData aux = searchVar(id);
+	if (!searchVar(id)){
+		VarData new, var;
+		new = (VarData)malloc(sizeof(struct varData));
+		var = varHashTable[h];
+		varHashTable[h]=new;
+		new->id=id;
+		new->type=type;
+		new->address=address;
+		new->next=var;
+	}
+	else {
+		aux->type=type;
+		aux->address=address;
+	}
 	return 1;
 }
 

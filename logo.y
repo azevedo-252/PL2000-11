@@ -1,4 +1,5 @@
 %{
+	#include <stdlib.h>
 	#include <stdio.h>
 	#include <ctype.h>
 	#include <string.h>
@@ -6,6 +7,8 @@
 	#include "hashFunctions.h"
 
 	int addressG = 0;
+	extern int height = 100, width = 100, xpos = 40, ypos = 40, raio = 5;
+	extern Direccao direccao = up;
 
 	extern ListaVars *nodo;
 	extern VarHashTable varHashTable;
@@ -24,9 +27,9 @@
 
 
 /* TODO verficiar depois o que é e nao é preciso */
-%type <stringvalue>Factor Term Single_Expression Expression SuccPred
-%type <intvalue>Type SuccOrPred Add_Op Mul_Op
-%type <varTipo>Var 
+%type <stringvalue>SuccPred
+%type <intvalue>Type SuccOrPred Add_Op Mul_Op Rel_Op Factor Term Single_Expression Array_Acess Expression
+%type <varTipo>Var Variable
 %type <constTipo>Constant Value_Var Inic_Var
 
 %union{
@@ -47,8 +50,46 @@
 Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 			;
 	
-Body 			: DECLARATIONS Declarations  {varHashTable = initHash();/*TODO Aqui é suposto haver algo de inicializao da tartaruga...*/printf("START\n");}
- 			  STATEMENTS {/*printHash();*/} Statements
+Body 			: DECLARATIONS 	{
+							varHashTable = initHash();
+							/*char buffer[10];
+							VarTipo var;// = (VarTipo) malloc (sizeof(VarTipo));
+							strcpy(var.id, "height");
+							sprintf(buffer, "%d", height);
+							//itoa(height, buffer, 10);
+							strcpy(var.value, buffer);
+							var.type = 0;
+							insertInListaVars(var, 1);
+							strcpy(var.id, "widht");
+							sprintf(buffer, "%d", width);
+							//itoa(width, buffer, 10);
+							strcpy(var.value, buffer);
+							var.type = 0;
+							insertInListaVars(var, 0);
+							strcpy(var.id, "xpos");
+							sprintf(buffer, "%d", xpos);
+							//itoa(xpos, buffer, 10);
+							strcpy(var.value, buffer);
+							var.type = 0;
+							insertInListaVars(var, 0);
+							strcpy(var.id, "ypos");
+							sprintf(buffer, "%d", ypos);
+							//itoa(ypos, buffer, 10);
+							strcpy(var.value, buffer);
+							var.type = 0;
+							insertInListaVars(var, 0);
+							strcpy(var.id, "raio");
+							sprintf(buffer, "%d", raio);
+							//itoa(raio, buffer, 10);
+							strcpy(var.value, buffer);
+							insertInListaVars(var, 0);
+							saveVars(0);*/
+							printf("START\n");
+							drawTurtle();
+							printf("REFRESH\n");
+							}Declarations
+
+ 			  STATEMENTS {printHash();} Statements
 			;
 
 
@@ -67,9 +108,9 @@ Declaration 		: Variable_Declaration
 Variable_Declaration 	: Vars ARROW Type ';' 	{saveVars($3);}
 			;
 
-Vars 			: Var 	{insertInListaVars($1, 0);
+Vars 			: Var 	{insertInListaVars($1, 1);
 				}
-			| Vars ',' Var 	{insertInListaVars($3, 1);
+			| Vars ',' Var 	{insertInListaVars($3, 0);
 					}
 			;
 
@@ -106,7 +147,8 @@ Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/* TODO so pus estes pare
 /***************************Declarations: Variables: Array_Definition**************/
 
 
-/*Array_Definition 	: '[' Array_Initialization ']'
+/*
+Array_Definition 	: '[' Array_Initialization ']'
 			;
 	
 Array_Initialization 	: Elem
@@ -141,7 +183,18 @@ Turtle_Commands 	: Step
 			| Location
 			;
 
-Step 			: FORWARD Expression 
+Step 			: FORWARD Expression 			{
+								VarData aux;
+								switch(direccao){
+									case(up):
+										aux = searchVar("xpos");
+										printf("load %d\n", aux->address);
+										printf("pushi %d\n", $2);
+										printf("ADD\n");
+										printf("storeg %d\n", aux->address);
+										drawTurtle();
+								}
+								}
 			| BACKWARD Expression
 			;
 
@@ -166,7 +219,7 @@ Location 		: GOTO NUMBER ',' NUMBER
 
 
 Assignment 		: Variable '=' Expression 	{
-								DataVar var =  searchVar($1.id);
+								VarData var =  searchVar($1.id);
 								if (var) printf("store %d",var->address); //nao sei qual store usar
 							}
 			;
@@ -175,76 +228,183 @@ Variable 		: IDENTIFIER Array_Acess {$$.id = $1;}
 			;
 	
 Array_Acess 		:
-			| '[' Single_Expression ']'
+			| '[' Single_Expression ']'		{ $$ = $2; }
 			;
 	
 
 /***************************Expression**************/
 
-Expression 		: Single_Expression
-			| Expression Rel_Op Single_Expression   
+Expression 		: Single_Expression			{ $$ = $1; }
+			| Expression Rel_Op Single_Expression	{
+								switch($2){
+									case(1):
+										printf("pushi %d\n", ($1 == $3));
+										$$ = ($1 == $3);
+										break;
+									case(2):
+										printf("pushi %d\n", ($1 != $3));
+										$$ = ($1 != $3);
+										break;
+									case(3):
+										printf("pushi %d\n", $1);
+										printf("pushi %d\n", $3);
+										printf("SUP\n");
+										$$ = ($1 > $3);
+										break;
+									case(4):
+										printf("pushi %d\n", $1);
+										printf("pushi %d\n", $3);
+										printf("INF\n");
+										$$ = ($1 < $3);
+										break;
+									case(5):
+										printf("pushi %d\n", $1);
+										printf("pushi %d\n", $3);
+										printf("SUPEQ\n");
+										$$ = ($1 >= $3);
+										break;
+									case(6):
+										printf("pushi %d\n", $1);
+										printf("pushi %d\n", $3);
+										printf("INFEQ\n");
+										$$ = ($1 <= $3);
+										break;
+									default:				//TODO ver o que faz o in, que acho que e para arrays...
+										yyerror("Unknown operation\n");
+										break;
+									
+								}
+								}
 			;
 	
 
 /***************************Single Expression**************/
 
-Single_Expression 	: Term
-			| Single_Expression Add_Op Term
+Single_Expression 	: Term					{ $$ = $1; }
+			| Single_Expression Add_Op Term		{
+								printf("pushi %d\n", $1);
+								printf("pushi %d\n", $3);
+								switch($2){
+									case(1):
+										printf("add\n");
+										break;
+									case(2):
+										printf("sub\n");
+										break;
+									case(3):
+										printf("pop 2\n");
+										if($1 > 0 || $3 > 0) printf("pushi 1\n");
+										else printf("pushi 0\n");
+										break;
+									default:
+										yyerror("Unknown operation\n");
+										break;
+								}
+								}
 			;
+
+
+
+Term 			: Factor				{ $$ = $1; }
+			| Term Mul_Op Factor			{
+								printf("pushi %d\n", $1);
+								printf("pushi %d\n", $3); 
+								switch($2){
+									case(1):
+										printf("mul\n");
+										break;
+									case(2):
+										if($3 == 0){
+											yyerror("Divide by 0\n");
+											exit(0);
+										}
+										printf("div \n");
+										break;
+									case(3):
+										printf("pop 2\n");
+										if($1 > 0 && $3 > 0) printf("pushi 1\n");    //Maior que 0 ou diferente de 0???
+										else printf("pushi 0\n");
+									case(4):
+										printf("pop 1\n");  //Para retirar o $3
+										while($3 > 1){
+											printf("pushi %d\n", $1);
+											printf("mul\n");
+											$3--;
+										}
+									default:
+										yyerror("Unknown operation\n");
+										break;
+									}
+								}
+			;	
 
 
 /***************************Term**************/
 
-Term 			: Factor
-			| Term Mul_Op Factor
-			;	
+Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
+								  $$ = atoi($1.value);       //atoi(const.value);
 
+
+
+								  /*$$->consttipo.value = $1.value;
+								  $$->consttipo.type = $1.type;*/
+								}
+			| Variable				{ /*TabelaHash *var = procuraLista($1);*/
+								  $$ = atoi($1.value);    //UMA VEZ MAIS, SEM QUALQUER CERTEZA DISTO
 
 /***************************Factor**************/
 
-Factor 			: Constant
-			| Variable
-			| SuccOrPred
-			| '(' Expression ')'
+
+
+								  /*$$->vartipo.id = $1.id; 
+								  $$->vartipo.value = $1.value;
+								  $$->vartipo.type = $1.type;*/
+								}
+			| SuccOrPred		{ $$ = $1; }
+			| '(' Expression ')'	{ $$ = $2; }
 			;
 	
 
 /***************************Operators**************/
 
-Add_Op  		: '+'
-			| '-'
-			| OR
+Add_Op  		: '+'			{ $$ = 1; }
+			| '-'			{ $$ = 2; }
+			| OR			{ $$ = 3; }
 			;
 	
-Mul_Op 			: '*'
-			| '/'
-			| AND
-			| POW
+Mul_Op 			: '*'			{ $$ = 1; }
+			| '/'			{ $$ = 2; }
+			| AND			{ $$ = 3; }
+			| POW			{ $$ = 4; }
 			;
 	 
-Rel_Op 			: EQUAL
-			| DIF 
-			| MAJOR 
-			| MINOR
-			| MAJOREQUAL
-			| MINOREQUAL
-			| IN
+Rel_Op 			: EQUAL			{ $$ = 1; }
+			| DIF 			{ $$ = 2; }
+			| MAJOR 		{ $$ = 3; }
+			| MINOR			{ $$ = 4; }
+			| MAJOREQUAL		{ $$ = 5; }
+			| MINOREQUAL		{ $$ = 6; }
+			/*| IN			{ $$ = $1; }*/       //PENSO QUE SEJA SO PARA ARRAYS
 			;
 	
 
 /***************************SuccOrPred**************/
 
-SuccOrPred 		: SuccPred IDENTIFIER
+SuccOrPred 		: SuccPred IDENTIFIER		{ VarData var = searchVar($2);
+							  printf("store %d\n", var->address);
+							  printf("pushi %d\n", atoi($1));
+							  printf("add\n");
+							}
 			;
 	
-SuccPred 		: SUCC
-			| PRED
+SuccPred 		: SUCC				{ $$ = "1"; }
+			| PRED				{ $$ = "-1"; }
 			;
 
 
 /***************************IO Statements***********/
 	
-Say_Statement 		: SAY '(' Expression ')'		{ 
+Say_Statement 		: SAY '(' Expression ')'		/*{ 
 								  switch($3.type){ // DEPENDE MUITO DE COMO FOR IMPLEMENTADO O EXPRESSION (FACTOR)
 									case 0: //INTEGER
 										printf("writei\n");
@@ -256,7 +416,7 @@ Say_Statement 		: SAY '(' Expression ')'		{
 										printf("writes\n");
 										break;
 								  }
-								}
+								}*/
 			;
 	
 Ask_Statement 		: ASK '(' STR ',' Variable ')'		{ 
@@ -266,10 +426,13 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
 										       		   e arquiva esta string (sem o "\n") na heap e coloca
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
-								  printf("atoi\n"); 		// variaveis só podem integer ou boolean 	
-								  //ListaVars *aux = nodo;
-								  //VarData *var = VarData searchVar($5->id);
-								  //printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local
+								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
+								  /*if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
+								  else {	
+								  	ListaVars *aux = nodo;
+								  	VarData *var = VarData searchVar($5->id);
+								  	printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
+								  }*/	
 								}
 			;
 	
@@ -305,7 +468,7 @@ void insertInListaVars(VarTipo var, int first){
 	aux->id = var.id;
 	aux->value = var.value;
 	aux->type = var.type;
-	if(first == 0){aux->next = NULL;}
+	if(first == 1){aux->next = NULL;}
 	else {aux->next = nodo;}
 	nodo = aux;
 	
@@ -361,6 +524,22 @@ void saveVars(int type){
 		new[i]=toupper(string[i]);
 	return new;
 }*/
+
+void drawTurtle(){
+	VarData aux, aux2, aux3;
+	aux = searchVar("raio");
+	printf("load %d\n", aux->address);
+	aux2 = searchVar("ypos");
+        printf("load %d\n", aux->address);
+	aux3 = searchVar("xpos");
+        printf("load %d\n", aux->address);
+	printf("DRAWCIRCLE\n");
+	printf("REFRESH\n");
+	printf("storeg %d\n", aux3->address);
+	printf("storeg %d\n", aux2->address);
+	printf("storeg %d\n", aux->address);
+}
+
 
 void printListaVars(){
 	ListaVars *aux = nodo;
