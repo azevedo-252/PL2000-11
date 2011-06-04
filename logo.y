@@ -42,7 +42,7 @@
 
 %%
 
-
+/***************************Program**************/
 
 Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 			;
@@ -52,6 +52,8 @@ Body 			: DECLARATIONS Declarations  {varHashTable = initHash();/*TODO Aqui é s
 			;
 
 
+/***************************Declarations**************/
+
 Declarations		: Declaration
 			| Declarations Declaration
 			;
@@ -60,6 +62,7 @@ Declaration 		: Variable_Declaration
 			;
 
 
+/***************************Declarations: Variables**************/
 
 Variable_Declaration 	: Vars ARROW Type ';' 	{saveVars($3);}
 			;
@@ -100,6 +103,8 @@ Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/* TODO so pus estes pare
 			;
 	
 
+/***************************Declarations: Variables: Array_Definition**************/
+
 
 /*Array_Definition 	: '[' Array_Initialization ']'
 			;
@@ -113,6 +118,8 @@ Elem 			: NUMBER
 */	
 
 
+/***************************Statements**************/
+
 Statements 		: Statement ';'
 			| Statements Statement ';'
 			;
@@ -123,6 +130,8 @@ Statement 		: Turtle_Commands
 			| Iterative_Statement
 			;
 	
+
+/***************************Turtle Statement**************/
 
 
 Turtle_Commands 	: Step
@@ -153,6 +162,8 @@ Location 		: GOTO NUMBER ',' NUMBER
 			;
 	
 
+/***************************Assignment Statement**************/
+
 
 Assignment 		: Variable '=' Expression
 			;
@@ -165,24 +176,28 @@ Array_Acess 		:
 			;
 	
 
+/***************************Expression**************/
 
 Expression 		: Single_Expression
 			| Expression Rel_Op Single_Expression   
 			;
 	
 
+/***************************Single Expression**************/
 
 Single_Expression 	: Term
 			| Single_Expression Add_Op Term
 			;
 
 
+/***************************Term**************/
 
 Term 			: Factor
 			| Term Mul_Op Factor
 			;	
 
 
+/***************************Factor**************/
 
 Factor 			: Constant
 			| Variable
@@ -191,6 +206,7 @@ Factor 			: Constant
 			;
 	
 
+/***************************Operators**************/
 
 Add_Op  		: '+'
 			| '-'
@@ -213,6 +229,7 @@ Rel_Op 			: EQUAL
 			;
 	
 
+/***************************SuccOrPred**************/
 
 SuccOrPred 		: SuccPred IDENTIFIER
 			;
@@ -222,6 +239,7 @@ SuccPred 		: SUCC
 			;
 
 
+/***************************IO Statements***********/
 
 Say_Statement 		: SAY '(' Expression ')'
 			;
@@ -230,6 +248,7 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'
 			;
 	
 
+/***************************Consitional & Iterative Statements*******/
 
 Conditional_Statement	: IfThenElse_Stat
 			;
@@ -238,6 +257,7 @@ Iterative_Statement 	: While_Stat
 			;
 	
 
+/***************************IfThenElse_Stat*********/
 
 IfThenElse_Stat 	: IF Expression THEN '{' Statements '}' Else_Expression
 			;
@@ -247,6 +267,7 @@ Else_Expression 	:
 			;
 	
 
+/***************************While_Stat**************/
 
 While_Stat 		: WHILE '(' Expression ')' '{' Statements '}'
 			;
