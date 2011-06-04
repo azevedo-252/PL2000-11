@@ -588,12 +588,13 @@ char *yytext;
 #line 1 "logo.l"
 #line 2 "logo.l"
 #include "structures.h"
+#include "hashFunctions.h"
 #include "y.tab.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
-#line 597 "lex.yy.c"
+#line 598 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -780,10 +781,10 @@ YY_DECL
 	register char *yy_cp, *yy_bp;
 	register int yy_act;
     
-#line 45 "logo.l"
+#line 46 "logo.l"
 
 
-#line 787 "lex.yy.c"
+#line 788 "lex.yy.c"
 
 	if ( !(yy_init) )
 		{
@@ -878,232 +879,232 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 47 "logo.l"
+#line 48 "logo.l"
 { return PROGRAM; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 48 "logo.l"
+#line 49 "logo.l"
 { return DECLARATIONS; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 49 "logo.l"
+#line 50 "logo.l"
 { return STATEMENTS; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 50 "logo.l"
+#line 51 "logo.l"
 { return ARROW; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 51 "logo.l"
+#line 52 "logo.l"
 { return INTEGER; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 52 "logo.l"
+#line 53 "logo.l"
 { return BOOLEAN; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 53 "logo.l"
+#line 54 "logo.l"
 { return STRING; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 54 "logo.l"
+#line 55 "logo.l"
 { /*return ARRAY;*/ }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 55 "logo.l"
+#line 56 "logo.l"
 { /*return SIZE;*/ }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 56 "logo.l"
+#line 57 "logo.l"
 { yylval.stringvalue=(char*)strdup(yytext); return TRUE; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 57 "logo.l"
+#line 58 "logo.l"
 { yylval.stringvalue=(char*)strdup(yytext); return FALSE; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 58 "logo.l"
+#line 59 "logo.l"
 { return FORWARD; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 59 "logo.l"
+#line 60 "logo.l"
 { return BACKWARD; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 60 "logo.l"
+#line 61 "logo.l"
 { return RRIGHT; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 61 "logo.l"
+#line 62 "logo.l"
 { return RLEFT; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 62 "logo.l"
+#line 63 "logo.l"
 { return PEN; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 63 "logo.l"
+#line 64 "logo.l"
 { return UP; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 64 "logo.l"
+#line 65 "logo.l"
 { return DOWN; }
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 65 "logo.l"
+#line 66 "logo.l"
 { return GOTO; }
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 66 "logo.l"
+#line 67 "logo.l"
 { return WHERE; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 67 "logo.l"
+#line 68 "logo.l"
 { return OR; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 68 "logo.l"
+#line 69 "logo.l"
 { return AND; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 69 "logo.l"
+#line 70 "logo.l"
 { return POW; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 70 "logo.l"
+#line 71 "logo.l"
 { return EQUAL; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 71 "logo.l"
+#line 72 "logo.l"
 { return DIF; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 72 "logo.l"
+#line 73 "logo.l"
 { return MINOR; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 73 "logo.l"
+#line 74 "logo.l"
 { return MAJOR; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 74 "logo.l"
+#line 75 "logo.l"
 { return MINOREQUAL; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 75 "logo.l"
+#line 76 "logo.l"
 { return MAJOREQUAL; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 76 "logo.l"
+#line 77 "logo.l"
 { return IN; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 77 "logo.l"
+#line 78 "logo.l"
 {return(yytext[0]);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 78 "logo.l"
+#line 79 "logo.l"
 { yylval.stringvalue=(char*)strdup(yytext); return SUCC; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 79 "logo.l"
+#line 80 "logo.l"
 { yylval.stringvalue=(char*)strdup(yytext); return PRED; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 80 "logo.l"
+#line 81 "logo.l"
 { return SAY; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 81 "logo.l"
+#line 82 "logo.l"
 { return ASK; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 82 "logo.l"
+#line 83 "logo.l"
 { return IF; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 83 "logo.l"
+#line 84 "logo.l"
 { return THEN; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 84 "logo.l"
+#line 85 "logo.l"
 { return ELSE; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 85 "logo.l"
+#line 86 "logo.l"
 { return WHILE; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 87 "logo.l"
+#line 88 "logo.l"
 { yylval.stringvalue = strdup(yytext); return NUMBER; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 88 "logo.l"
+#line 89 "logo.l"
 { yylval.stringvalue = strdup(yytext); return IDENTIFIER; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 89 "logo.l"
+#line 90 "logo.l"
 { yylval.stringvalue = strdup(yytext); return STR; }
 	YY_BREAK
 case 43:
 /* rule 43 can match eol */
 YY_RULE_SETUP
-#line 91 "logo.l"
+#line 92 "logo.l"
 {;}
 	YY_BREAK
 case 44:
 /* rule 44 can match eol */
 YY_RULE_SETUP
-#line 93 "logo.l"
+#line 94 "logo.l"
 { fprintf(stderr,"ERRO: %d '%s'\n",yylineno, yytext);}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 95 "logo.l"
+#line 96 "logo.l"
 ECHO;
 	YY_BREAK
-#line 1107 "lex.yy.c"
+#line 1108 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 
@@ -2113,7 +2114,7 @@ void yyfree (void * ptr )
 
 #define YYTABLES_NAME "yytables"
 
-#line 95 "logo.l"
+#line 96 "logo.l"
 
 
 

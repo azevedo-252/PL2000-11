@@ -3,7 +3,8 @@ PROGRAM logolissExemplo
   DECLARATIONS 
     x = (100) , y -> Integer ;
     z -> Boolean ;
-    w = TRUE -> Boolean ; 
+    w = FALSE -> Boolean ; 
+    ww = "teste" -> String ;
   STATEMENTS
     FORWARD x ;
     RRIGHT ;

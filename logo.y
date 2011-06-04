@@ -1,11 +1,14 @@
 %{
 	#include <stdio.h>
-	//#include <stdlib.h>
+	#include <ctype.h>
+	#include <string.h>
 	#include "structures.h"
+	#include "hashFunctions.h"
 
 	int addressG = 0;
 
-	ListaVars *nodo;
+	extern ListaVars *nodo;
+	extern VarHashTable varHashTable;
 
 %}
 %error-verbose
@@ -42,11 +45,11 @@
 
 
 
-Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("stop\n");}
+Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 			;
 	
-Body 			: DECLARATIONS Declarations  {printf("Start\n");}
-			 STATEMENTS Statements
+Body 			: DECLARATIONS Declarations  {varHashTable = initHash();/*TODO Aqui é suposto haver algo de inicializao da tartaruga...*/printf("START\n");}
+ 			  STATEMENTS {/*printHash();*/} Statements
 			;
 
 
@@ -59,57 +62,16 @@ Declaration 		: Variable_Declaration
 
 
 
-Variable_Declaration 	: Vars ARROW Type ';' 	{/*
-							ListaVars *aux = nodo;
-							while(aux) {
-								// verficiar na hashtable se ja existe uma variavel com este nome, se ja passa para a proxima var
-								//if(){//mensagem de erro
-								//}
-								//else {
-									// insere nome, tipo e address na hashtable
-									switch($3) {
-										case 0://INTEGER
-											if (aux->type == -1) {//VAZIO
-												printf("pushi 0\n");
-											}
-											else {
-												printf("pushi %d\n",atoi(aux->value));
-											}
-										break;
-										case 1://BOOLEAN
-											if (strcmp(aux->value,"true")==0 || aux->type==-1) {
-												printf("pushi 1\n");
-											}
-											else if (strcmp(aux->value, "false")==0) {
-												printf("pushi 0\n");
-											}
-										break;
-										case 2://STRING
-											if (aux->type == -1) {
-												printf("pushs \"\"\n");
-											}
-											else {
-												printf("pushs %s\n",aux->value);
-											}
-										break;
-										// nao estamos a fazer arrays para ja
-									}
-									addressG++;
-								//}
-								aux=aux->next;
-							}
-							nodo = NULL;
-						*/}
-						;
+Variable_Declaration 	: Vars ARROW Type ';' 	{saveVars($3);}
+			;
 
-Vars 			: Var 	{/*insereEmListaVars($1, 0);*/
+Vars 			: Var 	{insertInListaVars($1, 0);
 				}
-			| Vars ',' Var 	{/*insereEmListaVars($3, 1);*/
+			| Vars ',' Var 	{insertInListaVars($3, 1);
 					}
 			;
 
-Var 			: IDENTIFIER Value_Var {
-							//$$ = (VarTipo)malloc(sizeof(struct VarTipos));
+Var 			: IDENTIFIER Value_Var { 
 							$$.id=$1;
 							$$.type=$2.type;
 							if ($2.type != -1) {
@@ -132,7 +94,7 @@ Inic_Var 		: Constant {$$ = $1;}
 			/*| Array_Definition*/
 			;
 	
-Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/*TODO so pus estes parentises aqui porque ha exemplos que aparecem la*/
+Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/* TODO so pus estes parentises aqui porque ha exemplos em que aparecem la */
 			| STR 	 {$$.value = $1; $$.type=1;}
 			| TRUE   {$$.value = $1; $$.type=2;}
 			| FALSE  {$$.value = $1; $$.type=2;}
@@ -140,7 +102,7 @@ Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/*TODO so pus estes paren
 	
 
 
-Array_Definition 	: '[' Array_Initialization ']'
+/*Array_Definition 	: '[' Array_Initialization ']'
 			;
 	
 Array_Initialization 	: Elem
@@ -149,7 +111,7 @@ Array_Initialization 	: Elem
 	
 Elem 			: NUMBER
 			;
-	
+*/	
 
 
 Statements 		: Statement ';'
@@ -331,14 +293,75 @@ While_Stat 		: WHILE '(' Expression ')' '{' Statements '}'
 
 %%
 
-void insereEmListaVars(VarTipo var, int first){
+void insertInListaVars(VarTipo var, int first){
 	ListaVars *aux = (ListaVars*)malloc(sizeof(ListaVars));
 	aux->id = var.id;
 	aux->value = var.value;
 	aux->type = var.type;
-	if(first == 1){aux->next = NULL;}
+	if(first == 0){aux->next = NULL;}
 	else {aux->next = nodo;}
 	nodo = aux;
+	
+}
+
+void saveVars(int type){
+	//printListaVars();
+
+	ListaVars *aux = nodo;
+	while(aux) {
+		if(!searchVar(aux->id)){
+			// insere nome, tipo e address na hashtable
+			insertVar(aux->id, type, addressG);
+			switch(type) {
+				case 0://INTEGER
+					if (aux->type == -1) {//VAZIO
+						printf("pushi 0\n");
+					}
+					else {
+						printf("pushi %d\n",atoi(aux->value));
+					}
+				break;
+				case 1://BOOLEAN
+					if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
+						printf("pushi 1\n");
+					}
+					else if (strcmp(aux->value, "FALSE")==0) {
+						printf("pushi 0\n");
+					}
+				break;
+				case 2://STRING
+					if (aux->type == -1) {
+						printf("pushs \"\"\n");
+					}
+					else {
+						printf("pushs %s\n",aux->value);
+					}
+				break;
+				// nao estamos a fazer arrays para ja
+			}
+			addressG++;
+		}
+		aux=aux->next;
+	}
+	nodo = NULL;
+
+}
+
+/*char *stringToUpper(char* string){
+	int i;
+	char* new;
+	for (i=0; i<strlen(string); i++)
+		new[i]=toupper(string[i]);
+	return new;
+}*/
+
+void printListaVars(){
+	ListaVars *aux = nodo;
+	while(aux){
+		printf("NODO: id=%s\tvalue=%s\ttype=%d\n",aux->id,aux->value,aux->type);
+		aux = aux->next;
+	}
+	printf("ACABOU\n");
 }
 
 int yyerror(char *s){
@@ -347,8 +370,6 @@ int yyerror(char *s){
 }
 
 int main() {
-	//nodo = NULL;
-	//inithashtab();
 	yyparse();
 	return 0;
 }	

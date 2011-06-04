@@ -1,6 +1,13 @@
 #ifndef _STRUCTS
 #define _STRUCTS
 
+typedef enum Direccoes{
+	up,
+	down,
+	right,
+	left
+} Direccao;
+
 typedef struct VarTipos {
 	char* id;
 	char* value;
@@ -19,10 +26,22 @@ typedef struct NodoVar {
 	struct NodoVar *next;
 } ListaVars;
 
-typedef struct Expressions {
-	ConstTipo consttipo;
-	VarTipo vartipo;
-	struct Expressions *next;
-} Expression;
+//typedef struct Expressions {
+//	ConstTipo consttipo;
+//	VarTipo vartipo;
+//	struct Expressions *next;
+//} Expression;
+
+
+int height, width, xpos, ypos, raio;
+Direccao direccao;
+ListaVars *nodo;
+
+
+void insertInListaVars(VarTipo var, int first);
+void saveVars(int type);
+//char *stringToupper(char* string);
+void printListaVars();
+
 
 #endif
