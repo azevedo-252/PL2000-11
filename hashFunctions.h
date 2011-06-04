@@ -1,7 +1,7 @@
 #ifndef _HASH
 #define _HASH
 
-#define HASH_SIZE 50
+#define HASH_SIZE 30
 
 typedef struct varData {
 	char* id;
@@ -13,5 +13,7 @@ typedef struct varData {
 VarHashTable initHash();
 int hash(char* s);
 VarData searchVar(char* id);
+int insertVar(char* id, int type, int address);
+void printHash();
 
 #endif

@@ -1,6 +1,7 @@
 #include "hashFunctions.h"
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 
 VarHashTable varHashTable;
@@ -33,7 +34,8 @@ VarData searchVar(char* id){
 
 int insertVar(char* id, int type, int address) {
 	int h = hash(id);
-	VarData new = (VarData)malloc(sizeof(VarData)), var;
+	VarData new, var;
+	new = (VarData)malloc(sizeof(struct varData));
 	var = varHashTable[h];
 	varHashTable[h]=new;
 	new->id=id;
@@ -42,3 +44,20 @@ int insertVar(char* id, int type, int address) {
 	new->next=var;
 	return 1;
 }
+
+void printHash(){
+        int i;
+        VarData var;
+        for(i=0;i<HASH_SIZE;i++){
+                if(varHashTable[i]==NULL)
+                        printf("()\n");
+                else{
+                        var=varHashTable[i];
+                        printf("(");
+                        for(;var!=NULL;var=var->next)
+                                printf("(%s.%d.%d)\t ",var->id,var->type,var->address);
+                        printf(")\n");
+                }
+        }
+}
+

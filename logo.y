@@ -44,11 +44,11 @@
 
 
 
-Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("stop\n");}
+Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 			;
 	
-Body 			: DECLARATIONS {varHashTable = initHash();}Declarations  
- 			  STATEMENTS Statements
+Body 			: DECLARATIONS {printf("START\n");varHashTable = initHash();}Declarations  
+ 			  STATEMENTS {/*printHash();*/} Statements
 			;
 
 
@@ -61,15 +61,13 @@ Declaration 		: Variable_Declaration
 
 
 
-Variable_Declaration 	: Vars ARROW Type ';' 	{//printfListaVars();
+Variable_Declaration 	: Vars ARROW Type ';' 	{//printListaVars();
 
 							ListaVars *aux = nodo;
 							while(aux) {
-								// verficiar na hashtable se ja existe uma variavel com este nome, se ja passa para a proxima var
-								//if(){//mensagem de erro
-								//}
-								//else {
+								if(!searchVar(aux->id)){
 									// insere nome, tipo e address na hashtable
+									insertVar(aux->id, $3, addressG);
 									switch($3) {
 										case 0://INTEGER
 											if (aux->type == -1) {//VAZIO
@@ -98,16 +96,16 @@ Variable_Declaration 	: Vars ARROW Type ';' 	{//printfListaVars();
 										// nao estamos a fazer arrays para ja
 									}
 									addressG++;
-								//}
+								}
 								aux=aux->next;
 							}
 							nodo = NULL;
 						}
 						;
 
-Vars 			: Var 	{insereEmListaVars($1, 0);
+Vars 			: Var 	{insertInListaVars($1, 0);
 				}
-			| Vars ',' Var 	{insereEmListaVars($3, 1);
+			| Vars ',' Var 	{insertInListaVars($3, 1);
 					}
 			;
 
@@ -142,7 +140,7 @@ Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/*TODO so pus estes paren
 	
 
 
-Array_Definition 	: '[' Array_Initialization ']'
+/*Array_Definition 	: '[' Array_Initialization ']'
 			;
 	
 Array_Initialization 	: Elem
@@ -151,7 +149,7 @@ Array_Initialization 	: Elem
 	
 Elem 			: NUMBER
 			;
-	
+*/	
 
 
 Statements 		: Statement ';'
@@ -294,7 +292,7 @@ While_Stat 		: WHILE '(' Expression ')' '{' Statements '}'
 
 %%
 
-void insereEmListaVars(VarTipo var, int first){
+void insertInListaVars(VarTipo var, int first){
 	ListaVars *aux = (ListaVars*)malloc(sizeof(ListaVars));
 	aux->id = var.id;
 	aux->value = var.value;
@@ -313,7 +311,7 @@ void insereEmListaVars(VarTipo var, int first){
 	return new;
 }*/
 
-void printfListaVars(){
+void printListaVars(){
 	ListaVars *aux = nodo;
 	while(aux){
 		printf("NODO: id=%s\tvalue=%s\ttype=%d\n",aux->id,aux->value,aux->type);

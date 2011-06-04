@@ -4,7 +4,7 @@ PROGRAM logolissExemplo
     x = (100) , y -> Integer ;
     z -> Boolean ;
     w = FALSE -> Boolean ; 
-    v = "teste" -> String ;
+    ww = "teste" -> String ;
   STATEMENTS
     FORWARD x ;
     RRIGHT ;

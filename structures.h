@@ -21,7 +21,8 @@ typedef struct NodoVar {
 
 ListaVars *nodo;
 
-void insereEmListaVars(VarTipo var, int first);
-char *stringToupper(char* string);
+void insertInListaVars(VarTipo var, int first);
+//char *stringToupper(char* string);
+void printListaVars();
 
 #endif
