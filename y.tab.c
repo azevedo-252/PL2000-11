@@ -548,8 +548,8 @@ static const yytype_uint16 yyrline[] =
      205,   206,   209,   210,   217,   223,   226,   227,   233,   234,
      279,   280,   304,   305,   340,   348,   359,   360,   366,   367,
      368,   371,   372,   373,   374,   377,   378,   379,   380,   381,
-     382,   389,   396,   397,   403,   418,   438,   441,   447,   450,
-     451,   457
+     382,   389,   396,   397,   403,   406,   425,   428,   434,   437,
+     438,   444
 };
 #endif
 
@@ -2055,10 +2055,17 @@ yyreduce:
     { (yyval.stringvalue) = "-1"; }
     break;
 
+  case 74:
+
+/* Line 1455 of yacc.c  */
+#line 403 "logo.y"
+    { printf("writei\n"); }
+    break;
+
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 418 "logo.y"
+#line 406 "logo.y"
     { 
 							          printf("pushs %s\n",(yyvsp[(3) - (6)].stringvalue)); 	// guardar na stack a STR a perguntar
 								  printf("writes\n"); 		// escrever a STR a perguntar
@@ -2067,19 +2074,18 @@ yyreduce:
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
 								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  /*if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
-								  else {	
-								  	ListaVars *aux = nodo;
-								  	VarData *var = VarData searchVar($5->id);
-								  	printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
-								  }*/	
+								  if(!searchVar((yyvsp[(5) - (6)].varTipo).id)) printf("Error Variavel %s não existe",(yyvsp[(5) - (6)].varTipo).id);
+								  else {
+								  	VarData var = searchVar((yyvsp[(5) - (6)].varTipo).id);
+								  	printf("storeg %d\n",var->address); // pode ser storef se for uma variavel local								  
+								  }
 								}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 2083 "y.tab.c"
+#line 2089 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2291,7 +2297,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 460 "logo.y"
+#line 447 "logo.y"
 
 
 void insertInListaVars(VarTipo var, int first){
