@@ -264,12 +264,12 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
 								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
+								  /*if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
 								  else {	
-								  	//ListaVars *aux = nodo;
-								  	//VarData *var = VarData searchVar($5->id);
-								  	//printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
-								  }	
+								  	ListaVars *aux = nodo;
+								  	VarData *var = VarData searchVar($5->id);
+								  	printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
+								  }*/	
 								}
 			;
 	

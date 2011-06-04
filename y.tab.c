@@ -545,8 +545,8 @@ static const yytype_uint16 yyrline[] =
      156,   157,   160,   161,   168,   171,   174,   175,   181,   182,
      188,   189,   195,   196,   202,   203,   204,   205,   211,   212,
      213,   216,   217,   218,   219,   222,   223,   224,   225,   226,
-     227,   228,   234,   237,   238,   244,   259,   276,   279,   285,
-     288,   289,   295
+     227,   228,   234,   237,   238,   244,   259,   279,   282,   288,
+     291,   292,   298
 };
 #endif
 
@@ -1717,17 +1717,20 @@ yyreduce:
 										       		   e arquiva esta string (sem o "\n") na heap e coloca
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
-								  printf("atoi\n"); 		// variaveis só podem integer ou boolean 	
-								  //ListaVars *aux = nodo;
-								  //VarData *var = VarData searchVar($5->id);
-								  //printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local
+								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
+								  /*if(!searchVar($5->id)) printf("Error "Variavel %s não existe"",$5);
+								  else {	
+								  	ListaVars *aux = nodo;
+								  	VarData *var = VarData searchVar($5->id);
+								  	printf("storeg %d\n",*$5->address); // pode ser storef se for uma variavel local								  
+								  }*/	
 								}
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1731 "y.tab.c"
+#line 1734 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1939,7 +1942,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 298 "logo.y"
+#line 301 "logo.y"
 
 
 void insertInListaVars(VarTipo var, int first){
