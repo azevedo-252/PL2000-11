@@ -11,5 +11,7 @@ typedef struct varData {
 } *VarData, **VarHashTable;
 
 VarHashTable initHash();
+int hash(char* s);
+VarData searchVar(char* id);
 
 #endif
