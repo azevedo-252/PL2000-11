@@ -52,35 +52,31 @@ Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 	
 Body 			: DECLARATIONS 	{
 							varHashTable = initHash();
-							char buffer[10];
-							VarTipo var;// = (VarTipo) malloc (sizeof(VarTipo));
+							VarTipo var;
+							
 							var.id = "height";
-							sprintf(buffer, "%d", height);
-							var.value = buffer;
-							var.type = 0;
+							var.value = (char*)malloc(sizeof(10));
+							sprintf(var.value, "%d", height);
 							insertInListaVars(var, 1);
 							
 							var.id = "widht";
-							sprintf(buffer, "%d", width);
-							var.value = buffer;
-							var.type = 0;
+							var.value = (char*)malloc(sizeof(10));
+							sprintf(var.value, "%d", width);
 							insertInListaVars(var, 0);
 							
 							var.id = "xpos";
-							sprintf(buffer, "%d", xpos);
-							var.value = buffer;
-							var.type = 0;
-							
+							var.value = (char*)malloc(sizeof(10));
+							sprintf(var.value, "%d", xpos);
 							insertInListaVars(var, 0);
-							var.id = "ypos";
-							sprintf(buffer, "%d", ypos);
-							var.value = buffer;
-							var.type = 0;
 
+							var.id = "ypos";
+							var.value = (char*)malloc(sizeof(10));
+							sprintf(var.value, "%d", ypos);
 							insertInListaVars(var, 0);
+
 							var.id = "raio";
-							sprintf(buffer, "%d", raio);
-							var.value = buffer;
+							var.value = (char*)malloc(sizeof(10));
+							sprintf(var.value, "%d", raio);
 							insertInListaVars(var, 0);
 							
 							saveVars(0);
@@ -89,7 +85,7 @@ Body 			: DECLARATIONS 	{
 							printf("REFRESH\n");
 							}Declarations
 
- 			  STATEMENTS {/*printHash();*/} Statements
+ 			  STATEMENTS {printHash();} Statements
 			;
 
 
