@@ -1,11 +1,14 @@
 %{
 	#include <stdio.h>
-	//#include <stdlib.h>
+	#include <ctype.h>
+	#include <string.h>
 	#include "structures.h"
+	#include "hashFunctions.h"
 
 	int addressG = 0;
 
-	ListaVars *nodo;
+	extern ListaVars *nodo;
+	extern VarHashTable varHashTable;
 
 %}
 %error-verbose
@@ -44,8 +47,8 @@
 Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("stop\n");}
 			;
 	
-Body 			: DECLARATIONS Declarations  {printf("Start\n");}
-			 STATEMENTS Statements
+Body 			: DECLARATIONS {varHashTable = initHash();}Declarations  
+ 			  STATEMENTS Statements
 			;
 
 
@@ -58,7 +61,8 @@ Declaration 		: Variable_Declaration
 
 
 
-Variable_Declaration 	: Vars ARROW Type ';' 	{/*
+Variable_Declaration 	: Vars ARROW Type ';' 	{//printfListaVars();
+
 							ListaVars *aux = nodo;
 							while(aux) {
 								// verficiar na hashtable se ja existe uma variavel com este nome, se ja passa para a proxima var
@@ -76,10 +80,10 @@ Variable_Declaration 	: Vars ARROW Type ';' 	{/*
 											}
 										break;
 										case 1://BOOLEAN
-											if (strcmp(aux->value,"true")==0 || aux->type==-1) {
+											if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
 												printf("pushi 1\n");
 											}
-											else if (strcmp(aux->value, "false")==0) {
+											else if (strcmp(aux->value, "FALSE")==0) {
 												printf("pushi 0\n");
 											}
 										break;
@@ -98,17 +102,16 @@ Variable_Declaration 	: Vars ARROW Type ';' 	{/*
 								aux=aux->next;
 							}
 							nodo = NULL;
-						*/}
+						}
 						;
 
-Vars 			: Var 	{/*insereEmListaVars($1, 0);*/
+Vars 			: Var 	{insereEmListaVars($1, 0);
 				}
-			| Vars ',' Var 	{/*insereEmListaVars($3, 1);*/
+			| Vars ',' Var 	{insereEmListaVars($3, 1);
 					}
 			;
 
-Var 			: IDENTIFIER Value_Var {
-							//$$ = (VarTipo)malloc(sizeof(struct VarTipos));
+Var 			: IDENTIFIER Value_Var { 
 							$$.id=$1;
 							$$.type=$2.type;
 							if ($2.type != -1) {
@@ -131,7 +134,7 @@ Inic_Var 		: Constant {$$ = $1;}
 			/*| Array_Definition*/
 			;
 	
-Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/*TODO so pus estes parentises aqui porque ha exemplos que aparecem la*/
+Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/*TODO so pus estes parentises aqui porque ha exemplos em que aparecem la*/
 			| STR 	 {$$.value = $1; $$.type=1;}
 			| TRUE   {$$.value = $1; $$.type=2;}
 			| FALSE  {$$.value = $1; $$.type=2;}
@@ -296,9 +299,27 @@ void insereEmListaVars(VarTipo var, int first){
 	aux->id = var.id;
 	aux->value = var.value;
 	aux->type = var.type;
-	if(first == 1){aux->next = NULL;}
+	if(first == 0){aux->next = NULL;}
 	else {aux->next = nodo;}
 	nodo = aux;
+	
+}
+
+/*char *stringToUpper(char* string){
+	int i;
+	char* new;
+	for (i=0; i<strlen(string); i++)
+		new[i]=toupper(string[i]);
+	return new;
+}*/
+
+void printfListaVars(){
+	ListaVars *aux = nodo;
+	while(aux){
+		printf("NODO: id=%s\tvalue=%s\ttype=%d\n",aux->id,aux->value,aux->type);
+		aux = aux->next;
+	}
+	printf("ACABOU\n");
 }
 
 int yyerror(char *s){

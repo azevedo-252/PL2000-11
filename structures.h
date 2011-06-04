@@ -19,4 +19,9 @@ typedef struct NodoVar {
 	struct NodoVar *next;
 } ListaVars;
 
+ListaVars *nodo;
+
+void insereEmListaVars(VarTipo var, int first);
+char *stringToupper(char* string);
+
 #endif

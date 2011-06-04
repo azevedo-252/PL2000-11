@@ -129,7 +129,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 29 "logo.y"
+#line 32 "logo.y"
 
 	int intvalue;
 	char* stringvalue;

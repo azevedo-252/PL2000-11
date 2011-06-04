@@ -1,5 +1,6 @@
 %{
 #include "structures.h"
+#include "hashFunctions.h"
 #include "y.tab.h"
 #include <stdlib.h>
 #include <stdio.h>
