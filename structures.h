@@ -26,18 +26,10 @@ typedef struct NodoVar {
 	struct NodoVar *next;
 } ListaVars;
 
-//typedef struct Expressions {
-//	ConstTipo consttipo;
-//	VarTipo vartipo;
-//	struct Expressions *next;
-//} Expression;
-
 
 int height, width, xpos, ypos, raio, mode;
 Direccao direccao;
 ListaVars *nodo;
-//int *labelFalse, *labelEnd;
-//int label = 1;
 
 void insertInListaVars(VarTipo var, int first);
 void saveVars(int type);

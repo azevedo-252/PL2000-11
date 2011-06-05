@@ -30,7 +30,6 @@
 %left '*' '/'
 
 
-/* TODO verficiar depois o que é e nao é preciso */
 %type <stringvalue>Add_Op Mul_Op Rel_Op
 %type <intvalue>Type SuccOrPred Factor Term Single_Expression  Expression SuccPred /*Array_Acess*/
 %type <varTipo>Var Variable
@@ -55,15 +54,15 @@ Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 			;
 	
 Body 			: DECLARATIONS 	{
-							height = 100;
-							width = 100;
-							xpos = 300;
-							ypos = 200;
-							raio = 25;
-							mode = 1; //PEN UP
-							direccao = up;
-							init();
-							}Declarations
+						height = 100;
+						width = 100;
+						xpos = 300;
+						ypos = 200;
+						raio = 25;
+						mode = 1; //PEN UP
+						direccao = up;
+						init();
+					}Declarations
 
  			  STATEMENTS {/*printHash();*/} Statements
 			;
@@ -360,7 +359,7 @@ Single_Expression 	: Term					{ $$ = $1; }
 Term 			: Factor				{ $$ = $1; }
 			| Term Mul_Op Factor			{
 									if(strcmp($2,"AND")==0){
-										printf("MULL\n");
+										printf("MUL\n");
 										printf("PUSHI 0\n");
 										printf("EQUAL\n");
 									        printf("NOT\n");
@@ -484,7 +483,8 @@ Iterative_Statement 	: While_Stat
 
 /***************************IfThenElse_Stat*********/
 
-IfThenElse_Stat 	: IF Expression THEN '{' Statements '}' Else_Expression
+IfThenElse_Stat 	: IF Expression {}
+			  THEN '{' Statements '}' Else_Expression
 			;	
 
 Else_Expression 	:

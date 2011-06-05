@@ -5,10 +5,10 @@ PROGRAM logolissExemplo
   STATEMENTS
     FORWARD x ;
     RRIGHT ;
-    y = (75) ;
+    y = 3 || 0 ;
     FORWARD y ;
     RRIGHT ;
-    x = x - (10) + (50) ;
+    x = x - (10 * 6 + (50/2) * 3 );
     FORWARD x + (100) ;
     RRIGHT ;
     FORWARD (100) ;
