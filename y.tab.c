@@ -1581,8 +1581,8 @@ yyreduce:
     {
 							height = 100;
 							width = 100;
-							xpos = 100;
-							ypos = 100;
+							xpos = 50;
+							ypos = 50;
 							raio = 5;
 							mode = 0;
 							direccao = up;
@@ -2521,7 +2521,6 @@ void init() {
 	printf("START\n");
 	initWindow();
 	drawTurtle();
-	printf("REFRESH\n");
 }
 
 void initWindow(){
