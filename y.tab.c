@@ -1727,6 +1727,13 @@ yyreduce:
     {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=1;}
     break;
 
+  case 24:
+
+/* Line 1455 of yacc.c  */
+#line 166 "logo.y"
+    {printf(">>>>>>>>>>>>>>>>>Fim de uma Statement\n");}
+    break;
+
   case 34:
 
 /* Line 1455 of yacc.c  */
@@ -2152,7 +2159,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2156 "y.tab.c"
+#line 2163 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);

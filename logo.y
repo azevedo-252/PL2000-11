@@ -162,8 +162,8 @@ Elem 			: NUMBER
 
 /***************************Statements**************/
 
-Statements 		: Statement ';'
-			| Statements Statement ';'
+Statements 		: Statement ';' 
+			| Statements Statement ';'{printf(">>>>>>>>>>>>>>>>>Fim de uma Statement\n");}
 			;
 	
 Statement 		: Turtle_Commands
