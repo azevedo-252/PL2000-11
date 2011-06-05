@@ -2415,8 +2415,6 @@ void insertInListaVars(VarTipo var, int first){
 }
 
 void saveVars(int type){
-//	printListaVars();
-
 	ListaVars *aux = nodo;
 	while(aux) {
 		if(!searchVar(aux->id)){

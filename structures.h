@@ -36,7 +36,7 @@ typedef struct NodoVar {
 int height, width, xpos, ypos, raio, mode;
 Direccao direccao;
 ListaVars *nodo;
-
+int *labelFalse, *labelEnd;
 
 void insertInListaVars(VarTipo var, int first);
 void saveVars(int type);
