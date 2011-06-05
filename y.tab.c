@@ -78,9 +78,9 @@
 	#include "hashFunctions.h"
 
 	int addressG = 0;
-	extern int height = 100, width = 100, xpos = 40, ypos = 40, raio = 5;
-	extern Direccao direccao = up;
-	extern int mode = 0; // PEN UP
+	extern int height, width, xpos, ypos, raio;
+	extern Direccao direccao;
+	extern int mode; // PEN UP
 
 	extern char* yytext;
 	extern int yylineno;	
@@ -545,15 +545,15 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint16 yyrline[] =
 {
-       0,    54,    54,    57,    92,    57,    98,    99,   102,   108,
-     111,   113,   117,   126,   127,   130,   131,   132,   136,   140,
-     141,   142,   143,   165,   166,   169,   170,   171,   172,   179,
-     180,   181,   182,   183,   186,   218,   256,   257,   260,   261,
-     264,   265,   268,   269,   276,   283,   286,   287,   293,   294,
-     339,   340,   365,   366,   401,   411,   417,   418,   424,   425,
-     426,   429,   430,   431,   432,   435,   436,   437,   438,   439,
-     440,   447,   457,   458,   464,   467,   486,   489,   495,   498,
-     499,   505
+       0,    54,    54,    57,    99,    57,   105,   106,   109,   115,
+     118,   120,   124,   133,   134,   137,   138,   139,   143,   147,
+     148,   149,   150,   172,   173,   176,   177,   178,   179,   186,
+     187,   188,   189,   190,   193,   225,   263,   279,   297,   298,
+     301,   302,   305,   306,   313,   320,   323,   324,   330,   331,
+     376,   377,   402,   403,   438,   448,   454,   455,   461,   462,
+     463,   466,   467,   468,   469,   472,   473,   474,   475,   476,
+     477,   484,   494,   495,   501,   504,   523,   526,   532,   535,
+     536,   542
 };
 #endif
 
@@ -1579,6 +1579,13 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 57 "logo.y"
     {
+							height = 100;
+							width = 100;
+							xpos = 40;
+							ypos = 40;
+							raio = 5;
+							mode = 0;
+							direccao = up;
 							varHashTable = initHash();
 							VarTipo var;
 							
@@ -1587,7 +1594,7 @@ yyreduce:
 							sprintf(var.value, "%d", height);
 							insertInListaVars(var, 1);
 							
-							var.id = "widht";
+							var.id = "width";
 							var.value = (char*)malloc(sizeof(10));
 							sprintf(var.value, "%d", width);
 							insertInListaVars(var, 0);
@@ -1617,21 +1624,21 @@ yyreduce:
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 92 "logo.y"
+#line 99 "logo.y"
     {/*printHash();*/}
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 108 "logo.y"
+#line 115 "logo.y"
     {saveVars((yyvsp[(3) - (4)].intvalue));}
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 111 "logo.y"
+#line 118 "logo.y"
     {insertInListaVars((yyvsp[(1) - (1)].varTipo), 1);
 				}
     break;
@@ -1639,7 +1646,7 @@ yyreduce:
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 113 "logo.y"
+#line 120 "logo.y"
     {insertInListaVars((yyvsp[(3) - (3)].varTipo), 0);
 					}
     break;
@@ -1647,7 +1654,7 @@ yyreduce:
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 117 "logo.y"
+#line 124 "logo.y"
     { 
 							(yyval.varTipo).id=(yyvsp[(1) - (2)].stringvalue);
 							(yyval.varTipo).type=(yyvsp[(2) - (2)].constTipo).type;
@@ -1660,77 +1667,77 @@ yyreduce:
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 126 "logo.y"
+#line 133 "logo.y"
     {(yyval.constTipo).type=-1;}
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 127 "logo.y"
+#line 134 "logo.y"
     {(yyval.constTipo)=(yyvsp[(2) - (2)].constTipo);}
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 130 "logo.y"
+#line 137 "logo.y"
     {(yyval.intvalue) = 0;}
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 131 "logo.y"
+#line 138 "logo.y"
     {(yyval.intvalue) = 1;}
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 132 "logo.y"
+#line 139 "logo.y"
     {(yyval.intvalue) = 2;}
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 136 "logo.y"
+#line 143 "logo.y"
     {(yyval.constTipo) = (yyvsp[(1) - (1)].constTipo);}
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 140 "logo.y"
+#line 147 "logo.y"
     {(yyval.constTipo).value = (yyvsp[(2) - (3)].stringvalue); (yyval.constTipo).type=0;}
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 141 "logo.y"
+#line 148 "logo.y"
     {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=2;}
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 142 "logo.y"
+#line 149 "logo.y"
     {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=1;}
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 143 "logo.y"
+#line 150 "logo.y"
     {(yyval.constTipo).value = (yyvsp[(1) - (1)].stringvalue); (yyval.constTipo).type=1;}
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 186 "logo.y"
+#line 193 "logo.y"
     {
 								VarData aux;
 								switch(direccao){
@@ -1768,7 +1775,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 218 "logo.y"
+#line 225 "logo.y"
     {
 								VarData aux;
                                                                 switch(direccao){
@@ -1807,10 +1814,54 @@ yyreduce:
 								}
     break;
 
+  case 36:
+
+/* Line 1455 of yacc.c  */
+#line 263 "logo.y"
+    {
+								switch(direccao){
+									case(up):
+										direccao = right;
+										break;
+									case(right):
+										direccao = down;
+										break;
+									case(down):
+										direccao = left;
+										break;
+									default:
+										direccao = up;
+										break;
+								}
+								}
+    break;
+
+  case 37:
+
+/* Line 1455 of yacc.c  */
+#line 279 "logo.y"
+    {
+								switch(direccao){
+									case(up):
+										direccao = left;
+										break;
+									case(left):
+										direccao = down;
+										break;
+									case(down):
+										direccao = right;
+										break;
+									default:
+										direccao = up;
+										break;
+								}
+								}
+    break;
+
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 276 "logo.y"
+#line 313 "logo.y"
     {
 								VarData var =  searchVar((yyvsp[(1) - (3)].varTipo).id);
 								if (var) printf("STOREG %d\n",var->address);
@@ -1821,28 +1872,28 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 283 "logo.y"
+#line 320 "logo.y"
     {(yyval.varTipo).id = (yyvsp[(1) - (2)].stringvalue);}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 287 "logo.y"
+#line 324 "logo.y"
     { (yyval.intvalue) = (yyvsp[(2) - (3)].intvalue); }
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 293 "logo.y"
+#line 330 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 294 "logo.y"
+#line 331 "logo.y"
     {
 								switch((yyvsp[(2) - (3)].intvalue)){
 									case(1):
@@ -1888,14 +1939,14 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 339 "logo.y"
+#line 376 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 340 "logo.y"
+#line 377 "logo.y"
     {
 								//printf("PUSHI %d\n", $1);
 								//printf("PUSHI %d\n", $3);
@@ -1921,14 +1972,14 @@ yyreduce:
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 365 "logo.y"
+#line 402 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 366 "logo.y"
+#line 403 "logo.y"
     {
 								//printf("PUSHI %d\n", $1);
 								//printf("PUSHI %d\n", $3); 
@@ -1964,7 +2015,7 @@ yyreduce:
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 401 "logo.y"
+#line 438 "logo.y"
     {pushValues((yyvsp[(1) - (1)].constTipo).type,0,(yyvsp[(1) - (1)].constTipo).value); 
 								/*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
 								  //printf("PUSHI %d\n", $1.value);
@@ -1980,7 +2031,7 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 411 "logo.y"
+#line 448 "logo.y"
     { /*TabelaHash *var = procuraLista($1);*/
 
 								  VarData var = searchVar ((yyvsp[(1) - (1)].varTipo).id);
@@ -1992,112 +2043,112 @@ yyreduce:
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 417 "logo.y"
+#line 454 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 418 "logo.y"
+#line 455 "logo.y"
     { (yyval.intvalue) = (yyvsp[(2) - (3)].intvalue); }
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 424 "logo.y"
+#line 461 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 425 "logo.y"
+#line 462 "logo.y"
     { (yyval.intvalue) = 2; }
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 426 "logo.y"
+#line 463 "logo.y"
     { (yyval.intvalue) = 3; }
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 429 "logo.y"
+#line 466 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 430 "logo.y"
+#line 467 "logo.y"
     { (yyval.intvalue) = 2; }
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 431 "logo.y"
+#line 468 "logo.y"
     { (yyval.intvalue) = 3; }
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 432 "logo.y"
+#line 469 "logo.y"
     { (yyval.intvalue) = 4; }
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 435 "logo.y"
+#line 472 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 436 "logo.y"
+#line 473 "logo.y"
     { (yyval.intvalue) = 2; }
     break;
 
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 437 "logo.y"
+#line 474 "logo.y"
     { (yyval.intvalue) = 3; }
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 438 "logo.y"
+#line 475 "logo.y"
     { (yyval.intvalue) = 4; }
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 439 "logo.y"
+#line 476 "logo.y"
     { (yyval.intvalue) = 5; }
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 440 "logo.y"
+#line 477 "logo.y"
     { (yyval.intvalue) = 6; }
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 447 "logo.y"
+#line 484 "logo.y"
     { VarData var = searchVar((yyvsp[(2) - (2)].stringvalue));
 							  if (var) {
 							  	printf("store %d\n", var->address);
@@ -2111,28 +2162,28 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 457 "logo.y"
+#line 494 "logo.y"
     { (yyval.stringvalue) = "1"; }
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 458 "logo.y"
+#line 495 "logo.y"
     { (yyval.stringvalue) = "-1"; }
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 464 "logo.y"
+#line 501 "logo.y"
     { printf("writei\n"); }
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 467 "logo.y"
+#line 504 "logo.y"
     { 
 							          printf("pushs %s\n",(yyvsp[(3) - (6)].stringvalue)); 	// guardar na stack a STR a perguntar
 								  printf("writes\n"); 		// escrever a STR a perguntar
@@ -2152,7 +2203,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2156 "y.tab.c"
+#line 2207 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2364,7 +2415,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 508 "logo.y"
+#line 545 "logo.y"
 
 
 void insertInListaVars(VarTipo var, int first){

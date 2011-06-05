@@ -7,9 +7,9 @@
 	#include "hashFunctions.h"
 
 	int addressG = 0;
-	extern int height = 100, width = 100, xpos = 40, ypos = 40, raio = 5;
-	extern Direccao direccao = up;
-	extern int mode = 0; // PEN UP
+	extern int height, width, xpos, ypos, raio;
+	extern Direccao direccao;
+	extern int mode; // PEN UP
 
 	extern char* yytext;
 	extern int yylineno;	
@@ -55,6 +55,13 @@ Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 			;
 	
 Body 			: DECLARATIONS 	{
+							height = 100;
+							width = 100;
+							xpos = 40;
+							ypos = 40;
+							raio = 5;
+							mode = 0;
+							direccao = up;
 							varHashTable = initHash();
 							VarTipo var;
 							
@@ -63,7 +70,7 @@ Body 			: DECLARATIONS 	{
 							sprintf(var.value, "%d", height);
 							insertInListaVars(var, 1);
 							
-							var.id = "widht";
+							var.id = "width";
 							var.value = (char*)malloc(sizeof(10));
 							sprintf(var.value, "%d", width);
 							insertInListaVars(var, 0);
@@ -253,8 +260,38 @@ Step 			: FORWARD Expression 			{
 								}
 			;
 
-Rotate 			: RRIGHT
-			| RLEFT
+Rotate 			: RRIGHT				{
+								switch(direccao){
+									case(up):
+										direccao = right;
+										break;
+									case(right):
+										direccao = down;
+										break;
+									case(down):
+										direccao = left;
+										break;
+									default:
+										direccao = up;
+										break;
+								}
+								}
+			| RLEFT					{
+								switch(direccao){
+									case(up):
+										direccao = left;
+										break;
+									case(left):
+										direccao = down;
+										break;
+									case(down):
+										direccao = right;
+										break;
+									default:
+										direccao = up;
+										break;
+								}
+								}
 			;
 	
 Mode 			: PEN UP

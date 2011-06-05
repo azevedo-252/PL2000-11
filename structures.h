@@ -33,7 +33,7 @@ typedef struct NodoVar {
 //} Expression;
 
 
-int height, width, xpos, ypos, raio;
+int height, width, xpos, ypos, raio, mode;
 Direccao direccao;
 ListaVars *nodo;
 
@@ -43,7 +43,7 @@ void saveVars(int type);
 //char *stringToupper(char* string);
 void printListaVars();
 void drawTurtle();
-void drawLine(int newx, int newy){
+void drawLine(int newx, int newy);
 void pushValues(int varType, int nullType, char* value);
 
 #endif
