@@ -300,6 +300,7 @@ Single_Expression 	: Term					{ $$ = $1; }
 			;
 
 
+/***************************Term**************/
 
 Term 			: Factor				{ $$ = $1; }
 			| Term Mul_Op Factor			{
@@ -335,7 +336,7 @@ Term 			: Factor				{ $$ = $1; }
 			;	
 
 
-/***************************Term**************/
+/***************************Factor**************/
 
 Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
 								  $$ = atoi($1.value);       //atoi(const.value);
@@ -347,11 +348,6 @@ Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCUR
 								}
 			| Variable				{ /*TabelaHash *var = procuraLista($1);*/
 								  $$ = atoi($1.value);    //UMA VEZ MAIS, SEM QUALQUER CERTEZA DISTO
-
-/***************************Factor**************/
-
-
-
 								  /*$$->vartipo.id = $1.id; 
 								  $$->vartipo.value = $1.value;
 								  $$->vartipo.type = $1.type;*/
@@ -492,6 +488,7 @@ void saveVars(int type){
 				break;
 				// nao estamos a fazer arrays para ja
 			}
+			printf("STOREG %d\n",addressG);
 			addressG++;
 		}
 		aux=aux->next;
@@ -511,16 +508,13 @@ void saveVars(int type){
 void drawTurtle(){
 	VarData aux, aux2, aux3;
 	aux = searchVar("raio");
-	printf("load %d\n", aux->address);
+	printf("PUSHG %d\n", aux->address);
 	aux2 = searchVar("ypos");
-        printf("load %d\n", aux->address);
+        printf("PUSHG %d\n", aux2->address);
 	aux3 = searchVar("xpos");
-        printf("load %d\n", aux->address);
+        printf("PUSHG %d\n", aux3->address);
 	printf("DRAWCIRCLE\n");
 	printf("REFRESH\n");
-	printf("storeg %d\n", aux3->address);
-	printf("storeg %d\n", aux2->address);
-	printf("storeg %d\n", aux->address);
 }
 
 
