@@ -8,4 +8,8 @@ PROGRAM logolissExemplo
   STATEMENTS
     PEN DOWN ;
     FORWARD x ;
+    RRIGHT;
+    FORWARD x ;
+    RLEFT;
+    BACKWARD x ;
 }
