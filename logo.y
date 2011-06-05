@@ -193,37 +193,37 @@ Step 			: FORWARD Expression 			{
 								drawLine();
 								}
 			| BACKWARD Expression			{
-								VarData aux = searchVar("xpos"), aux2 = searchVar("ypos");
+								//VarData aux = searchVar("xpos"), aux2 = searchVar("ypos");
 								//printf("PUSHI %d\n", aux2->address);	//para o drawline
 								//printf("PUSHI %d\n", aux->address);     //para o drawline
+								VarData aux = NULL;
+					
+								if (direccao == up || direccao == down)
+									aux = searchVar("ypos");
+								else if (direccao == right || direccao == left)
+									aux = searchVar("xpos");
+
+								printf("PUSHG %d\n", aux->address);
+								printf("SWAP\n"); //para a subtracao ser bem feita
+
+
                                                                 switch(direccao){
                                                                         case(up):
-                                                                                aux = searchVar("ypos");
-                                                                                printf("PUSHG %d\n", aux->address);
                                                                                 printf("ADD\n");
-                                                                                printf("STOREG %d\n", aux->address);
                                                                                 break;
                                                                         case(down):
-                                                                                aux = searchVar("ypos");
-                                                                                printf("PUSHG %d\n", aux->address);
                                                                                 printf("SUB\n");
-                                                                                printf("STOREG %d\n", aux->address);
                                                                                 break;
                                                                         case(right):
-                                                                                aux = searchVar("xpos");
-                                                                                printf("PUSHG %d\n", aux->address);
                                                                                 printf("SUB\n");
-                                                                                printf("STOREG %d\n", aux->address);
                                                                                 break;
                                                                         case(left):
-                                                                                aux = searchVar("xpos");
-                                                                                printf("PUSHG %d\n", aux->address);
                                                                                 printf("ADD\n");
-                                                                                printf("STOREG %d\n", aux->address);
                                                                                 break;
                                                                         default:
                                                                                 break;
 								}
+								printf("STOREG %d\n", aux->address);
 								drawTurtle();
 								drawLine();
 								}
@@ -604,6 +604,7 @@ void pushValues(int varType, int nullType, char* value){
 
 void drawTurtle(){
 	VarData aux, aux2, aux3;
+	printf("CLEARDRAWINGAREA\n");
 	aux3 = searchVar("xpos");
         printf("PUSHG %d\n", aux3->address);
 	aux2 = searchVar("ypos");
