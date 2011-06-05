@@ -1,0 +1,21 @@
+PROGRAM logolissExemplo 
+{
+ DECLARATIONS
+   x = (50) , y -> Integer ;
+ STATEMENTS
+   FORWARD x ;
+   RRIGHT ;
+   y = (75) ;
+   FORWARD y ;
+   RRIGHT ;
+   x = x - (10) + (50) ;
+   FORWARD x + (100) ;
+   RRIGHT ;
+   FORWARD (100) ;
+   GOTO 200, 50 ;
+   WHERE ? ;
+   SAY ("OLA") ;
+   ASK ("VALOR DO Y -> INTEGER\n", y) ;
+   SAY (y) ; 
+   SAY (y + x) ; 
+}
