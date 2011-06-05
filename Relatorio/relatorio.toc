@@ -1,0 +1,21 @@
+\select@language {portuges}
+\contentsline {section}{\numberline {1}Introdu\IeC {\c c}\IeC {\~a}o}{3}
+\contentsline {section}{\numberline {2}Escolha do Enunciado}{4}
+\contentsline {section}{\numberline {3}Desenvolvimento do Programa}{5}
+\contentsline {subsection}{\numberline {3.1}O Ficheiro FLEX e o ficheiro YACC}{5}
+\contentsline {subsection}{\numberline {3.2}Estruturas de Dados}{7}
+\contentsline {subsubsection}{\numberline {3.2.1}VarHashTable}{7}
+\contentsline {subsubsection}{\numberline {3.2.2}VarTipo}{8}
+\contentsline {subsubsection}{\numberline {3.2.3}ConstTipo}{8}
+\contentsline {subsubsection}{\numberline {3.2.4}ListaVars}{8}
+\contentsline {subsection}{\numberline {3.3}Expressions}{8}
+\contentsline {subsection}{\numberline {3.4}Declarations}{8}
+\contentsline {subsection}{\numberline {3.5}Statements}{9}
+\contentsline {subsection}{\numberline {3.6}Os Comandos da Turtle}{9}
+\contentsline {subsubsection}{\numberline {3.6.1}Setp}{9}
+\contentsline {subsubsection}{\numberline {3.6.2}Rotate}{9}
+\contentsline {subsubsection}{\numberline {3.6.3}Mode}{10}
+\contentsline {subsubsection}{\numberline {3.6.4}Dialogue}{10}
+\contentsline {subsubsection}{\numberline {3.6.5}Location}{10}
+\contentsline {section}{\numberline {4}Conclus\IeC {\~a}o}{11}
+\contentsline {section}{\numberline {A}Anexos}{12}

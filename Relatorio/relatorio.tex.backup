@@ -1,0 +1,706 @@
+\documentclass[12pt,a4paper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[portuges]{babel}
+\usepackage[pdftex]{graphicx}
+\usepackage{lscape}
+\usepackage{listings}
+\usepackage{indentfirst}
+\newenvironment{codefold}{}{}
+
+\title{\textbf{Processamento de Linguagens}\\Compilador para a Linguagem LogoLISS}
+\author{54776 - Rafael Abreu\\54789 - Bruno Azevedo\\54821 - Vítor Costa}
+\date{\today}
+
+
+\begin{document}
+\begin{codefold}
+
+\maketitle
+\newpage
+\tableofcontents
+\newpage
+
+\section{Introdução}
+\indent Na disciplina de Processamento de Linguagens foi-nos proposto a realização de um trabalho prático utilizando a ferramenta Flex. Este trabalho tem como objectivo
+desenvolver as nossas capacidades no que diz respeito a linguagens, ou seja, ganhar traquejo em Expressões Regulares, conseguir retirar informações relevantes no meio
+de um texto enorme, encontrando padrões que nos ajudem a descobrir essas informações, etc. A ferramenta Flex é óptima para a realização deste trabalho, uma vez que nos
+permite ``apanhar'' conteúdo específico, através de Expressões Regulares, e manipulá-lo da forma que nós quisermos. Neste relatório, será apresentado uma explicação sobre
+a escolha do enunciado, métodos de resoluçãoe será apresentado o resultado final.\\
+
+\newpage
+\section{Escolha do Enunciado}
+
+\indent Neste segundo trabalho, apenas tínhamos um enunciado disponível, não havendo opções de escolha. Este enunciado propunha-nos a criação de um interpretador léxico
+para a linguagem LogoLISS, e disponibilizava-nos a sua gramática na íntegra. Mais tarde, foi-nos disponibilizado um segundo enunciado, em que a linguagem que tratava era
+bastante mais simples que o LogoLISS, mas, para equilibrar o nível de dificuldade, não nos disponibilizava o gramática.\\
+\indent Optámos pelo primeiro enunciado pela simples razão de já estarmos dentro do problema e mais ambientados com ele do que com o enunciado alternativo.\\
+
+\newpage
+\section{Desenvolvimento do Programa}
+
+\indent A primeira grande dificuldade com que nos deparamos (e que se foi revelando ocasionalmente durante o desenvolvimento do trabalho) foi: ``O que é o LogoLISS?
+O que é que é suposto determinado comando fazer? Como é que vou conseguir guardar esta informação de modo a que a VM consiga aceder e trabalhar com bons resultados?''.
+Foi este tipo de obstáculos que tivemos de superar, ambientando-nos no mundo do LogoLISS e da máquina virtual (VM), principalmente à sua parte gráfica (GVM).\\
+\indent Para que conseguissemos enfrentar tal barreiras e ultrapassa-las com sucesso, decidimos implementar o seguinte:
+
+  \subsection{O Ficheiro FLEX e o ficheiro YACC}
+
+  \indent Para dar início ao trabalho prático, começamos por implementar a sua base: os ficheiro FLEX e YACC. De seguida, encontra-se o principal dessa base:\\
+
+\begin{verbatim}
+{PROGRAM}                 { return PROGRAM; }
+{DECLARATIONS}            { return DECLARATIONS; }
+{STATEMENTS}              { return STATEMENTS; }
+"->"                      { return ARROW; }
+{INTEGER}                 { return INTEGER; }
+{BOOLEAN}                 { return BOOLEAN; }
+{STRING}                  { return STRING; }
+{ARRAY}                   { /*return ARRAY;*/ }
+{SIZE}                    { /*return SIZE;*/ }
+{TRUE}                    { yylval.stringvalue=(char*)strdup(yytext); return TRUE; }
+{FALSE}                   { yylval.stringvalue=(char*)strdup(yytext); return FALSE; }
+{FORWARD}                 { return FORWARD; }
+{BACKWARD}                { return BACKWARD; }
+{RRIGHT}                  { return RRIGHT; }
+{RLEFT}                   { return RLEFT; }
+{PEN}                     { return PEN; }
+{UP}                      { return UP; }
+{DOWN}                    { return DOWN; }
+{GOTO}                    { return GOTO; }
+{WHERE}                   { return WHERE; }
+"||"                      { return OR; }
+"&&"                      { return AND; }
+"**"                      { return POW; }
+"=="                      { return EQUAL; }
+"!="                      { return DIF; }
+"<"                       { return MINOR; }
+">"                       { return MAJOR; }
+"<="                      { return MINOREQUAL; }
+">="                      { return MAJOREQUAL; }
+{IN}                      { return IN; }
+[=\-,;!?/()\[\]\{\}*+]    {return(yytext[0]);}
+{SUCC}                    { yylval.stringvalue=(char*)strdup(yytext); return SUCC; }
+{PRED}                    { yylval.stringvalue=(char*)strdup(yytext); return PRED; }
+{SAY}                     { return SAY; }
+{ASK}                     { return ASK; }
+{IF}                      { return IF; }
+{THEN}                    { return THEN; }
+{ELSE}                    { return ELSE; }
+{WHILE}                   { return WHILE; }
+
+{NUMBER}                  { yylval.stringvalue = strdup(yytext); return NUMBER; }
+{IDENTIFIER}              { yylval.stringvalue = strdup(yytext); return IDENTIFIER; }
+{STR}                     { yylval.stringvalue = strdup(yytext); return STR; }
+
+[\ \n\t\r]+               {;}
+
+<*>.|\n                   { fprintf(stderr,"ERRO: %d '%s'\n",yylineno, yytext);}
+\end{verbatim}
+
+\indent Aqui está representado como é que o nosso programa consegue corresponder determinado comando a uma determinada acção: caso encontre qualquer coia que esteja do
+lado esquerdo, vai retornar o que está do lado direito. Esse retorno irá ser utilizado no ficheiro YACC:
+
+\begin{verbatim}
+%token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN STRING FORWARD BACKWARD RRIGHT RLEFT
+%token PEN UP DOWN GOTO WHERE OR AND POW EQUAL DIF MINOREQUAL MAJOREQUAL IN SAY ASK IF THEN ELSE WHILE
+%token <stringvalue>TRUE FALSE IDENTIFIER NUMBER STR SUCC PRED
+\end{verbatim}
+
+\indent O que aqui está representado é a passagem de um comando para o seu respectivo ``token''. Com esta transformação, conseguimos manipular o comando da forma que
+quisermos.\\
+\indent De seguida, apresentamos as estruturas de dados que utilizamos no nosso trabalho prático:
+
+  \subsection{Estruturas de Dados}
+  
+  \indent Para armazenarmos a informação relevante à medida que o nosso compilador percorre o programa, criamos várias estruturas de dados que nos ajudam nessa tarefa.\\
+  \indent De seguida, está uma pequena explicação de cada uma dessas estruturas de dados (ver código em anexo):
+
+
+    \subsubsection{VarHashTable}
+
+\indent A máquina virtual, sendo uma máquina de pilhas que vai acumulando valores de diversos tipos, precisa de um mecanismo para associar, em runtime, esses valores a um
+tipo, um identificador e o respectivo endereço na pilha.\\
+\indent Decidimos que tal mecanismo seria composto por uma tabela de hash que a cada identificador associa um nodo da tabela. Cada nodo contem a informação enunciada
+acima, o próprio identificador, o tipo do valor ao qual o identificador está associado e a endereço na stack onde esse valor foi alocado.\\
+\indent Esta tabela, permite, em runtime, verificar se determinado identificador existe, e se existir, obtém informação suficiente para poder aceder ao seu valor na stack.
+Também poderá validar os valores de input verificando o tipo do identificador.\\
+
+\indent As funções associadas à tabela de hash correspondem às funcionalidades básicas de inserção e procura:
+
+\begin{description}
+ \item [initHash()] inicializa a tabela de hash;
+ \item [hash()} função de hash que cria uma chave dado um identificador;
+ \item [searchVar(char* id)] procura a variável na tabela e retorna caso exista;
+ \item [insertVar(char* id, int type, int address)] insere uma nova variável na tabela hash.
+\end{description}
+
+
+    \subsubsection{VarTipo}
+
+\indent Estrutura que no decorrer do parsing, quando encontra uma variável, guarda o identificador, o valor e o tipo de dados.\\
+
+    \subsubsection{ConstTipo}
+
+\indent Estrutura que no decorrer do parsing, quando encontra uma constante, guarda o valor e o tipo. Tipo este que pode representar valor nulo.\\
+
+    \subsubsection{ListaVars}
+
+\indent Lista ligada que, no decorrer do parsing, na Declaração de Variáveis, guarda as variáveis por declaração. Esta lista ligada é posteriormente utilizada para
+armazenar as variáveis na tabela de hash.\\
+
+  \subsection{Expressions}
+
+\indent Por uma questão de simplificação, uma vez que as ``Expressions'' são expressões com um valor associado, declaramos que estes estados nada mais são que inteiros,
+que corresponde ao seu valor.\\
+\indent Basicamente, percorre a sua árvore de derivação até aos comandos base (adição, multiplicação de factores, etc.), calcula o seu valor e retorna-o.\\
+\indent Este estado é utilizado nos mais variáveis comandos LogoLISS, desde comandos da Tartaruga até uma simples atribuição.\\
+
+  \subsection{Os Comandos da Turtle}
+
+\indent Este era o principal objectivo do trabalho: fazer um programa em LogoLISS capaz de criar uma tartaruga e capaz de a manipular, deslocando-a em várias direcções e
+diferentes sentidos.\\
+\indent Estes comandos representam todos os comandos que podemos fazer com a tartaruga (que no nosso projeto significa uma circunferência com centro na posição
+(300, 200), com raio de 25, desenhado num ecrã 600x800, direcionada para cima (direcção = up) e com o rasto activo (mode = 1)). Os comandos implementados foram:
+
+    \subsubsection{Setp}
+
+\indent Este comando subdivide-se em 2 comandos, o FORWARD e o BACKWARD. Em primeiro lugar, a partir do endereço das coordenadas, vai buscar a posição actual da tartaruga
+e guarda-a na stack, testa qual é a direcção ("up", "right", "down" ou "left") dada há tartaruga. Dependendo da rotação soma ou subtrai o valor da "expression" na
+respectiva cordenada (x,y) da tartaruga e acualiza a nova posição da tartaruga. Desenha o seu rasto atráves das antigas e novas coordenadas calculadas, caso solicitado,
+e só por fim desenha a nova posição da tartaruga.\\
+
+    \subsubsection{Rotate}
+
+\indent Representa as duas rotações possíveis dadas há tartaruga dependendo da actual direcção que tem. Subdivide-se em dois comandos diferentes: o RRIGhT e o RLEFT. O que
+eles fazem é o seguinte: dependendo da direcção actual da tartaruga e da rotação dada calcula-se e atualiza-se a nova direcção na tartaruga.\\
+  
+    \subsubsection{Mode}
+
+\indent representa os dois modos de desenho do rastro, para representar o movimento (Step) da tartaruga:PEN UP e PENDOWN. O que fazem é alterar o ``mode'' para 0 ou 1
+caso seja para desenhar ou nao o rastro da tartaruga.\\
+
+    \subsubsection{Dialogue}
+
+\indent Mostra os comandos de diálogo ("say" e "ask") que podemos aplicar à tartaruga: Say\_Statement, que escreve uma ``expression'', e Ask\_Statement, que escreve uma
+string e guarda numa variável o que foi lido do teclado.\\
+\indent Por sua vez, o Say\_Statement divide-se no comando SAY ( Expression ), que calcula a ``Expression'' e coloca-a na stack consoante o tipo (``INTEGER'', ``BOOLEAN''
+e ``STRING'') da ``Expression'' e imprime a respectiva expression; o Ask\_Statement divide-se no comando ASK ( STR , Variable ), que, em caso de a ``Variable'' nao estar
+declarada, dá um erro, senão guarda na stack e mostra a string (STR), depois lê uma string do teclado (concluída por um ``\n''), arquiva esta string na heap e o endereço
+na satck. Converte o valor lido do teclado consoante o tipo da ``Variable'' e guarda esse valor na respectiva váriavel.
+
+    \subsubsection{Location}
+
+\indent Mostra ou edita a localização da tartaruga. Subdivide-se em GOTO NUMBER , NUMNBER, que em primeiro lugar, a partir do endereço das coordenadas, vai buscar a
+posição actual da tartaruga e guarda-a na stack para depois poder desenhar a linha de rasto. Em seguida, arquiva e actualiza os valores das novas coordenadas (NUMBER's)
+da tartaruga. Desenha o rasto da tartaruga, atráves das antigas e novas coordenadas calculadas, caso solicitado e só por fim desenha a nova posição da tartaruga na
+posição pretendida; subdivide-se também no WHERE ?, que em primeiro lugar, a partir do endereço das coordenadas, vai buscar a posição actual da tartaruga e imprime em
+primeiro lugar a coordenada x e depois a coordenada y.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Resultado Final}
+
+\indent Para o formato das páginas HTML geradas, pensamos numa tabela com uma coluna, e em que as linhas fossem os dados que nos foram pedidos no enunciado. Para a
+sua criação, foram utilizadas diversas tags. De seguida, expomos uma pequena exploração das tags utilizadas:\\
+
+\begin{description}
+
+ \item[\flq html\frq ``PÁGINA HTML''  \flq /html\frq] delimita a página HTML, tudo o que tiver dentro desta tag faz parte dela;\\ 
+ \item[\flq head\frq ``CABEÇALHO'' \flq /head\frq] define a área de cabeçalho, com elementos não visíveis na página;\\
+ \item[\flq meta http-equiv=``content-type'' content=``text/html; charset=UTF-8''\frq] permite que a página criada mostre todos os caracteres em formato UTF-8;\\
+ \item[\flq title\frq ``TÍTULO DA PÁGINA HTML'' \flq /title\frq] coloca o nome da página na barra de título da janela;\\
+ \item[\flq body scroll yes\frq ``CORPO DO DOCUMENTO HTML'' \flq /body\frq] define a área visível do documento HTML. O atributo ``scroll yes'' permite activar o scroll
+  na página caso não seja possível mostrar toda a página HTML no ecrã;\\
+ \item[\flq div align=``center''\frq ``TEXTO'' \flq /div\frq] tag genérico de formatação que permite centralizar todos os blocos de texto;\\
+ \item[\flq font size=20\frq ``TEXTO'' \flq /font\frq] define o tamanho da letra para 20;\\
+ \item[\flq u\frq ``TEXTO'' \flq /u\frq] permite sublinhar o texto;\\
+ \item[\flq p\frq ``TEXTO'' \flq /p\frq] define um parágrafo;\\
+ \item[\flq br /\frq] cria uma quebra de linha no código;\\
+ \item[\flq table border=``1''\frq ``INFORMAÇÃO DA TABELA'' \flq /table\frq] permite criar uma tabela com o atributo ``border=1'', ou seja, criar uma linha de tamanho 1
+  para delimitar toda a tabela;\\
+ \item[\flq tr\frq ``LINHA'' \flq /tr\frq] delimita uma linha na tabela;\\
+ \item[\flq td\frq ``CELULA'' \flq /td\frq] delimita uma célula/coluna na tabela;\\
+ \item[\flq a href=``URL''\frq  ``NOME DO URL''  \flq /a\frq] mostra o ``NOME DO URL'' na página e permite fazer hiperligação para o ``URL'';\\
+ \item \textbf{\flq IFRAME name= ``NOME DO URL'' = ``URL'' frameBorder=0 width=1200 scrolling=yes height=800 target=``\_top ''\frq \flq /IFRAME\frq} permite criar uma frame que
+  abre uma página (no nosso caso, essa frame corresponde à página do wikipedia original).\\
+\end{description}
+
+\indent Para executar o nosso pequeno programa, basta na pasta ``Files'' colocar o nome do ficheiro que deseja testar com o nome ``Wikipedia'' e a extenção ``.xml''. Para
+executar o programa basta aceder à pasta onde se encontra os ficheiros do programa, a partir da linha de comandos e introduzir o comando ``make'' para compilar, ou então
+o comando ``make prog'', que compila, executa e cria a(s) página(s) pretendida(s) em HTML, com o respectivo título como nome. Por fim tem ainda o comando ``make clean''
+que permite limpar todas as páginas HTML criadas. Para criar um limite de páginas geradas pelo programa, basta inserir esse limite no segundo argumento da função proc, na
+makefile. Caso não seja pretendido nenhum tipo de limitação, então esse argumento deverá ser -1\\
+\indent Cada página HTML criada foi dividida em duas partes, uma com uma tabela com as informações recolhidas e outra com a página original do Wikipedia, como se pode ver
+no exemplo seguinte:\\
+\begin{center}
+\includegraphics[width=0.6\textwidth]{imgs/Manga_XML_1.jpg}\\
+
+\includegraphics[width=1.2\textwidth]{imgs/Manga_XML_2.jpg}\\
+\end{center}
+
+\indent Para além de criar as páginas HTML, também mostra todas as informações recolhidas na linha de comandos, como se pode verificar no seguinte exemplo:\\
+\begin{center}
+\setlength\fboxsep{0pt}
+\setlength\fboxrule{0.5pt}
+\fbox{\includegraphics[width=0.7\textwidth]{imgs/Manga_CMD.jpg}}\\
+\end{center}
+
+\indent Os testes realizados foram, para além de diversos ficheiros xml com apenas uma página Wikipedia, 3 ficheiros xml, de tamanhos diferentes e com um número de páginas
+Wikipedia também diferentes:\\
+
+\begin{itemize}
+ \item Um dos ficheiros XML tem 473 KB, e gera 20 ficheiros HTML;
+ \item Um outro ficheiro XML tem 677.7 KB, e gera 129 ficheiros HTML;
+ \item Finalmente, o último ficheiro XML tem 1008.1 KB, e gera 195 ficheiros HTML.
+\end{itemize}
+
+
+
+\newpage
+\section{Conclusão}
+
+\indent Foi um desafio implementar um programa para o tema de ``Processamento da Wikipedia''. Não obstante, foi muito agradável fazer esta tarefa proposta. O grupo,
+unanimemente, apreciou as técnicas de utilização de expressões regulares e a utilização de estados, aprendidos durante as aulas da disciplina de Processamento de
+Linguagens, para nos facilitar na implementação do nosso problema. Essas técnicas permitiram recolher com perfeição as informações pretendidas com poucas e de tamanho
+reduzido expressões regulares, o que permite uma melhor organização no trabalho, e isso é, claro, um grande passo para o seu sucesso.\\
+\indent No processo de usar as expressões regulares e os estados criados, utilizamos a ferramenta de software Flex. O trabalho com essa ferramenta foi árduo e moroso.
+Mesmo assim o grupo superou o obstáculo com êxito. Estas técnicas foram bastante desafiadoras, mas revelou-se deveras útil no sentido em que facilitou muito a posterior
+implementação do código na linguagem de programação C.\\
+\indent O projecto ``Processamento da Wikipedia'' foi muito enriquecedor, dado que nos obrigou a dedicar uma porção de tempo e a refinar as nossas qualidades de
+utilização do Flex e do potencial das expressões regulares. O grupo mostrou-se coeso na elaboração deste trabalho e soube dividir bem as tarefas entre todos os elementos.
+Em suma, um grupo bom juntou-se para realizar um trabalho aliciante e, pensamos nós, criou um trabalho interessante, que funciona, e que produz o pretendido com o
+enunciado.
+
+\newpage
+\appendix
+
+\section{Especificação FLEX}
+
+\subsection{Código escrito em ``structures.h''}
+
+\begin{verbatim}
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+
+typedef struct section {
+	char sect[250];
+	struct section *next;
+} Section;
+
+typedef struct link {
+	char link[250];
+	char name[250];
+	struct link *next;
+} InLink, ExLink;
+
+
+typedef struct page {							
+	char title[250];
+	char link[250];
+	char username[250]; 
+	char date[250];
+	char hour[250];
+	int n_section;
+	int n_inLink;
+	int n_exLink;
+	Section *section;
+	InLink *inLink;
+	ExLink *exLink;
+} Page;
+
+void initPage (Page**);
+InLink *insertInLink(Page*, char*);
+void insertLinkName (InLink*,char*);
+ExLink *insertExLink(Page*, char*);
+//void insertExLinkName (ExLink*,char*);
+void insertSections(Page*, char*);
+
+\end{verbatim}
+
+\subsection{Código escrito em ``structures.c''}
+
+\begin{verbatim}
+#include "structures.h"
+
+void initPage (Page **page) {
+	Section *aux_sect = NULL;
+        InLink *aux_inLnk = NULL;
+        ExLink *aux_exLnk = NULL;
+        if ((*page)) {
+                (*page)->title[0] = '\0';
+                (*page)->username[0] = '\0';
+                (*page)->date[0] = '\0';
+                (*page)->hour[0] = '\0';
+                (*page)->n_section = 0;
+                (*page)->n_inLink = 0;
+                (*page)->n_exLink = 0;
+                aux_sect = (*page)->section;
+                while (aux_sect != NULL) {
+                        aux_sect->sect[0] = '\0';
+                        aux_sect = aux_sect->next;
+                }
+                aux_inLnk = (*page)->inLink;
+                while (aux_inLnk != NULL) {
+                        aux_inLnk->link[0] = '\0';
+                        aux_inLnk->name[0] = '\0';
+                        aux_inLnk = aux_inLnk->next;
+                }
+                aux_exLnk = (*page)->exLink;
+                while (aux_exLnk != NULL) {
+                        aux_exLnk->link[0] = '\0';
+                        aux_exLnk->name[0] = '\0';
+                        aux_exLnk = aux_exLnk->next;
+                }
+        }
+        else (*page) = (Page*)malloc(sizeof(Page));
+}
+
+void print(Page *page){
+        int n_sec = 1;
+        int n_inLnk = 1;
+        int n_exLnk = 1;
+        printf("\nTitle:%s\nUsername: %s\nDate: %s\nHour: %s\nSections:% d\n",
+           page->title,page->username,page->date,page->hour,page->n_section);
+        Section *aux_section = page->section;
+        while(aux_section && aux_section->sect[0] != '\0') {
+                printf("\tSection %d: %s\n",n_sec++,aux_section->sect);
+                aux_section = aux_section->next;
+        }
+        InLink *aux_inLink = page->inLink;
+        printf("InLinks:%d\n",page->n_inLink);
+        while(aux_inLink && aux_inLink->link[0] != '\0') {
+                printf("\tInLink %d: %s\n",n_inLnk++,aux_inLink->link);
+                if (aux_inLink->name[0] != '\0')
+                    printf("\t\tName InLink: %s\n",aux_inLink->name);
+                aux_inLink = aux_inLink->next;
+        }
+	ExLink *aux_exLink = page->exLink;
+        printf("ExLinks: %d\n",page->n_exLink);
+        while(aux_exLink && aux_exLink->link[0] != '\0') {
+                printf("\tExLink %d: %s\n",n_exLnk++,aux_exLink->link);
+                if (aux_exLink->name[0] != '\0')
+                    printf("\t\tName ExLink: %s\n",aux_exLink->name);
+                aux_exLink = aux_exLink->next;
+	        }
+}
+
+void writeHTML(Page *page){
+    char name[250];
+    strcpy(name, page->title);
+    char extension[] = ".html";
+
+    //Imprime no ecra
+    print(page);
+
+    strcat(name,extension);
+    FILE *fhtml = fopen (name,"w");
+    if (!fhtml){
+        fprintf(stderr, "Erro ao abrir o ficheiro %s\n", name);
+        exit(0);
+    }
+    fprintf(fhtml,"<html>\n<head><meta http-equiv=\"content-type\"
+     content=\"text/html; charset=UTF-8\"><title> %s</title> </head>",
+     page->title);
+    fprintf(fhtml,"<body scroll yes><div align=\"center\"><table
+     border=\"1\"><font size=20>%s</font>\n<br />",page->title);
+    fprintf(fhtml,"<tr><td><u>Link:</u> <a href=
+     \"http://en.wikipedia.org/wiki/%s\"> http://en.wikipedia.org/wiki/
+     %s</a></td></tr>\n",page->link,page->link);	
+    if(page->username[0] != '\0') fprintf(fhtml,"<tr><td><u>Username:</u>
+     %s</td></tr>\n", page->username);
+    fprintf(fhtml,"<tr><td><u>Date of the last revision:</u> %s</td></tr>
+     \e",page->date);
+    fprintf(fhtml,"<tr><td><u>Hour of the last revision:</u> %s</td></tr>
+     \n",page->hour);
+    fprintf(fhtml,"<tr><td><u>Sections:</u> %d\n", page->n_section);
+    fprintf(fhtml,"<table>\n");
+    int i;
+    if (page->n_section > 0){
+        i = 1;
+        Section *aux_sec = page->section;
+        while (aux_sec && i <= page->n_section){
+            fprintf(fhtml,"<tr><td><u><p style=\"margin-left: 16\">
+             Section %d:</u> %s</p></td></tr>\n", i, aux_sec->sect);
+            aux_sec = aux_sec->next;
+            i++;
+        }
+    }
+    fprintf(fhtml,"</table></td></tr>\n</td>\n<tr><td><u>InLinks:</u> %d\n
+     <table>\n", page->n_inLink);
+    if (page->n_inLink > 0){
+        i = 1;
+        InLink *aux_in = page->inLink;
+        while (aux_in && i <= page->n_inLink){
+            if(aux_in->name[0] != '\0'){ 
+            fprintf(fhtml,"<tr><td><u><p style=\"margin-left: 16\">InLink %d:
+             </u> <a href=\"http://en.wikipedia.org/wiki/%s\"> %s</a></p>
+             </td></tr>\n", i, aux_in->link, aux_in->name);
+            }
+            else{
+                fprintf(fhtml,"<tr><td><u><p style=\"margin-left: 16\">InLink
+                 %d:</u> <a href=\"http://en.wikipedia.org/wiki/%s\"> %s</a>
+                 </p></td></tr>\n", i, aux_in->link, aux_in->link);
+            }
+            aux_in = aux_in->next; 
+            i++;
+        }
+    }
+    fprintf(fhtml,"</table></td></tr>\n<tr><td><u>ExtLinks:</u> %d\n<table>\n",
+     page->n_exLink);
+    if (page->n_exLink > 0){
+        i = 1;
+        ExLink *aux_ex = page->exLink;
+        while (aux_ex && i <= page->n_exLink){
+            if(aux_ex->name[0] != '\0'){
+                fprintf(fhtml,"<tr><td><u><p style=\"margin-left: 16\">ExLink
+                 %d:</u> <a href=\"%s\"> %s</a></p></td></tr>\n", i,
+                 aux_ex->link, aux_ex->name);
+            }
+            else{
+            fprintf(fhtml,"<tr><td><u><p style=\"margin-left: 16\">ExLink
+             %d:</u> <a href=\"%s\"> %s</a></p></td></tr>\n", i,
+             aux_ex->link, aux_ex->link);
+            }
+            aux_ex = aux_ex->next;
+            i++;
+        }
+    }
+    fprintf(fhtml,"</table></div></td></tr>\n</table>\n");
+    fprintf(fhtml,"<IFRAME name= wiki src=\"http://en.wikipedia.org/wiki/%s\"
+     frameBorder=0 width=1200 scrolling=yes height=800 target=\"_top\"(Target)>
+     </IFRAME>",page->link);
+    fprintf(fhtml,"</body>\n</html>");
+    fclose(fhtml);
+}
+
+
+
+void insertSection (Page *page, char *yytxt) {
+    Section *aux_section = page->section, *prev_section = NULL;
+    int null = 1, first = 1;
+    while (aux_section && null == 1) {
+        first = 0;
+        prev_section = aux_section;
+        if (aux_section->sect[0] != '\0')
+            aux_section = aux_section->next;
+        else null = 0;
+    }
+    if (null == 1) {
+        aux_section = (Section*)malloc(sizeof(Section));
+        aux_section->next = NULL;
+    }
+    if (first == 1) {page->section = aux_section; page->n_section = 0;}
+    else if (null == 1) {prev_section->next = aux_section;}
+    strcpy(aux_section->sect,yytxt);
+    page->n_section++;
+}
+
+
+InLink *insertInLink (Page *page, char *yytxt) {
+    InLink *aux_inLink = page->inLink, *prev_inLink = NULL;
+    int null = 1, first = 1;
+    // percorre a lista dos links internos ate encontrar um que nao esteja
+    // escrito ou encontro um nodo vazio
+    while (aux_inLink && null == 1) {
+        first = 0;
+        prev_inLink = aux_inLink;
+        if (aux_inLink->link[0] != '\0'){ // se tiver texto escrito
+                                          // anteriormente
+            aux_inLink = aux_inLink->next;}
+        else null = 0;
+    }
+    // se encontrar um nodo vazio aloca memoria para esse link
+    if (null == 1) {
+        aux_inLink = (InLink*)malloc(sizeof(InLink));	
+        aux_inLink->next = NULL;
+    }
+    // para o caso de ser o primeiro nodo da lisa
+    if (first == 1) {page->inLink = aux_inLink;}
+    // liga o novo nodo à cauda
+    else if(null == 1) {prev_inLink->next = aux_inLink;}
+    // escreve no nodo disponivel
+    strcpy(aux_inLink->link,yytxt);
+    page->n_inLink++; 
+    return aux_inLink;
+}
+
+void insertLinkName (InLink *link, char *yytxt) {
+    strcpy(link->name, yytxt);
+}
+
+ExLink *insertExLink (Page *page, char *yytxt) {
+    ExLink *aux_exLink = page->exLink, *prev_exLink = NULL;
+    int null = 1, first = 1;
+    while (aux_exLink && null == 1) {
+        first = 0;
+        prev_exLink = aux_exLink;
+        if (aux_exLink->link[0] != '\0'){ // se tiver texto escrito
+                                          // anteriormente
+            aux_exLink = aux_exLink->next;}
+        else null = 0;
+    }
+    if (null == 1) {
+        aux_exLink = (ExLink*)malloc(sizeof(ExLink));	
+        aux_exLink->next = NULL;
+    }
+    if (first == 1) {page->exLink = aux_exLink;}
+    else if(null == 1) {prev_exLink->next = aux_exLink;}
+    strcpy(aux_exLink->link,yytxt);
+    page->n_exLink++;
+    return aux_exLink;
+}
+
+void change(Page *page, char *yytxt){
+    int i;
+    for(i = 0; yytxt[i] != '\0'; i++){
+        if (yytxt[i] == ' ') page->link[i] = '_';
+        else page->link[i] = yytxt[i];
+    }
+    page->link[i]='\0';
+}
+
+\end{verbatim}
+
+
+\subsection{Código escrito em ``proc.l''}
+
+\begin{verbatim}
+%{
+#include <stdio.h>
+#include "structures.h"
+
+int limit = -1, n_page = 0;
+%}
+
+%x PAGE
+%x TITLE
+%x USERNAME
+%x DATE
+%x HOUR
+%x SECTION
+%x INLINK
+%x EXLINK
+%x INLINKNAME
+%x EXLINKNAME
+%x FORCEEND
+
+%option yylineno
+                                Page *page = NULL;
+%%
+                                InLink *inLink = NULL;
+                                ExLink *exLink = NULL;
+
+<INITIAL>"<page>"               {if(n_page == limit) BEGIN FORCEEND;
+                                 else {
+                                  n_page++;
+                                  BEGIN PAGE;
+                                  initPage (&page);
+                                  }
+                                } 
+<PAGE>"</page>"                 {BEGIN INITIAL; writeHTML(page); }
+
+<PAGE>"<title>"                 {BEGIN TITLE;}
+<TITLE>.*/"</title>"            {BEGIN PAGE; strcpy(page->title,yytext);
+                                 change(page,yytext);}
+
+<PAGE>"<username>"              {BEGIN USERNAME;}
+<USERNAME>.*/"</username>"      {BEGIN PAGE; strcpy(page->username,yytext);}
+
+<PAGE>"<timestamp>"             {BEGIN DATE;}
+<DATE>"T"                       {BEGIN HOUR;}
+<DATE>"Z</timestamp>"           {BEGIN PAGE;}
+<DATE>.*/"T"                    {strcpy(page->date,yytext);}
+<HOUR>.*/"Z</timestamp>"        {BEGIN PAGE; strcpy(page->hour,yytext);}
+
+<PAGE>"="{3,}                   {/* nao interessam as sub-seccoes */}
+<PAGE>^"=="                     {BEGIN SECTION;}
+<SECTION>[^=]+/"=="             {BEGIN PAGE; insertSection(page, yytext); }			
+
+<PAGE>"[["                      {BEGIN INLINK;}
+<INLINK>[^\]\]\|]*/"]]"         {BEGIN PAGE; insertInLink(page, yytext);}
+<INLINK>[^\]\]]*/"|"            {BEGIN INLINKNAME;
+                                 inLink = insertInLink(page, yytext); }
+<INLINKNAME>[^\]\]]*/"]]"       {BEGIN PAGE; insertLinkName(inLink, yytext+1);} 
+
+
+<PAGE>"*"*[\s]*"["/"http"       {BEGIN EXLINK;}
+<EXLINK>[^\] ]*/"]"             {BEGIN PAGE; insertExLink(page, yytext);}
+<EXLINK>[^\] ]*/" "             {BEGIN EXLINKNAME;
+                                 exLink = insertExLink(page, yytext);}
+<EXLINKNAME>[^\]]*/"]"          {BEGIN PAGE; insertLinkName(exLink, yytext+1);}
+
+<FORCEEND>.                     {printf("\n\tNumero total de ficheiros HTML
+                                 gerados: %d\n\n",n_page); return 0;}
+
+<*>.|\n                         {}
+
+<<EOF>>                         {printf("\n\tNumero total de ficheiros HTML
+                                 gerados: %d\n\n",n_page); return 0;}
+%%
+int main(int argc, char *argv[]) {
+    yyin = fopen(argv[1], "r");
+    limit = atoi(argv[2]);
+    yylex();
+    return 0;
+}
+
+int yywrap() {
+    return 1;
+}
+
+\end{verbatim}
+
+\subsection{Código escrito em ``makefile''}
+
+\begin{verbatim}
+D=structures.c
+R=structures.o
+O=proc
+$O:$O.c 
+	cc -c $D
+	cc -o $O $R  $O.c -lfl
+
+$O.c:$O.l
+	flex -o $O.c $O.l
+structures:$D
+	cc -c $D
+
+prog:$O
+	./$O Files/Wikipedia-20110317162647.xml 250
+clean:
+	rm $O $O.c *.o *.html
+all:
+	*.o clean
+
+\end{verbatim}
+
+\end{codefold}
+\end{document}
