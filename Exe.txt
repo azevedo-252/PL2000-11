@@ -1,15 +1,20 @@
 PROGRAM logolissExemplo 
 {
   DECLARATIONS 
-    x = (100) , y -> Integer ;
+    x = (100), y -> Integer ;
     z -> Boolean ;
     w = FALSE -> Boolean ; 
     ww = "teste" -> String ;
   STATEMENTS
     PEN DOWN ;
-    BACKWARD x ;
-    RRIGHT ;
-    BACKWARD x ;
-    GOTO 200 , 50 ;
+    BACKWARD x;
+    RRIGHT;
+    BACKWARD x;
+    GOTO 200, 50 ;
     WHERE ? ;
+    SAY ("OLA") ;
+    ASK ("VALOR DO Y -> INTEGER\n", y) ;
+    SAY (y) ; 
+    SAY (w) ;
+    SAY (y + x) ; 
 }
