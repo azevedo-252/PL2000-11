@@ -6,5 +6,6 @@ PROGRAM logolissExemplo
     w = FALSE -> Boolean ; 
     ww = "teste" -> String ;
   STATEMENTS
+    PEN DOWN ;
     FORWARD x ;
 }

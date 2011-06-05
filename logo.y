@@ -7,9 +7,9 @@
 	#include "hashFunctions.h"
 
 	int addressG = 0;
-	extern int height, width, xpos, ypos, raio;
-	extern Direccao direccao;
-	extern int mode; // PEN UP
+	int height, width, xpos, ypos, raio;
+	Direccao direccao;
+	int mode; // PEN UP
 
 	extern char* yytext;
 	extern int yylineno;	
@@ -160,7 +160,9 @@ Turtle_Commands 	: Step
 			;
 
 Step 			: FORWARD Expression 			{
-								VarData aux;
+								VarData aux = searchVar("xpos"), aux2 = searchVar("ypos");
+								printf("PUSHI %d\n", aux2->address);	//para o drawline
+								printf("PUSHI %d\n", aux->address);     //para o drawline
 								switch(direccao){
 									case(up):
 										aux = searchVar("xpos");
@@ -263,8 +265,8 @@ Rotate 			: RRIGHT				{
 								}
 			;
 	
-Mode 			: PEN UP
-			| PEN DOWN
+Mode 			: PEN UP				{ mode = 0; }
+			| PEN DOWN				{ mode = 1; }
 			;
 	
 Dialogue 		: Say_Statement
@@ -286,7 +288,13 @@ Assignment 		: Variable '=' Expression 	{
 							}
 			;
 	
-Variable 		: IDENTIFIER Array_Acess {$$.id = $1;}
+Variable 		: IDENTIFIER Value_Var 		{ 	VarData var = searchVar($1);
+								if(var){
+									$$.id=$1;
+									$$.type=var->type;
+								}
+								else $$.type = -1;	
+					       		}
 			;
 	
 Array_Acess 		:
@@ -404,11 +412,12 @@ Term 			: Factor				{ $$ = $1; }
 
 /***************************Factor**************/
 
-Factor 			: Constant				{pushValues($1.type,0,$1.value);}
+Factor 			: Constant				{pushValues($1.type,0,$1.value); $$ = $1.type;}
 			| Variable				{
 								  VarData var = searchVar ($1.id);
 								  if(var)printf("PUSHG %d\n", var->address);
 								  else yyerror("Variable undeclared!\n");
+								  $$ = var->type;
 								}
 			| SuccOrPred		{ $$ = $1; }
 			| '(' Expression ')'	{ $$ = $2; }
@@ -457,23 +466,47 @@ SuccPred 		: SUCC				{ $$ = 1; }
 
 /***************************IO Statements***********/
 	
-Say_Statement 		: SAY '(' Expression ')'		{ printf("writei\n"); }
-			;
+Say_Statement 		: SAY '(' Expression ')'		{ switch ($3){ // Expression Type 
+									case 0:	// INTEGER							
+										printf("writei\n"); 
+										break;
+									case 1: // BOOLEAN
+										printf("writei\n");
+										break;
+									case 2: // STRING
+										printf("writes\n");
+										break;
+									}
+								}
+			;						
+			
 	
 Ask_Statement 		: ASK '(' STR ',' Variable ')'		{ 
-							          printf("pushs %s\n",$3); 	// guardar na stack a STR a perguntar
-								  printf("writes\n"); 		// escrever a STR a perguntar
-							 	  printf("read\n"); 		/* lê uma string do teclado (concluída por um "\n") 
+								  if($5.type == -1) yyerror("Variable undeclared!\n");
+								  else{
+									printf("pushs %s\n",$3); 	// guardar na stack a STR a perguntar
+								  	printf("writes\n"); 		// escrever a STR a perguntar
+									printf("read\n"); 	/* lê uma string do teclado (concluída por um "\n") 
 										       		   e arquiva esta string (sem o "\n") na heap e coloca
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
-								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  if(!searchVar($5.id)) yyerror("Variable undeclared!\n");
-								  else {
-								  	VarData var = searchVar($5.id);
-								  	printf("storeg %d\n",var->address);
+									switch ($5.type){ // Expression Type
+										case 0:	// INTEGER							
+											printf("atoi\n"); 
+											break;
+										case 1: // BOOLEAN
+											printf("atoi\n");
+											break;
+										case 2: // STRING
+											break;
+										default :
+											yyerror("Variable undeclared!\n");
+											break;
+									  }
+									  VarData var = searchVar($5.id);
+									  printf("storeg %d\n",var->address);
+									}
 								  }
-								}
 			;
 	
 

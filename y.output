@@ -1,6 +1,22 @@
-Terminais não utilizados na gramática
+Nonterminals useless in grammar
+
+   Array_Acess
+
+
+Terminals unused in grammar
 
    IN
+   '['
+   ']'
+
+
+Rules useless in grammar
+
+   80 Array_Acess: /* vazio */
+   81            | '[' Single_Expression ']'
+
+
+Estado 47 conflictos: 1 shift/reduce
 
 
 Gramática
@@ -73,79 +89,76 @@ Gramática
 
    44 Assignment: Variable '=' Expression
 
-   45 Variable: IDENTIFIER Array_Acess
+   45 Variable: IDENTIFIER Value_Var
 
-   46 Array_Acess: /* vazio */
-   47            | '[' Single_Expression ']'
+   46 Expression: Single_Expression
+   47           | Expression Rel_Op Single_Expression
 
-   48 Expression: Single_Expression
-   49           | Expression Rel_Op Single_Expression
+   48 Single_Expression: Term
+   49                  | Single_Expression Add_Op Term
 
-   50 Single_Expression: Term
-   51                  | Single_Expression Add_Op Term
+   50 Term: Factor
+   51     | Term Mul_Op Factor
 
-   52 Term: Factor
-   53     | Term Mul_Op Factor
+   52 Factor: Constant
+   53       | Variable
+   54       | SuccOrPred
+   55       | '(' Expression ')'
 
-   54 Factor: Constant
-   55       | Variable
-   56       | SuccOrPred
-   57       | '(' Expression ')'
+   56 Add_Op: '+'
+   57       | '-'
+   58       | OR
 
-   58 Add_Op: '+'
-   59       | '-'
-   60       | OR
+   59 Mul_Op: '*'
+   60       | '/'
+   61       | AND
+   62       | POW
 
-   61 Mul_Op: '*'
-   62       | '/'
-   63       | AND
-   64       | POW
+   63 Rel_Op: EQUAL
+   64       | DIF
+   65       | MAJOR
+   66       | MINOR
+   67       | MAJOREQUAL
+   68       | MINOREQUAL
 
-   65 Rel_Op: EQUAL
-   66       | DIF
-   67       | MAJOR
-   68       | MINOR
-   69       | MAJOREQUAL
-   70       | MINOREQUAL
+   69 SuccOrPred: SuccPred IDENTIFIER
 
-   71 SuccOrPred: SuccPred IDENTIFIER
+   70 SuccPred: SUCC
+   71         | PRED
 
-   72 SuccPred: SUCC
-   73         | PRED
+   72 Say_Statement: SAY '(' Expression ')'
 
-   74 Say_Statement: SAY '(' Expression ')'
+   73 Ask_Statement: ASK '(' STR ',' Variable ')'
 
-   75 Ask_Statement: ASK '(' STR ',' Variable ')'
+   74 Conditional_Statement: IfThenElse_Stat
 
-   76 Conditional_Statement: IfThenElse_Stat
+   75 Iterative_Statement: While_Stat
 
-   77 Iterative_Statement: While_Stat
+   76 IfThenElse_Stat: IF Expression THEN '{' Statements '}' Else_Expression
 
-   78 IfThenElse_Stat: IF Expression THEN '{' Statements '}' Else_Expression
+   77 Else_Expression: /* vazio */
+   78                | ELSE '{' Statements '}'
 
-   79 Else_Expression: /* vazio */
-   80                | ELSE '{' Statements '}'
-
-   81 While_Stat: WHILE '(' Expression ')' '{' Statements '}'
+   79 While_Stat: WHILE '(' Expression ')' '{' Statements '}'
 
 
 Terminais, com as regras aonde aparecem
 
 $end (0) 0
-'(' (40) 18 57 74 75 81
-')' (41) 18 57 74 75 81
-'*' (42) 61
-'+' (43) 58
-',' (44) 10 42 75
-'-' (45) 59
-'/' (47) 62
+'(' (40) 18 55 72 73 79
+')' (41) 18 55 72 73 79
+'*' (42) 59
+'+' (43) 56
+',' (44) 10 42 73
+'-' (45) 57
+'/' (47) 60
 ';' (59) 8 23 24
 '=' (61) 13 44
 '?' (63) 43
-'[' (91) 47
-']' (93) 47
-'{' (123) 1 78 80 81
-'}' (125) 1 78 80 81
+'[' (91)
+']' (93)
+'{' (123) 1 76 78 79
+'}' (125) 1 76 78 79
 error (256)
 PROGRAM (258) 1
 DECLARATIONS (259) 4
@@ -163,29 +176,29 @@ UP (270) 38
 DOWN (271) 39
 GOTO (272) 42
 WHERE (273) 43
-OR (274) 60
-AND (275) 63
-POW (276) 64
-EQUAL (277) 65
-DIF (278) 66
-MINOREQUAL (279) 70
-MAJOREQUAL (280) 69
+OR (274) 58
+AND (275) 61
+POW (276) 62
+EQUAL (277) 63
+DIF (278) 64
+MINOREQUAL (279) 68
+MAJOREQUAL (280) 67
 IN (281)
-SAY (282) 74
-ASK (283) 75
-IF (284) 78
-THEN (285) 78
-ELSE (286) 80
-WHILE (287) 81
+SAY (282) 72
+ASK (283) 73
+IF (284) 76
+THEN (285) 76
+ELSE (286) 78
+WHILE (287) 79
 TRUE (288) 21
 FALSE (289) 22
-IDENTIFIER (290) 1 11 45 71
+IDENTIFIER (290) 1 11 45 69
 NUMBER (291) 19 42
-STR (292) 20 75
-SUCC (293) 72
-PRED (294) 73
-MAJOR (295) 67
-MINOR (296) 68
+STR (292) 20 73
+SUCC (293) 70
+PRED (294) 71
+MAJOR (295) 65
+MINOR (296) 66
 
 
 Não-terminais, com as regras aonde aparecem
@@ -211,15 +224,15 @@ Vars (64)
 Var (65)
     à esquerda: 11, à direita: 9 10
 Value_Var (66)
-    à esquerda: 12 13, à direita: 11
+    à esquerda: 12 13, à direita: 11 45
 Type (67)
     à esquerda: 14 15 16, à direita: 8
 Inic_Var (68)
     à esquerda: 17 18, à direita: 13
 Constant (69)
-    à esquerda: 19 20 21 22, à direita: 17 18 54
+    à esquerda: 19 20 21 22, à direita: 17 18 52
 Statements (70)
-    à esquerda: 23 24, à direita: 4 24 78 80 81
+    à esquerda: 23 24, à direita: 4 24 76 78 79
 Statement (71)
     à esquerda: 25 26 27 28, à direita: 23 24
 Turtle_Commands (72)
@@ -237,41 +250,39 @@ Location (77)
 Assignment (78)
     à esquerda: 44, à direita: 26
 Variable (79)
-    à esquerda: 45, à direita: 44 55 75
-Array_Acess (80)
-    à esquerda: 46 47, à direita: 45
-Expression (81)
-    à esquerda: 48 49, à direita: 34 35 44 49 57 74 78 81
-Single_Expression (82)
-    à esquerda: 50 51, à direita: 47 48 49 51
-Term (83)
-    à esquerda: 52 53, à direita: 50 51 53
-Factor (84)
-    à esquerda: 54 55 56 57, à direita: 52 53
-Add_Op (85)
-    à esquerda: 58 59 60, à direita: 51
-Mul_Op (86)
-    à esquerda: 61 62 63 64, à direita: 53
-Rel_Op (87)
-    à esquerda: 65 66 67 68 69 70, à direita: 49
-SuccOrPred (88)
-    à esquerda: 71, à direita: 56
-SuccPred (89)
-    à esquerda: 72 73, à direita: 71
-Say_Statement (90)
-    à esquerda: 74, à direita: 40
-Ask_Statement (91)
-    à esquerda: 75, à direita: 41
-Conditional_Statement (92)
-    à esquerda: 76, à direita: 27
-Iterative_Statement (93)
-    à esquerda: 77, à direita: 28
-IfThenElse_Stat (94)
-    à esquerda: 78, à direita: 76
-Else_Expression (95)
-    à esquerda: 79 80, à direita: 78
-While_Stat (96)
-    à esquerda: 81, à direita: 77
+    à esquerda: 45, à direita: 44 53 73
+Expression (80)
+    à esquerda: 46 47, à direita: 34 35 44 47 55 72 76 79
+Single_Expression (81)
+    à esquerda: 48 49, à direita: 46 47 49
+Term (82)
+    à esquerda: 50 51, à direita: 48 49 51
+Factor (83)
+    à esquerda: 52 53 54 55, à direita: 50 51
+Add_Op (84)
+    à esquerda: 56 57 58, à direita: 49
+Mul_Op (85)
+    à esquerda: 59 60 61 62, à direita: 51
+Rel_Op (86)
+    à esquerda: 63 64 65 66 67 68, à direita: 47
+SuccOrPred (87)
+    à esquerda: 69, à direita: 54
+SuccPred (88)
+    à esquerda: 70 71, à direita: 69
+Say_Statement (89)
+    à esquerda: 72, à direita: 40
+Ask_Statement (90)
+    à esquerda: 73, à direita: 41
+Conditional_Statement (91)
+    à esquerda: 74, à direita: 27
+Iterative_Statement (92)
+    à esquerda: 75, à direita: 28
+IfThenElse_Stat (93)
+    à esquerda: 76, à direita: 74
+Else_Expression (94)
+    à esquerda: 77 78, à direita: 76
+While_Stat (95)
+    à esquerda: 79, à direita: 75
 
 
 estado 0
@@ -684,21 +695,21 @@ estado 42
 
 estado 43
 
-   74 Say_Statement: SAY . '(' Expression ')'
+   72 Say_Statement: SAY . '(' Expression ')'
 
     '('  fazer shift, e ir para o estado 82
 
 
 estado 44
 
-   75 Ask_Statement: ASK . '(' STR ',' Variable ')'
+   73 Ask_Statement: ASK . '(' STR ',' Variable ')'
 
     '('  fazer shift, e ir para o estado 83
 
 
 estado 45
 
-   78 IfThenElse_Stat: IF . Expression THEN '{' Statements '}' Else_Expression
+   76 IfThenElse_Stat: IF . Expression THEN '{' Statements '}' Else_Expression
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
@@ -721,20 +732,21 @@ estado 45
 
 estado 46
 
-   81 While_Stat: WHILE . '(' Expression ')' '{' Statements '}'
+   79 While_Stat: WHILE . '(' Expression ')' '{' Statements '}'
 
     '('  fazer shift, e ir para o estado 85
 
 
 estado 47
 
-   45 Variable: IDENTIFIER . Array_Acess
+   45 Variable: IDENTIFIER . Value_Var
 
-    '['  fazer shift, e ir para o estado 86
+    '='  fazer shift, e ir para o estado 16
 
-    $default  reduzir usando a regra 46 (Array_Acess)
+    '='       [reduzir usando a regra 12 (Value_Var)]
+    $default  reduzir usando a regra 12 (Value_Var)
 
-    Array_Acess  ir para o estado 87
+    Value_Var  ir para o estado 86
 
 
 estado 48
@@ -757,7 +769,7 @@ estado 48
 
     $default  reduzir usando a regra 4 (Body)
 
-    Statement              ir para o estado 88
+    Statement              ir para o estado 87
     Turtle_Commands        ir para o estado 50
     Step                   ir para o estado 51
     Rotate                 ir para o estado 52
@@ -778,7 +790,7 @@ estado 49
 
    23 Statements: Statement . ';'
 
-    ';'  fazer shift, e ir para o estado 89
+    ';'  fazer shift, e ir para o estado 88
 
 
 estado 50
@@ -834,7 +846,7 @@ estado 57
 
    44 Assignment: Variable . '=' Expression
 
-    '='  fazer shift, e ir para o estado 90
+    '='  fazer shift, e ir para o estado 89
 
 
 estado 58
@@ -867,16 +879,16 @@ estado 61
 
 estado 62
 
-   76 Conditional_Statement: IfThenElse_Stat .
+   74 Conditional_Statement: IfThenElse_Stat .
 
-    $default  reduzir usando a regra 76 (Conditional_Statement)
+    $default  reduzir usando a regra 74 (Conditional_Statement)
 
 
 estado 63
 
-   77 Iterative_Statement: While_Stat .
+   75 Iterative_Statement: While_Stat .
 
-    $default  reduzir usando a regra 77 (Iterative_Statement)
+    $default  reduzir usando a regra 75 (Iterative_Statement)
 
 
 estado 64
@@ -895,21 +907,21 @@ estado 65
 
 estado 66
 
-   72 SuccPred: SUCC .
+   70 SuccPred: SUCC .
 
-    $default  reduzir usando a regra 72 (SuccPred)
+    $default  reduzir usando a regra 70 (SuccPred)
 
 
 estado 67
 
-   73 SuccPred: PRED .
+   71 SuccPred: PRED .
 
-    $default  reduzir usando a regra 73 (SuccPred)
+    $default  reduzir usando a regra 71 (SuccPred)
 
 
 estado 68
 
-   57 Factor: '(' . Expression ')'
+   55 Factor: '(' . Expression ')'
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
@@ -922,7 +934,7 @@ estado 68
 
     Constant           ir para o estado 69
     Variable           ir para o estado 70
-    Expression         ir para o estado 91
+    Expression         ir para o estado 90
     Single_Expression  ir para o estado 72
     Term               ir para o estado 73
     Factor             ir para o estado 74
@@ -932,100 +944,100 @@ estado 68
 
 estado 69
 
-   54 Factor: Constant .
+   52 Factor: Constant .
 
-    $default  reduzir usando a regra 54 (Factor)
+    $default  reduzir usando a regra 52 (Factor)
 
 
 estado 70
 
-   55 Factor: Variable .
+   53 Factor: Variable .
 
-    $default  reduzir usando a regra 55 (Factor)
+    $default  reduzir usando a regra 53 (Factor)
 
 
 estado 71
 
    34 Step: FORWARD Expression .
-   49 Expression: Expression . Rel_Op Single_Expression
+   47 Expression: Expression . Rel_Op Single_Expression
 
-    EQUAL       fazer shift, e ir para o estado 92
-    DIF         fazer shift, e ir para o estado 93
-    MINOREQUAL  fazer shift, e ir para o estado 94
-    MAJOREQUAL  fazer shift, e ir para o estado 95
-    MAJOR       fazer shift, e ir para o estado 96
-    MINOR       fazer shift, e ir para o estado 97
+    EQUAL       fazer shift, e ir para o estado 91
+    DIF         fazer shift, e ir para o estado 92
+    MINOREQUAL  fazer shift, e ir para o estado 93
+    MAJOREQUAL  fazer shift, e ir para o estado 94
+    MAJOR       fazer shift, e ir para o estado 95
+    MINOR       fazer shift, e ir para o estado 96
 
     $default  reduzir usando a regra 34 (Step)
 
-    Rel_Op  ir para o estado 98
+    Rel_Op  ir para o estado 97
 
 
 estado 72
 
-   48 Expression: Single_Expression .
-   51 Single_Expression: Single_Expression . Add_Op Term
+   46 Expression: Single_Expression .
+   49 Single_Expression: Single_Expression . Add_Op Term
 
-    OR   fazer shift, e ir para o estado 99
-    '+'  fazer shift, e ir para o estado 100
-    '-'  fazer shift, e ir para o estado 101
+    OR   fazer shift, e ir para o estado 98
+    '+'  fazer shift, e ir para o estado 99
+    '-'  fazer shift, e ir para o estado 100
 
-    $default  reduzir usando a regra 48 (Expression)
+    $default  reduzir usando a regra 46 (Expression)
 
-    Add_Op  ir para o estado 102
+    Add_Op  ir para o estado 101
 
 
 estado 73
 
-   50 Single_Expression: Term .
-   53 Term: Term . Mul_Op Factor
+   48 Single_Expression: Term .
+   51 Term: Term . Mul_Op Factor
 
-    AND  fazer shift, e ir para o estado 103
-    POW  fazer shift, e ir para o estado 104
-    '*'  fazer shift, e ir para o estado 105
-    '/'  fazer shift, e ir para o estado 106
+    AND  fazer shift, e ir para o estado 102
+    POW  fazer shift, e ir para o estado 103
+    '*'  fazer shift, e ir para o estado 104
+    '/'  fazer shift, e ir para o estado 105
 
-    $default  reduzir usando a regra 50 (Single_Expression)
+    $default  reduzir usando a regra 48 (Single_Expression)
 
-    Mul_Op  ir para o estado 107
+    Mul_Op  ir para o estado 106
 
 
 estado 74
 
-   52 Term: Factor .
+   50 Term: Factor .
 
-    $default  reduzir usando a regra 52 (Term)
+    $default  reduzir usando a regra 50 (Term)
 
 
 estado 75
 
-   56 Factor: SuccOrPred .
+   54 Factor: SuccOrPred .
 
-    $default  reduzir usando a regra 56 (Factor)
+    $default  reduzir usando a regra 54 (Factor)
 
 
 estado 76
 
-   71 SuccOrPred: SuccPred . IDENTIFIER
+   69 SuccOrPred: SuccPred . IDENTIFIER
 
-    IDENTIFIER  fazer shift, e ir para o estado 108
+    IDENTIFIER  fazer shift, e ir para o estado 107
 
 
 estado 77
 
    35 Step: BACKWARD Expression .
-   49 Expression: Expression . Rel_Op Single_Expression
+   47 Expression: Expression . Rel_Op Single_Expression
 
-    EQUAL       fazer shift, e ir para o estado 92
-    DIF         fazer shift, e ir para o estado 93
-    MINOREQUAL  fazer shift, e ir para o estado 94
-    MAJOREQUAL  fazer shift, e ir para o estado 95
-    MAJOR       fazer shift, e ir para o estado 96
-    MINOR       fazer shift, e ir para o estado 97
+    EQUAL       fazer shift, e ir para o estado 91
+    DIF         fazer shift, e ir para o estado 92
+    MINOREQUAL  fazer shift, e ir para o estado 93
+    MAJOREQUAL  fazer shift, e ir para o estado 94
+    MAJOR       fazer shift, e ir para o estado 95
+    MINOR       fazer shift, e ir para o estado 96
 
     $default  reduzir usando a regra 35 (Step)
 
-    Rel_Op  ir para o estado 98
+    Rel_Op  ir para o estado 97
 
 
 estado 78
@@ -1046,7 +1058,7 @@ estado 80
 
    42 Location: GOTO NUMBER . ',' NUMBER
 
-    ','  fazer shift, e ir para o estado 109
+    ','  fazer shift, e ir para o estado 108
 
 
 estado 81
@@ -1058,7 +1070,7 @@ estado 81
 
 estado 82
 
-   74 Say_Statement: SAY '(' . Expression ')'
+   72 Say_Statement: SAY '(' . Expression ')'
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
@@ -1071,7 +1083,7 @@ estado 82
 
     Constant           ir para o estado 69
     Variable           ir para o estado 70
-    Expression         ir para o estado 110
+    Expression         ir para o estado 109
     Single_Expression  ir para o estado 72
     Term               ir para o estado 73
     Factor             ir para o estado 74
@@ -1081,30 +1093,30 @@ estado 82
 
 estado 83
 
-   75 Ask_Statement: ASK '(' . STR ',' Variable ')'
+   73 Ask_Statement: ASK '(' . STR ',' Variable ')'
 
-    STR  fazer shift, e ir para o estado 111
+    STR  fazer shift, e ir para o estado 110
 
 
 estado 84
 
-   49 Expression: Expression . Rel_Op Single_Expression
-   78 IfThenElse_Stat: IF Expression . THEN '{' Statements '}' Else_Expression
+   47 Expression: Expression . Rel_Op Single_Expression
+   76 IfThenElse_Stat: IF Expression . THEN '{' Statements '}' Else_Expression
 
-    EQUAL       fazer shift, e ir para o estado 92
-    DIF         fazer shift, e ir para o estado 93
-    MINOREQUAL  fazer shift, e ir para o estado 94
-    MAJOREQUAL  fazer shift, e ir para o estado 95
-    THEN        fazer shift, e ir para o estado 112
-    MAJOR       fazer shift, e ir para o estado 96
-    MINOR       fazer shift, e ir para o estado 97
+    EQUAL       fazer shift, e ir para o estado 91
+    DIF         fazer shift, e ir para o estado 92
+    MINOREQUAL  fazer shift, e ir para o estado 93
+    MAJOREQUAL  fazer shift, e ir para o estado 94
+    THEN        fazer shift, e ir para o estado 111
+    MAJOR       fazer shift, e ir para o estado 95
+    MINOR       fazer shift, e ir para o estado 96
 
-    Rel_Op  ir para o estado 98
+    Rel_Op  ir para o estado 97
 
 
 estado 85
 
-   81 While_Stat: WHILE '(' . Expression ')' '{' Statements '}'
+   79 While_Stat: WHILE '(' . Expression ')' '{' Statements '}'
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
@@ -1117,7 +1129,7 @@ estado 85
 
     Constant           ir para o estado 69
     Variable           ir para o estado 70
-    Expression         ir para o estado 113
+    Expression         ir para o estado 112
     Single_Expression  ir para o estado 72
     Term               ir para o estado 73
     Factor             ir para o estado 74
@@ -1127,48 +1139,26 @@ estado 85
 
 estado 86
 
-   47 Array_Acess: '[' . Single_Expression ']'
-
-    TRUE        fazer shift, e ir para o estado 22
-    FALSE       fazer shift, e ir para o estado 23
-    IDENTIFIER  fazer shift, e ir para o estado 47
-    NUMBER      fazer shift, e ir para o estado 24
-    STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 66
-    PRED        fazer shift, e ir para o estado 67
-    '('         fazer shift, e ir para o estado 68
-
-    Constant           ir para o estado 69
-    Variable           ir para o estado 70
-    Single_Expression  ir para o estado 114
-    Term               ir para o estado 73
-    Factor             ir para o estado 74
-    SuccOrPred         ir para o estado 75
-    SuccPred           ir para o estado 76
-
-
-estado 87
-
-   45 Variable: IDENTIFIER Array_Acess .
+   45 Variable: IDENTIFIER Value_Var .
 
     $default  reduzir usando a regra 45 (Variable)
 
 
-estado 88
+estado 87
 
    24 Statements: Statements Statement . ';'
 
-    ';'  fazer shift, e ir para o estado 115
+    ';'  fazer shift, e ir para o estado 113
 
 
-estado 89
+estado 88
 
    23 Statements: Statement ';' .
 
     $default  reduzir usando a regra 23 (Statements)
 
 
-estado 90
+estado 89
 
    44 Assignment: Variable '=' . Expression
 
@@ -1183,7 +1173,7 @@ estado 90
 
     Constant           ir para o estado 69
     Variable           ir para o estado 70
-    Expression         ir para o estado 116
+    Expression         ir para o estado 114
     Single_Expression  ir para o estado 72
     Term               ir para o estado 73
     Factor             ir para o estado 74
@@ -1191,67 +1181,67 @@ estado 90
     SuccPred           ir para o estado 76
 
 
+estado 90
+
+   47 Expression: Expression . Rel_Op Single_Expression
+   55 Factor: '(' Expression . ')'
+
+    EQUAL       fazer shift, e ir para o estado 91
+    DIF         fazer shift, e ir para o estado 92
+    MINOREQUAL  fazer shift, e ir para o estado 93
+    MAJOREQUAL  fazer shift, e ir para o estado 94
+    MAJOR       fazer shift, e ir para o estado 95
+    MINOR       fazer shift, e ir para o estado 96
+    ')'         fazer shift, e ir para o estado 115
+
+    Rel_Op  ir para o estado 97
+
+
 estado 91
 
-   49 Expression: Expression . Rel_Op Single_Expression
-   57 Factor: '(' Expression . ')'
+   63 Rel_Op: EQUAL .
 
-    EQUAL       fazer shift, e ir para o estado 92
-    DIF         fazer shift, e ir para o estado 93
-    MINOREQUAL  fazer shift, e ir para o estado 94
-    MAJOREQUAL  fazer shift, e ir para o estado 95
-    MAJOR       fazer shift, e ir para o estado 96
-    MINOR       fazer shift, e ir para o estado 97
-    ')'         fazer shift, e ir para o estado 117
-
-    Rel_Op  ir para o estado 98
+    $default  reduzir usando a regra 63 (Rel_Op)
 
 
 estado 92
 
-   65 Rel_Op: EQUAL .
+   64 Rel_Op: DIF .
 
-    $default  reduzir usando a regra 65 (Rel_Op)
+    $default  reduzir usando a regra 64 (Rel_Op)
 
 
 estado 93
 
-   66 Rel_Op: DIF .
-
-    $default  reduzir usando a regra 66 (Rel_Op)
-
-
-estado 94
-
-   70 Rel_Op: MINOREQUAL .
-
-    $default  reduzir usando a regra 70 (Rel_Op)
-
-
-estado 95
-
-   69 Rel_Op: MAJOREQUAL .
-
-    $default  reduzir usando a regra 69 (Rel_Op)
-
-
-estado 96
-
-   67 Rel_Op: MAJOR .
-
-    $default  reduzir usando a regra 67 (Rel_Op)
-
-
-estado 97
-
-   68 Rel_Op: MINOR .
+   68 Rel_Op: MINOREQUAL .
 
     $default  reduzir usando a regra 68 (Rel_Op)
 
 
-estado 98
+estado 94
 
-   49 Expression: Expression Rel_Op . Single_Expression
+   67 Rel_Op: MAJOREQUAL .
+
+    $default  reduzir usando a regra 67 (Rel_Op)
+
+
+estado 95
+
+   65 Rel_Op: MAJOR .
+
+    $default  reduzir usando a regra 65 (Rel_Op)
+
+
+estado 96
+
+   66 Rel_Op: MINOR .
+
+    $default  reduzir usando a regra 66 (Rel_Op)
+
+
+estado 97
+
+   47 Expression: Expression Rel_Op . Single_Expression
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
@@ -1264,37 +1254,37 @@ estado 98
 
     Constant           ir para o estado 69
     Variable           ir para o estado 70
-    Single_Expression  ir para o estado 118
+    Single_Expression  ir para o estado 116
     Term               ir para o estado 73
     Factor             ir para o estado 74
     SuccOrPred         ir para o estado 75
     SuccPred           ir para o estado 76
 
 
-estado 99
+estado 98
 
-   60 Add_Op: OR .
-
-    $default  reduzir usando a regra 60 (Add_Op)
-
-
-estado 100
-
-   58 Add_Op: '+' .
+   58 Add_Op: OR .
 
     $default  reduzir usando a regra 58 (Add_Op)
 
 
+estado 99
+
+   56 Add_Op: '+' .
+
+    $default  reduzir usando a regra 56 (Add_Op)
+
+
+estado 100
+
+   57 Add_Op: '-' .
+
+    $default  reduzir usando a regra 57 (Add_Op)
+
+
 estado 101
 
-   59 Add_Op: '-' .
-
-    $default  reduzir usando a regra 59 (Add_Op)
-
-
-estado 102
-
-   51 Single_Expression: Single_Expression Add_Op . Term
+   49 Single_Expression: Single_Expression Add_Op . Term
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
@@ -1307,43 +1297,43 @@ estado 102
 
     Constant    ir para o estado 69
     Variable    ir para o estado 70
-    Term        ir para o estado 119
+    Term        ir para o estado 117
     Factor      ir para o estado 74
     SuccOrPred  ir para o estado 75
     SuccPred    ir para o estado 76
 
 
-estado 103
+estado 102
 
-   63 Mul_Op: AND .
-
-    $default  reduzir usando a regra 63 (Mul_Op)
-
-
-estado 104
-
-   64 Mul_Op: POW .
-
-    $default  reduzir usando a regra 64 (Mul_Op)
-
-
-estado 105
-
-   61 Mul_Op: '*' .
+   61 Mul_Op: AND .
 
     $default  reduzir usando a regra 61 (Mul_Op)
 
 
-estado 106
+estado 103
 
-   62 Mul_Op: '/' .
+   62 Mul_Op: POW .
 
     $default  reduzir usando a regra 62 (Mul_Op)
 
 
-estado 107
+estado 104
 
-   53 Term: Term Mul_Op . Factor
+   59 Mul_Op: '*' .
+
+    $default  reduzir usando a regra 59 (Mul_Op)
+
+
+estado 105
+
+   60 Mul_Op: '/' .
+
+    $default  reduzir usando a regra 60 (Mul_Op)
+
+
+estado 106
+
+   51 Term: Term Mul_Op . Factor
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
@@ -1356,234 +1346,214 @@ estado 107
 
     Constant    ir para o estado 69
     Variable    ir para o estado 70
-    Factor      ir para o estado 120
+    Factor      ir para o estado 118
     SuccOrPred  ir para o estado 75
     SuccPred    ir para o estado 76
 
 
+estado 107
+
+   69 SuccOrPred: SuccPred IDENTIFIER .
+
+    $default  reduzir usando a regra 69 (SuccOrPred)
+
+
 estado 108
 
-   71 SuccOrPred: SuccPred IDENTIFIER .
+   42 Location: GOTO NUMBER ',' . NUMBER
 
-    $default  reduzir usando a regra 71 (SuccOrPred)
+    NUMBER  fazer shift, e ir para o estado 119
 
 
 estado 109
 
-   42 Location: GOTO NUMBER ',' . NUMBER
+   47 Expression: Expression . Rel_Op Single_Expression
+   72 Say_Statement: SAY '(' Expression . ')'
 
-    NUMBER  fazer shift, e ir para o estado 121
+    EQUAL       fazer shift, e ir para o estado 91
+    DIF         fazer shift, e ir para o estado 92
+    MINOREQUAL  fazer shift, e ir para o estado 93
+    MAJOREQUAL  fazer shift, e ir para o estado 94
+    MAJOR       fazer shift, e ir para o estado 95
+    MINOR       fazer shift, e ir para o estado 96
+    ')'         fazer shift, e ir para o estado 120
+
+    Rel_Op  ir para o estado 97
 
 
 estado 110
 
-   49 Expression: Expression . Rel_Op Single_Expression
-   74 Say_Statement: SAY '(' Expression . ')'
+   73 Ask_Statement: ASK '(' STR . ',' Variable ')'
 
-    EQUAL       fazer shift, e ir para o estado 92
-    DIF         fazer shift, e ir para o estado 93
-    MINOREQUAL  fazer shift, e ir para o estado 94
-    MAJOREQUAL  fazer shift, e ir para o estado 95
-    MAJOR       fazer shift, e ir para o estado 96
-    MINOR       fazer shift, e ir para o estado 97
-    ')'         fazer shift, e ir para o estado 122
-
-    Rel_Op  ir para o estado 98
+    ','  fazer shift, e ir para o estado 121
 
 
 estado 111
 
-   75 Ask_Statement: ASK '(' STR . ',' Variable ')'
+   76 IfThenElse_Stat: IF Expression THEN . '{' Statements '}' Else_Expression
 
-    ','  fazer shift, e ir para o estado 123
+    '{'  fazer shift, e ir para o estado 122
 
 
 estado 112
 
-   78 IfThenElse_Stat: IF Expression THEN . '{' Statements '}' Else_Expression
+   47 Expression: Expression . Rel_Op Single_Expression
+   79 While_Stat: WHILE '(' Expression . ')' '{' Statements '}'
 
-    '{'  fazer shift, e ir para o estado 124
+    EQUAL       fazer shift, e ir para o estado 91
+    DIF         fazer shift, e ir para o estado 92
+    MINOREQUAL  fazer shift, e ir para o estado 93
+    MAJOREQUAL  fazer shift, e ir para o estado 94
+    MAJOR       fazer shift, e ir para o estado 95
+    MINOR       fazer shift, e ir para o estado 96
+    ')'         fazer shift, e ir para o estado 123
+
+    Rel_Op  ir para o estado 97
 
 
 estado 113
-
-   49 Expression: Expression . Rel_Op Single_Expression
-   81 While_Stat: WHILE '(' Expression . ')' '{' Statements '}'
-
-    EQUAL       fazer shift, e ir para o estado 92
-    DIF         fazer shift, e ir para o estado 93
-    MINOREQUAL  fazer shift, e ir para o estado 94
-    MAJOREQUAL  fazer shift, e ir para o estado 95
-    MAJOR       fazer shift, e ir para o estado 96
-    MINOR       fazer shift, e ir para o estado 97
-    ')'         fazer shift, e ir para o estado 125
-
-    Rel_Op  ir para o estado 98
-
-
-estado 114
-
-   47 Array_Acess: '[' Single_Expression . ']'
-   51 Single_Expression: Single_Expression . Add_Op Term
-
-    OR   fazer shift, e ir para o estado 99
-    '+'  fazer shift, e ir para o estado 100
-    '-'  fazer shift, e ir para o estado 101
-    ']'  fazer shift, e ir para o estado 126
-
-    Add_Op  ir para o estado 102
-
-
-estado 115
 
    24 Statements: Statements Statement ';' .
 
     $default  reduzir usando a regra 24 (Statements)
 
 
-estado 116
+estado 114
 
    44 Assignment: Variable '=' Expression .
-   49 Expression: Expression . Rel_Op Single_Expression
+   47 Expression: Expression . Rel_Op Single_Expression
 
-    EQUAL       fazer shift, e ir para o estado 92
-    DIF         fazer shift, e ir para o estado 93
-    MINOREQUAL  fazer shift, e ir para o estado 94
-    MAJOREQUAL  fazer shift, e ir para o estado 95
-    MAJOR       fazer shift, e ir para o estado 96
-    MINOR       fazer shift, e ir para o estado 97
+    EQUAL       fazer shift, e ir para o estado 91
+    DIF         fazer shift, e ir para o estado 92
+    MINOREQUAL  fazer shift, e ir para o estado 93
+    MAJOREQUAL  fazer shift, e ir para o estado 94
+    MAJOR       fazer shift, e ir para o estado 95
+    MINOR       fazer shift, e ir para o estado 96
 
     $default  reduzir usando a regra 44 (Assignment)
 
-    Rel_Op  ir para o estado 98
+    Rel_Op  ir para o estado 97
+
+
+estado 115
+
+   55 Factor: '(' Expression ')' .
+
+    $default  reduzir usando a regra 55 (Factor)
+
+
+estado 116
+
+   47 Expression: Expression Rel_Op Single_Expression .
+   49 Single_Expression: Single_Expression . Add_Op Term
+
+    OR   fazer shift, e ir para o estado 98
+    '+'  fazer shift, e ir para o estado 99
+    '-'  fazer shift, e ir para o estado 100
+
+    $default  reduzir usando a regra 47 (Expression)
+
+    Add_Op  ir para o estado 101
 
 
 estado 117
 
-   57 Factor: '(' Expression ')' .
+   49 Single_Expression: Single_Expression Add_Op Term .
+   51 Term: Term . Mul_Op Factor
 
-    $default  reduzir usando a regra 57 (Factor)
+    AND  fazer shift, e ir para o estado 102
+    POW  fazer shift, e ir para o estado 103
+    '*'  fazer shift, e ir para o estado 104
+    '/'  fazer shift, e ir para o estado 105
+
+    $default  reduzir usando a regra 49 (Single_Expression)
+
+    Mul_Op  ir para o estado 106
 
 
 estado 118
 
-   49 Expression: Expression Rel_Op Single_Expression .
-   51 Single_Expression: Single_Expression . Add_Op Term
+   51 Term: Term Mul_Op Factor .
 
-    OR   fazer shift, e ir para o estado 99
-    '+'  fazer shift, e ir para o estado 100
-    '-'  fazer shift, e ir para o estado 101
-
-    $default  reduzir usando a regra 49 (Expression)
-
-    Add_Op  ir para o estado 102
+    $default  reduzir usando a regra 51 (Term)
 
 
 estado 119
-
-   51 Single_Expression: Single_Expression Add_Op Term .
-   53 Term: Term . Mul_Op Factor
-
-    AND  fazer shift, e ir para o estado 103
-    POW  fazer shift, e ir para o estado 104
-    '*'  fazer shift, e ir para o estado 105
-    '/'  fazer shift, e ir para o estado 106
-
-    $default  reduzir usando a regra 51 (Single_Expression)
-
-    Mul_Op  ir para o estado 107
-
-
-estado 120
-
-   53 Term: Term Mul_Op Factor .
-
-    $default  reduzir usando a regra 53 (Term)
-
-
-estado 121
 
    42 Location: GOTO NUMBER ',' NUMBER .
 
     $default  reduzir usando a regra 42 (Location)
 
 
+estado 120
+
+   72 Say_Statement: SAY '(' Expression ')' .
+
+    $default  reduzir usando a regra 72 (Say_Statement)
+
+
+estado 121
+
+   73 Ask_Statement: ASK '(' STR ',' . Variable ')'
+
+    IDENTIFIER  fazer shift, e ir para o estado 47
+
+    Variable  ir para o estado 124
+
+
 estado 122
 
-   74 Say_Statement: SAY '(' Expression ')' .
+   76 IfThenElse_Stat: IF Expression THEN '{' . Statements '}' Else_Expression
 
-    $default  reduzir usando a regra 74 (Say_Statement)
+    FORWARD     fazer shift, e ir para o estado 36
+    BACKWARD    fazer shift, e ir para o estado 37
+    RRIGHT      fazer shift, e ir para o estado 38
+    RLEFT       fazer shift, e ir para o estado 39
+    PEN         fazer shift, e ir para o estado 40
+    GOTO        fazer shift, e ir para o estado 41
+    WHERE       fazer shift, e ir para o estado 42
+    SAY         fazer shift, e ir para o estado 43
+    ASK         fazer shift, e ir para o estado 44
+    IF          fazer shift, e ir para o estado 45
+    WHILE       fazer shift, e ir para o estado 46
+    IDENTIFIER  fazer shift, e ir para o estado 47
+
+    Statements             ir para o estado 125
+    Statement              ir para o estado 49
+    Turtle_Commands        ir para o estado 50
+    Step                   ir para o estado 51
+    Rotate                 ir para o estado 52
+    Mode                   ir para o estado 53
+    Dialogue               ir para o estado 54
+    Location               ir para o estado 55
+    Assignment             ir para o estado 56
+    Variable               ir para o estado 57
+    Say_Statement          ir para o estado 58
+    Ask_Statement          ir para o estado 59
+    Conditional_Statement  ir para o estado 60
+    Iterative_Statement    ir para o estado 61
+    IfThenElse_Stat        ir para o estado 62
+    While_Stat             ir para o estado 63
 
 
 estado 123
 
-   75 Ask_Statement: ASK '(' STR ',' . Variable ')'
+   79 While_Stat: WHILE '(' Expression ')' . '{' Statements '}'
 
-    IDENTIFIER  fazer shift, e ir para o estado 47
-
-    Variable  ir para o estado 127
+    '{'  fazer shift, e ir para o estado 126
 
 
 estado 124
 
-   78 IfThenElse_Stat: IF Expression THEN '{' . Statements '}' Else_Expression
+   73 Ask_Statement: ASK '(' STR ',' Variable . ')'
 
-    FORWARD     fazer shift, e ir para o estado 36
-    BACKWARD    fazer shift, e ir para o estado 37
-    RRIGHT      fazer shift, e ir para o estado 38
-    RLEFT       fazer shift, e ir para o estado 39
-    PEN         fazer shift, e ir para o estado 40
-    GOTO        fazer shift, e ir para o estado 41
-    WHERE       fazer shift, e ir para o estado 42
-    SAY         fazer shift, e ir para o estado 43
-    ASK         fazer shift, e ir para o estado 44
-    IF          fazer shift, e ir para o estado 45
-    WHILE       fazer shift, e ir para o estado 46
-    IDENTIFIER  fazer shift, e ir para o estado 47
-
-    Statements             ir para o estado 128
-    Statement              ir para o estado 49
-    Turtle_Commands        ir para o estado 50
-    Step                   ir para o estado 51
-    Rotate                 ir para o estado 52
-    Mode                   ir para o estado 53
-    Dialogue               ir para o estado 54
-    Location               ir para o estado 55
-    Assignment             ir para o estado 56
-    Variable               ir para o estado 57
-    Say_Statement          ir para o estado 58
-    Ask_Statement          ir para o estado 59
-    Conditional_Statement  ir para o estado 60
-    Iterative_Statement    ir para o estado 61
-    IfThenElse_Stat        ir para o estado 62
-    While_Stat             ir para o estado 63
+    ')'  fazer shift, e ir para o estado 127
 
 
 estado 125
 
-   81 While_Stat: WHILE '(' Expression ')' . '{' Statements '}'
-
-    '{'  fazer shift, e ir para o estado 129
-
-
-estado 126
-
-   47 Array_Acess: '[' Single_Expression ']' .
-
-    $default  reduzir usando a regra 47 (Array_Acess)
-
-
-estado 127
-
-   75 Ask_Statement: ASK '(' STR ',' Variable . ')'
-
-    ')'  fazer shift, e ir para o estado 130
-
-
-estado 128
-
    24 Statements: Statements . Statement ';'
-   78 IfThenElse_Stat: IF Expression THEN '{' Statements . '}' Else_Expression
+   76 IfThenElse_Stat: IF Expression THEN '{' Statements . '}' Else_Expression
 
     FORWARD     fazer shift, e ir para o estado 36
     BACKWARD    fazer shift, e ir para o estado 37
@@ -1597,9 +1567,9 @@ estado 128
     IF          fazer shift, e ir para o estado 45
     WHILE       fazer shift, e ir para o estado 46
     IDENTIFIER  fazer shift, e ir para o estado 47
-    '}'         fazer shift, e ir para o estado 131
+    '}'         fazer shift, e ir para o estado 128
 
-    Statement              ir para o estado 88
+    Statement              ir para o estado 87
     Turtle_Commands        ir para o estado 50
     Step                   ir para o estado 51
     Rotate                 ir para o estado 52
@@ -1616,9 +1586,9 @@ estado 128
     While_Stat             ir para o estado 63
 
 
-estado 129
+estado 126
 
-   81 While_Stat: WHILE '(' Expression ')' '{' . Statements '}'
+   79 While_Stat: WHILE '(' Expression ')' '{' . Statements '}'
 
     FORWARD     fazer shift, e ir para o estado 36
     BACKWARD    fazer shift, e ir para o estado 37
@@ -1633,8 +1603,62 @@ estado 129
     WHILE       fazer shift, e ir para o estado 46
     IDENTIFIER  fazer shift, e ir para o estado 47
 
-    Statements             ir para o estado 132
+    Statements             ir para o estado 129
     Statement              ir para o estado 49
+    Turtle_Commands        ir para o estado 50
+    Step                   ir para o estado 51
+    Rotate                 ir para o estado 52
+    Mode                   ir para o estado 53
+    Dialogue               ir para o estado 54
+    Location               ir para o estado 55
+    Assignment             ir para o estado 56
+    Variable               ir para o estado 57
+    Say_Statement          ir para o estado 58
+    Ask_Statement          ir para o estado 59
+    Conditional_Statement  ir para o estado 60
+    Iterative_Statement    ir para o estado 61
+    IfThenElse_Stat        ir para o estado 62
+    While_Stat             ir para o estado 63
+
+
+estado 127
+
+   73 Ask_Statement: ASK '(' STR ',' Variable ')' .
+
+    $default  reduzir usando a regra 73 (Ask_Statement)
+
+
+estado 128
+
+   76 IfThenElse_Stat: IF Expression THEN '{' Statements '}' . Else_Expression
+
+    ELSE  fazer shift, e ir para o estado 130
+
+    $default  reduzir usando a regra 77 (Else_Expression)
+
+    Else_Expression  ir para o estado 131
+
+
+estado 129
+
+   24 Statements: Statements . Statement ';'
+   79 While_Stat: WHILE '(' Expression ')' '{' Statements . '}'
+
+    FORWARD     fazer shift, e ir para o estado 36
+    BACKWARD    fazer shift, e ir para o estado 37
+    RRIGHT      fazer shift, e ir para o estado 38
+    RLEFT       fazer shift, e ir para o estado 39
+    PEN         fazer shift, e ir para o estado 40
+    GOTO        fazer shift, e ir para o estado 41
+    WHERE       fazer shift, e ir para o estado 42
+    SAY         fazer shift, e ir para o estado 43
+    ASK         fazer shift, e ir para o estado 44
+    IF          fazer shift, e ir para o estado 45
+    WHILE       fazer shift, e ir para o estado 46
+    IDENTIFIER  fazer shift, e ir para o estado 47
+    '}'         fazer shift, e ir para o estado 132
+
+    Statement              ir para o estado 87
     Turtle_Commands        ir para o estado 50
     Step                   ir para o estado 51
     Rotate                 ir para o estado 52
@@ -1653,82 +1677,28 @@ estado 129
 
 estado 130
 
-   75 Ask_Statement: ASK '(' STR ',' Variable ')' .
+   78 Else_Expression: ELSE . '{' Statements '}'
 
-    $default  reduzir usando a regra 75 (Ask_Statement)
+    '{'  fazer shift, e ir para o estado 133
 
 
 estado 131
 
-   78 IfThenElse_Stat: IF Expression THEN '{' Statements '}' . Else_Expression
+   76 IfThenElse_Stat: IF Expression THEN '{' Statements '}' Else_Expression .
 
-    ELSE  fazer shift, e ir para o estado 133
-
-    $default  reduzir usando a regra 79 (Else_Expression)
-
-    Else_Expression  ir para o estado 134
+    $default  reduzir usando a regra 76 (IfThenElse_Stat)
 
 
 estado 132
 
-   24 Statements: Statements . Statement ';'
-   81 While_Stat: WHILE '(' Expression ')' '{' Statements . '}'
+   79 While_Stat: WHILE '(' Expression ')' '{' Statements '}' .
 
-    FORWARD     fazer shift, e ir para o estado 36
-    BACKWARD    fazer shift, e ir para o estado 37
-    RRIGHT      fazer shift, e ir para o estado 38
-    RLEFT       fazer shift, e ir para o estado 39
-    PEN         fazer shift, e ir para o estado 40
-    GOTO        fazer shift, e ir para o estado 41
-    WHERE       fazer shift, e ir para o estado 42
-    SAY         fazer shift, e ir para o estado 43
-    ASK         fazer shift, e ir para o estado 44
-    IF          fazer shift, e ir para o estado 45
-    WHILE       fazer shift, e ir para o estado 46
-    IDENTIFIER  fazer shift, e ir para o estado 47
-    '}'         fazer shift, e ir para o estado 135
-
-    Statement              ir para o estado 88
-    Turtle_Commands        ir para o estado 50
-    Step                   ir para o estado 51
-    Rotate                 ir para o estado 52
-    Mode                   ir para o estado 53
-    Dialogue               ir para o estado 54
-    Location               ir para o estado 55
-    Assignment             ir para o estado 56
-    Variable               ir para o estado 57
-    Say_Statement          ir para o estado 58
-    Ask_Statement          ir para o estado 59
-    Conditional_Statement  ir para o estado 60
-    Iterative_Statement    ir para o estado 61
-    IfThenElse_Stat        ir para o estado 62
-    While_Stat             ir para o estado 63
+    $default  reduzir usando a regra 79 (While_Stat)
 
 
 estado 133
 
-   80 Else_Expression: ELSE . '{' Statements '}'
-
-    '{'  fazer shift, e ir para o estado 136
-
-
-estado 134
-
-   78 IfThenElse_Stat: IF Expression THEN '{' Statements '}' Else_Expression .
-
-    $default  reduzir usando a regra 78 (IfThenElse_Stat)
-
-
-estado 135
-
-   81 While_Stat: WHILE '(' Expression ')' '{' Statements '}' .
-
-    $default  reduzir usando a regra 81 (While_Stat)
-
-
-estado 136
-
-   80 Else_Expression: ELSE '{' . Statements '}'
+   78 Else_Expression: ELSE '{' . Statements '}'
 
     FORWARD     fazer shift, e ir para o estado 36
     BACKWARD    fazer shift, e ir para o estado 37
@@ -1743,7 +1713,7 @@ estado 136
     WHILE       fazer shift, e ir para o estado 46
     IDENTIFIER  fazer shift, e ir para o estado 47
 
-    Statements             ir para o estado 137
+    Statements             ir para o estado 134
     Statement              ir para o estado 49
     Turtle_Commands        ir para o estado 50
     Step                   ir para o estado 51
@@ -1761,10 +1731,10 @@ estado 136
     While_Stat             ir para o estado 63
 
 
-estado 137
+estado 134
 
    24 Statements: Statements . Statement ';'
-   80 Else_Expression: ELSE '{' Statements . '}'
+   78 Else_Expression: ELSE '{' Statements . '}'
 
     FORWARD     fazer shift, e ir para o estado 36
     BACKWARD    fazer shift, e ir para o estado 37
@@ -1778,9 +1748,9 @@ estado 137
     IF          fazer shift, e ir para o estado 45
     WHILE       fazer shift, e ir para o estado 46
     IDENTIFIER  fazer shift, e ir para o estado 47
-    '}'         fazer shift, e ir para o estado 138
+    '}'         fazer shift, e ir para o estado 135
 
-    Statement              ir para o estado 88
+    Statement              ir para o estado 87
     Turtle_Commands        ir para o estado 50
     Step                   ir para o estado 51
     Rotate                 ir para o estado 52
@@ -1797,8 +1767,8 @@ estado 137
     While_Stat             ir para o estado 63
 
 
-estado 138
+estado 135
 
-   80 Else_Expression: ELSE '{' Statements '}' .
+   78 Else_Expression: ELSE '{' Statements '}' .
 
-    $default  reduzir usando a regra 80 (Else_Expression)
+    $default  reduzir usando a regra 78 (Else_Expression)
