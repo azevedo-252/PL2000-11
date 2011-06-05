@@ -58,7 +58,7 @@ Body 			: DECLARATIONS 	{
 							height = 100;
 							width = 100;
 							xpos = 50;
-							ypos = 50;
+							ypos = 60;
 							raio = 5;
 							mode = 0;
 							direccao = up;
@@ -160,68 +160,72 @@ Turtle_Commands 	: Step
 			;
 
 Step 			: FORWARD Expression 			{
-								VarData aux = searchVar("xpos"), aux2 = searchVar("ypos");
-								printf("PUSHI %d\n", aux2->address);	//para o drawline
-								printf("PUSHI %d\n", aux->address);     //para o drawline
+								VarData aux;
 								switch(direccao){
 									case(up):
+										aux = searchVar("xpos");
 										printf("PUSHG %d\n", aux->address);
 										printf("SUB\n");
 										printf("STOREG %d\n", aux->address);
 										break;
 									case(down):
+										aux = searchVar("xpos");
 										printf("PUSHG %d\n", aux->address);
 										printf("ADD\n");
 										printf("STOREG %d\n", aux->address);
 										break;
 									case(right):
-										printf("PUSHG %d\n", aux2->address);
+										aux = searchVar("ypos");
+										printf("PUSHG %d\n", aux->address);
 										printf("ADD\n");
-										printf("STOREG %d\n", aux2->address);
+										printf("STOREG %d\n", aux->address);
 										break;
 									case(left):
-										printf("PUSHG %d\n", aux2->address);
+										aux = searchVar("ypos");
+										printf("PUSHG %d\n", aux->address);
 										printf("SUB\n");
-										printf("STOREG %d\n", aux2->address);
+										printf("STOREG %d\n", aux->address);
 										break;
 									default:
 										break;
 								}
 								drawTurtle();
-								drawLine();
 								}
 			| BACKWARD Expression			{
-								VarData aux = searchVar("xpos"), aux2 = searchVar("ypos");
-                                                                printf("PUSHI %d\n", aux2->address);    //para o drawline
-								printf("PUSHI %d\n", aux->address);     //para o drawline
+								VarData aux;
                                                                 switch(direccao){
                                                                         case(up):
+                                                                                aux = searchVar("xpos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("ADD\n");
                                                                                 printf("STOREG %d\n", aux->address);
 										drawLine(xpos+$2,ypos);
                                                                                 break;
                                                                         case(down):
+                                                                                aux = searchVar("xpos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("SUB\n");
                                                                                 printf("STOREG %d\n", aux->address);
 										drawLine(xpos-$2,ypos);
                                                                                 break;
                                                                         case(right):
-                                                                                printf("PUSHG %d\n", aux2->address);
+                                                                                aux = searchVar("ypos");
+                                                                                printf("PUSHG %d\n", aux->address);
                                                                                 printf("SUB\n");
-                                                                                printf("STOREG %d\n", aux2->address);
+                                                                                printf("STOREG %d\n", aux->address);
+										drawLine(xpos,ypos-$2);
                                                                                 break;
                                                                         case(left):
-                                                                                printf("PUSHG %d\n", aux2->address);
+                                                                                aux = searchVar("ypos");
+                                                                                printf("PUSHG %d\n", aux->address);
                                                                                 printf("ADD\n");
-                                                                                printf("STOREG %d\n", aux2->address);
+                                                                                printf("STOREG %d\n", aux->address);
+										drawLine(xpos,ypos+$2);
                                                                                 break;
                                                                         default:
                                                                                 break;
 								}
 								drawTurtle();
-								drawLine();
 								}
 			;
 
@@ -293,7 +297,7 @@ Array_Acess 		:
 /***************************Expression**************/
 
 Expression 		: Single_Expression			{ $$ = $1; }
-			| Expression Rel_Op Single_Expression	{
+			| Expression Rel_Op Single_Expression	{/* TA MAL
 								switch($2){
 									case(1):
 										printf("PUSHI %d\n", ($1 == $3));
@@ -331,7 +335,7 @@ Expression 		: Single_Expression			{ $$ = $1; }
 										yyerror("Unknown operation\n");
 										break;
 									
-								}
+								}*/
 								}
 			;
 	
@@ -349,10 +353,10 @@ Single_Expression 	: Term					{ $$ = $1; }
 									case(2):
 										printf("sub\n");
 										break;
-									case(3):
+									case(3):/*TA MAL
 										printf("pop 2\n");
 										if($1 > 0 || $3 > 0) printf("PUSHI 1\n");
-										else printf("PUSHI 0\n");
+										else printf("PUSHI 0\n");*/
 										break;
 									default:
 										yyerror("Unknown operation\n");
@@ -379,7 +383,7 @@ Term 			: Factor				{ $$ = $1; }
 										}
 										printf("div \n");
 										break;
-									case(3):
+									/*case(3): TA MAL
 										printf("pop 2\n");
 										if($1 > 0 && $3 > 0) printf("PUSHI 1\n");    //Maior que 0 ou diferente de 0???
 										else printf("PUSHI 0\n");
@@ -389,7 +393,7 @@ Term 			: Factor				{ $$ = $1; }
 											printf("PUSHI %d\n", $1);
 											printf("mul\n");
 											$3--;
-										}
+										}*/
 									default:
 										yyerror("Unknown operation\n");
 										break;
@@ -589,13 +593,15 @@ void drawTurtle(){
 	printf("REFRESH\n");
 }
 
-void drawLine(){
+void drawLine(int newx, int newy){
 	if(mode == 1){ // PEN DOWN
 		VarData aux1, aux2;
-		aux2 = searchVar("ypos");
-        	printf("PUSHG %d\n", aux2->address);
-		aux1 = searchVar("xpos");
+		printf("PUSHI %d\n", newy);
+		printf("PUSHI %d\n", newx);
+		aux1 = searchVar("ypos");
         	printf("PUSHG %d\n", aux1->address);
+		aux2 = searchVar("xpos");
+        	printf("PUSHG %d\n", aux2->address);
 		printf("DRAWLINE\n");
 		printf("REFRESH\n");	
 	}
@@ -637,8 +643,8 @@ void init() {
 }
 
 void initWindow(){
-	printf("pushi %d\n",800);
-        printf("pushi %d\n",600);
+	printf("PUSHI %d\n",800);
+        printf("PUSHI %d\n",600);
         printf("opendrawingarea\n");
 }
 
