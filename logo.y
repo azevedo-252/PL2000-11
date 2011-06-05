@@ -184,14 +184,75 @@ Step 			: FORWARD Expression 			{
 								switch(direccao){
 									case(up):
 										aux = searchVar("xpos");
-										printf("load %d\n", aux->address);
+										printf("pushg %d\n", aux->address);
+										printf("pushi %d\n", $2);
+										printf("SUB\n");
+										printf("STOREG %d\n", aux->address);
+										drawTurtle();
+										break;
+									case(down):
+										aux = searchVar("xpos");
+										printf("pushg %d\n", aux->address);
 										printf("pushi %d\n", $2);
 										printf("ADD\n");
-										printf("storeg %d\n", aux->address);
+										printf("STOREG %d\n", aux->address);
 										drawTurtle();
+										break;
+									case(right):
+										aux = searchVar("ypos");
+										printf("pushg %d\n", aux->address);
+										printf("pushi %d\n", $2);
+										printf("ADD\n");
+										printf("STOREG %d\n", aux->address);
+										break;
+									case(left):
+										aux = searchVar("ypos");
+										printf("pushg %d\n", aux->address);
+										printf("pushi %d\n", $2);
+										printf("SUB\n");
+										printf("STOREG %d\n", aux->address);
+										break;
+									default:
+										break;
 								}
 								}
-			| BACKWARD Expression
+			| BACKWARD Expression			{
+								VarData aux;
+                                                                switch(direccao){
+                                                                        case(up):
+                                                                                aux = searchVar("xpos");
+                                                                                printf("pushg %d\n", aux->address);
+                                                                                printf("pushi %d\n", $2);
+                                                                                printf("ADD\n");
+                                                                                printf("STOREG %d\n", aux->address);
+                                                                                drawTurtle();
+                                                                                break;
+                                                                        case(down):
+                                                                                aux = searchVar("xpos");
+                                                                                printf("pushg %d\n", aux->address);
+                                                                                printf("pushi %d\n", $2);
+                                                                                printf("SUB\n");
+                                                                                printf("STOREG %d\n", aux->address);
+                                                                                drawTurtle();
+                                                                                break;
+                                                                        case(right):
+                                                                                aux = searchVar("ypos");
+                                                                                printf("pushg %d\n", aux->address);
+                                                                                printf("pushi %d\n", $2);
+                                                                                printf("SUB\n");
+                                                                                printf("STOREG %d\n", aux->address);
+                                                                                break;
+                                                                        case(left):
+                                                                                aux = searchVar("ypos");
+                                                                                printf("pushg %d\n", aux->address);
+                                                                                printf("pushi %d\n", $2);
+                                                                                printf("ADD\n");
+                                                                                printf("STOREG %d\n", aux->address);
+                                                                                break;
+                                                                        default:
+                                                                                break;
+								}
+								}
 			;
 
 Rotate 			: RRIGHT
@@ -278,8 +339,8 @@ Expression 		: Single_Expression			{ $$ = $1; }
 
 Single_Expression 	: Term					{ $$ = $1; }
 			| Single_Expression Add_Op Term		{
-								printf("pushi %d\n", $1);
-								printf("pushi %d\n", $3);
+								//printf("pushi %d\n", $1);
+								//printf("pushi %d\n", $3);
 								switch($2){
 									case(1):
 										printf("add\n");
@@ -303,8 +364,8 @@ Single_Expression 	: Term					{ $$ = $1; }
 
 Term 			: Factor				{ $$ = $1; }
 			| Term Mul_Op Factor			{
-								printf("pushi %d\n", $1);
-								printf("pushi %d\n", $3); 
+								//printf("pushi %d\n", $1);
+								//printf("pushi %d\n", $3); 
 								switch($2){
 									case(1):
 										printf("mul\n");
@@ -338,7 +399,8 @@ Term 			: Factor				{ $$ = $1; }
 /***************************Term**************/
 
 Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
-								  $$ = atoi($1.value);       //atoi(const.value);
+								  printf("pushg %d\n", $1.value);
+								  //$$ = atoi($1.value);       //atoi(const.value);
 
 
 
@@ -346,7 +408,9 @@ Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCUR
 								  $$->consttipo.type = $1.type;*/
 								}
 			| Variable				{ /*TabelaHash *var = procuraLista($1);*/
-								  $$ = atoi($1.value);    //UMA VEZ MAIS, SEM QUALQUER CERTEZA DISTO
+								  VarData var = searchVar ($1.id);
+								  printf("pushg %d\n", var->address);
+								}
 
 /***************************Factor**************/
 
@@ -354,7 +418,7 @@ Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCUR
 
 								  /*$$->vartipo.id = $1.id; 
 								  $$->vartipo.value = $1.value;
-								  $$->vartipo.type = $1.type;*/
+								  po.type = $1.type;*/
 								}
 			| SuccOrPred		{ $$ = $1; }
 			| '(' Expression ')'	{ $$ = $2; }
@@ -469,25 +533,31 @@ void saveVars(int type){
 				case 0://INTEGER
 					if (aux->type == -1) {//VAZIO
 						printf("pushi 0\n");
+						printf("address: %d\n", addressG);
 					}
 					else {
 						printf("pushi %d\n",atoi(aux->value));
+						printf("address: %d\n", addressG);
 					}
 				break;
 				case 1://BOOLEAN
 					if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
 						printf("pushi 1\n");
+						printf("address: %d\n", addressG);
 					}
 					else if (strcmp(aux->value, "FALSE")==0) {
 						printf("pushi 0\n");
+						printf("address: %d\n", addressG);
 					}
 				break;
 				case 2://STRING
 					if (aux->type == -1) {
 						printf("pushs \"\"\n");
+						printf("address: %d\n", addressG);
 					}
 					else {
 						printf("pushs %s\n",aux->value);
+						printf("address: %d\n", addressG);
 					}
 				break;
 				// nao estamos a fazer arrays para ja
@@ -513,9 +583,9 @@ void drawTurtle(){
 	aux = searchVar("raio");
 	printf("load %d\n", aux->address);
 	aux2 = searchVar("ypos");
-        printf("load %d\n", aux->address);
+        printf("load %d\n", aux2->address);
 	aux3 = searchVar("xpos");
-        printf("load %d\n", aux->address);
+        printf("load %d\n", aux3->address);
 	printf("DRAWCIRCLE\n");
 	printf("REFRESH\n");
 	printf("storeg %d\n", aux3->address);
