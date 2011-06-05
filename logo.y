@@ -60,7 +60,7 @@ Body 			: DECLARATIONS 	{
 							xpos = 300;
 							ypos = 200;
 							raio = 25;
-							mode = 1;
+							mode = 0;
 							direccao = up;
 							init();
 							}Declarations
@@ -143,7 +143,11 @@ Statements 		: Statement ';'
 			| Statements Statement ';'
 			;
 	
-Statement 		: Turtle_Commands
+Statement 		: Turtle_Commands {	
+						VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
+						printf("PUSHG %d\n", aux2->address);	//para o drawline
+						printf("PUSHG %d\n", aux3->address);     //para o drawline
+					  }	
 			| Assignment
 			| Conditional_Statement
 			| Iterative_Statement
@@ -160,12 +164,7 @@ Turtle_Commands 	: Step
 			| Location
 			;
 
-Step 			: FORWARD 	{	
-					VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
-					printf("PUSHG %d\n", aux2->address);	//para o drawline
-					printf("PUSHG %d\n", aux3->address);     //para o drawline
-					}				 
-			  Expression 	{
+Step 			: FORWARD Expression 	{
 						VarData aux = NULL;
 						if (direccao == up || direccao == down)
 							aux = searchVar("ypos");
@@ -195,12 +194,7 @@ Step 			: FORWARD 	{
 						drawLine();							
 						drawTurtle();
 					}
-			| BACKWARD 	{
-						VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
-						printf("PUSHG %d\n", aux2->address);	//para o drawline
-						printf("PUSHG %d\n", aux3->address);     //para o drawline
-					}
-	  		  Expression	{
+			| BACKWARD Expression	{
 						VarData aux = NULL;
 			
 						if (direccao == up || direccao == down)
@@ -288,10 +282,10 @@ Location 		: GOTO NUMBER ',' NUMBER		{
 			| WHERE '?'				{
 									VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
 									printf("PUSHG %d\n", aux2->address);
-									printf("ATOI\n");
+									//printf("ATOI\n");
 									printf("WRITEI\n");
 									printf("PUSHG %d\n", aux3->address);
-									printf("ATOI\n");
+									//printf("ATOI\n");
 									printf("WRITEI\n");
 								}
 			;
@@ -556,7 +550,6 @@ void pushValues(int varType, int nullType, char* value){
 
 void drawTurtle(){
 	VarData aux, aux2, aux3;
-	//if (!first) drawLine();
 	aux3 = searchVar("xpos");
         printf("PUSHG %d\n", aux3->address);
 	aux2 = searchVar("ypos");
@@ -568,7 +561,7 @@ void drawTurtle(){
 }
 
 void drawLine(){
-	//printf("CLEARDRAWINGAREA\n");
+	printf("CLEARDRAWINGAREA\n");
 	if(mode == 1){ // PEN DOWN
 		VarData aux1, aux2;
 		aux1 = searchVar("xpos");
