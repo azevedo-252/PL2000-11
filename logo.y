@@ -272,7 +272,8 @@ Location 		: GOTO NUMBER ',' NUMBER
 
 Assignment 		: Variable '=' Expression 	{
 								VarData var =  searchVar($1.id);
-								if (var) printf("store %d",var->address); //nao sei qual store usar
+								if (var) printf("STOREG %d",var->address);
+								else yyerror("Variable undeclared!\n");
 							}
 			;
 	
@@ -394,8 +395,9 @@ Term 			: Factor				{ $$ = $1; }
 
 /***************************Factor**************/
 
-Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
-								  printf("PUSHG %d\n", $1.value);
+Factor 			: Constant				{pushValues($1.type,0,$1.value); 
+								/*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
+								  //printf("PUSHI %d\n", $1.value);
 								  //$$ = atoi($1.value);       //atoi(const.value);
 
 
@@ -406,12 +408,9 @@ Factor 			: Constant				{ /*TabelaHash *const = procuraLista($1);    ->   PROCUR
 			| Variable				{ /*TabelaHash *var = procuraLista($1);*/
 
 								  VarData var = searchVar ($1.id);
-								  printf("PUSHG %d\n", var->address);
+								  if(var)printf("PUSHG %d\n", var->address);
+								  else yyerror("Variable undeclared!\n");
 								}
-
-/***************************Factor**************/
-
-	
 			| SuccOrPred		{ $$ = $1; }
 			| '(' Expression ')'	{ $$ = $2; }
 			;
@@ -443,9 +442,12 @@ Rel_Op 			: EQUAL			{ $$ = 1; }
 /***************************SuccOrPred**************/
 
 SuccOrPred 		: SuccPred IDENTIFIER		{ VarData var = searchVar($2);
-							  printf("store %d\n", var->address);
-							  printf("PUSHI %d\n", atoi($1));
-							  printf("add\n");
+							  if (var) {
+							  	printf("store %d\n", var->address);
+								  printf("PUSHI %d\n", atoi($1));
+								  printf("add\n");
+							  }
+							  else yyerror("Variable undeclared!\n");
 							}
 			;
 	
@@ -467,7 +469,7 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
 								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  if(!searchVar($5.id)) printf("Error Variavel %s não existe",$5.id);
+								  if(!searchVar($5.id)) yyerror("Variable undeclared!\n");
 								  else {
 								  	VarData var = searchVar($5.id);
 								  	printf("storeg %d\n",var->address);
@@ -521,34 +523,7 @@ void saveVars(int type){
 		if(!searchVar(aux->id)){//printf("AQUI\t%s\thash:%d\n",aux->id,hash(aux->id));
 			// insere nome, tipo e address na hashtable
 			insertVar(aux->id, type, addressG);
-			switch(type) {
-				case 0://INTEGER
-					if (aux->type == -1) {//VAZIO
-						printf("PUSHI 0\n");
-					}
-					else {
-						printf("PUSHI %d\n",atoi(aux->value));
-					}
-				break;
-				case 1://BOOLEAN
-					if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
-						printf("PUSHI 1\n");
-
-					}
-					else if (strcmp(aux->value, "FALSE")==0) {
-						printf("PUSHI 0\n");
-					}
-				break;
-				case 2://STRING
-					if (aux->type == -1) {
-						printf("pushs \"\"\n");
-					}
-					else {
-						printf("pushs %s\n",aux->value);
-					}
-				break;
-				// nao estamos a fazer arrays para ja
-			}
+			pushValues(type,aux->type, aux->value);
 			printf("STOREG %d\n",addressG);
 			addressG++;
 		}
@@ -556,6 +531,37 @@ void saveVars(int type){
 	}
 	nodo = NULL;
 
+}
+
+void pushValues(int varType, int nullType, char* value){
+	switch(varType) {
+		case 0://INTEGER
+			if (nullType == -1) {//VAZIO
+				printf("PUSHI 0\n");
+			}
+			else {
+				printf("PUSHI %d\n",atoi(value));
+			}
+		break;
+		case 1://BOOLEAN
+			if (nullType==-1 || strcmp(value,"TRUE")==0) {
+				printf("PUSHI 1\n");
+
+			}
+			else if (strcmp(value, "FALSE")==0) {
+				printf("PUSHI 0\n");
+			}
+		break;
+		case 2://STRING
+			if (nullType == -1) {
+				printf("pushs \"\"\n");
+			}
+			else {
+				printf("pushs %s\n",value);
+			}
+		break;
+		// nao estamos a fazer arrays para ja
+	}
 }
 
 /*char *stringToUpper(char* string){

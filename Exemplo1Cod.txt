@@ -9,7 +9,7 @@ PROGRAM logolissExemplo
     FORWARD x ;
     RRIGHT ;
     y = (100) ;
-    FORWARD e ;
+    FORWARD y ;
     RRIGHT ;
     x = x - (100) + (20) ;
     FORWARD x + (100) ;

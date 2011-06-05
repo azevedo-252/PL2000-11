@@ -550,11 +550,11 @@ static const yytype_uint16 yyrline[] =
      112,   114,   118,   127,   128,   131,   132,   133,   137,   141,
      142,   143,   144,   166,   167,   170,   171,   172,   173,   180,
      181,   182,   183,   184,   187,   219,   253,   254,   257,   258,
-     261,   262,   265,   266,   273,   279,   282,   283,   289,   290,
-     335,   336,   361,   362,   397,   406,   415,   416,   422,   423,
-     424,   427,   428,   429,   430,   433,   434,   435,   436,   437,
-     438,   445,   452,   453,   459,   462,   481,   484,   490,   493,
-     494,   500
+     261,   262,   265,   266,   273,   280,   283,   284,   290,   291,
+     336,   337,   362,   363,   398,   408,   414,   415,   421,   422,
+     423,   426,   427,   428,   429,   432,   433,   434,   435,   436,
+     437,   444,   454,   455,   461,   464,   483,   486,   492,   495,
+     496,   502
 };
 #endif
 
@@ -1810,35 +1810,36 @@ yyreduce:
 #line 273 "logo.y"
     {
 								VarData var =  searchVar((yyvsp[(1) - (3)].varTipo).id);
-								if (var) printf("store %d",var->address); //nao sei qual store usar
+								if (var) printf("STOREG %d",var->address);
+								else yyerror("Variable undeclared!\n");
 							}
     break;
 
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 279 "logo.y"
+#line 280 "logo.y"
     {(yyval.varTipo).id = (yyvsp[(1) - (2)].stringvalue);}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 283 "logo.y"
+#line 284 "logo.y"
     { (yyval.intvalue) = (yyvsp[(2) - (3)].intvalue); }
     break;
 
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 289 "logo.y"
+#line 290 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 290 "logo.y"
+#line 291 "logo.y"
     {
 								switch((yyvsp[(2) - (3)].intvalue)){
 									case(1):
@@ -1884,14 +1885,14 @@ yyreduce:
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 335 "logo.y"
+#line 336 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 336 "logo.y"
+#line 337 "logo.y"
     {
 								//printf("PUSHI %d\n", $1);
 								//printf("PUSHI %d\n", $3);
@@ -1917,14 +1918,14 @@ yyreduce:
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 361 "logo.y"
+#line 362 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 362 "logo.y"
+#line 363 "logo.y"
     {
 								//printf("PUSHI %d\n", $1);
 								//printf("PUSHI %d\n", $3); 
@@ -1960,9 +1961,10 @@ yyreduce:
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 397 "logo.y"
-    { /*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
-								  printf("PUSHG %d\n", (yyvsp[(1) - (1)].constTipo).value);
+#line 398 "logo.y"
+    {pushValues((yyvsp[(1) - (1)].constTipo).type,0,(yyvsp[(1) - (1)].constTipo).value); 
+								/*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
+								  //printf("PUSHI %d\n", $1.value);
 								  //$$ = atoi($1.value);       //atoi(const.value);
 
 
@@ -1975,155 +1977,159 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 406 "logo.y"
+#line 408 "logo.y"
     { /*TabelaHash *var = procuraLista($1);*/
 
 								  VarData var = searchVar ((yyvsp[(1) - (1)].varTipo).id);
-								  printf("PUSHG %d\n", var->address);
+								  if(var)printf("PUSHG %d\n", var->address);
+								  else yyerror("Variable undeclared!\n");
 								}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 415 "logo.y"
+#line 414 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 416 "logo.y"
+#line 415 "logo.y"
     { (yyval.intvalue) = (yyvsp[(2) - (3)].intvalue); }
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 422 "logo.y"
+#line 421 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 423 "logo.y"
+#line 422 "logo.y"
     { (yyval.intvalue) = 2; }
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 424 "logo.y"
+#line 423 "logo.y"
     { (yyval.intvalue) = 3; }
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 427 "logo.y"
+#line 426 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 428 "logo.y"
+#line 427 "logo.y"
     { (yyval.intvalue) = 2; }
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 429 "logo.y"
+#line 428 "logo.y"
     { (yyval.intvalue) = 3; }
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 430 "logo.y"
+#line 429 "logo.y"
     { (yyval.intvalue) = 4; }
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 433 "logo.y"
+#line 432 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 434 "logo.y"
+#line 433 "logo.y"
     { (yyval.intvalue) = 2; }
     break;
 
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 435 "logo.y"
+#line 434 "logo.y"
     { (yyval.intvalue) = 3; }
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 436 "logo.y"
+#line 435 "logo.y"
     { (yyval.intvalue) = 4; }
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 437 "logo.y"
+#line 436 "logo.y"
     { (yyval.intvalue) = 5; }
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 438 "logo.y"
+#line 437 "logo.y"
     { (yyval.intvalue) = 6; }
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 445 "logo.y"
+#line 444 "logo.y"
     { VarData var = searchVar((yyvsp[(2) - (2)].stringvalue));
-							  printf("store %d\n", var->address);
-							  printf("PUSHI %d\n", atoi((yyvsp[(1) - (2)].stringvalue)));
-							  printf("add\n");
+							  if (var) {
+							  	printf("store %d\n", var->address);
+								  printf("PUSHI %d\n", atoi((yyvsp[(1) - (2)].stringvalue)));
+								  printf("add\n");
+							  }
+							  else yyerror("Variable undeclared!\n");
 							}
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 452 "logo.y"
+#line 454 "logo.y"
     { (yyval.stringvalue) = "1"; }
     break;
 
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 453 "logo.y"
+#line 455 "logo.y"
     { (yyval.stringvalue) = "-1"; }
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 459 "logo.y"
+#line 461 "logo.y"
     { printf("writei\n"); }
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 462 "logo.y"
+#line 464 "logo.y"
     { 
 							          printf("pushs %s\n",(yyvsp[(3) - (6)].stringvalue)); 	// guardar na stack a STR a perguntar
 								  printf("writes\n"); 		// escrever a STR a perguntar
@@ -2132,7 +2138,7 @@ yyreduce:
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
 								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  if(!searchVar((yyvsp[(5) - (6)].varTipo).id)) printf("Error Variavel %s não existe",(yyvsp[(5) - (6)].varTipo).id);
+								  if(!searchVar((yyvsp[(5) - (6)].varTipo).id)) yyerror("Variable undeclared!\n");
 								  else {
 								  	VarData var = searchVar((yyvsp[(5) - (6)].varTipo).id);
 								  	printf("storeg %d\n",var->address);
@@ -2143,7 +2149,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2147 "y.tab.c"
+#line 2153 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2355,7 +2361,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 503 "logo.y"
+#line 505 "logo.y"
 
 
 void insertInListaVars(VarTipo var, int first){
@@ -2377,34 +2383,7 @@ void saveVars(int type){
 		if(!searchVar(aux->id)){//printf("AQUI\t%s\thash:%d\n",aux->id,hash(aux->id));
 			// insere nome, tipo e address na hashtable
 			insertVar(aux->id, type, addressG);
-			switch(type) {
-				case 0://INTEGER
-					if (aux->type == -1) {//VAZIO
-						printf("PUSHI 0\n");
-					}
-					else {
-						printf("PUSHI %d\n",atoi(aux->value));
-					}
-				break;
-				case 1://BOOLEAN
-					if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
-						printf("PUSHI 1\n");
-
-					}
-					else if (strcmp(aux->value, "FALSE")==0) {
-						printf("PUSHI 0\n");
-					}
-				break;
-				case 2://STRING
-					if (aux->type == -1) {
-						printf("pushs \"\"\n");
-					}
-					else {
-						printf("pushs %s\n",aux->value);
-					}
-				break;
-				// nao estamos a fazer arrays para ja
-			}
+			pushValues(type,aux->type, aux->value);
 			printf("STOREG %d\n",addressG);
 			addressG++;
 		}
@@ -2412,6 +2391,37 @@ void saveVars(int type){
 	}
 	nodo = NULL;
 
+}
+
+void pushValues(int varType, int nullType, char* value){
+	switch(varType) {
+		case 0://INTEGER
+			if (nullType == -1) {//VAZIO
+				printf("PUSHI 0\n");
+			}
+			else {
+				printf("PUSHI %d\n",atoi(value));
+			}
+		break;
+		case 1://BOOLEAN
+			if (nullType==-1 || strcmp(value,"TRUE")==0) {
+				printf("PUSHI 1\n");
+
+			}
+			else if (strcmp(value, "FALSE")==0) {
+				printf("PUSHI 0\n");
+			}
+		break;
+		case 2://STRING
+			if (nullType == -1) {
+				printf("pushs \"\"\n");
+			}
+			else {
+				printf("pushs %s\n",value);
+			}
+		break;
+		// nao estamos a fazer arrays para ja
+	}
 }
 
 /*char *stringToUpper(char* string){
