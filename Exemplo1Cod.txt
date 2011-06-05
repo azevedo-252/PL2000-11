@@ -1,14 +1,14 @@
 PROGRAM logolissExemplo 
 {
   DECLARATIONS 
-    x = (100) , y -> Integer ;
+    x = (50) , y -> Integer ;
   STATEMENTS
     FORWARD x ;
     RRIGHT ;
-    y = (100) ;
+    y = (75) ;
     FORWARD y ;
     RRIGHT ;
-    x = x - (100) + (20) ;
+    x = x - (10) + (50) ;
     FORWARD x + (100) ;
     RRIGHT ;
     FORWARD (100) ;
