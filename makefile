@@ -16,3 +16,6 @@ y.tab.c y.tab.h: logo.y
 
 hashFunctions.o: hashFunctions.h hashFunctions.c
 	cc -c hashFunctions.c
+
+clean : 
+	rm -Rf *.o y.* lex.yy.c
