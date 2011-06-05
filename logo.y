@@ -60,7 +60,7 @@ Body 			: DECLARATIONS 	{
 							xpos = 300;
 							ypos = 200;
 							raio = 25;
-							mode = 1;
+							mode = 0; //PEN UP
 							direccao = up;
 							init();
 							}Declarations
@@ -143,11 +143,7 @@ Statements 		: Statement ';'
 			| Statements Statement ';'
 			;
 	
-Statement 		: Turtle_Commands {	
-						VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
-						printf("PUSHG %d\n", aux2->address);	//para o drawline
-						printf("PUSHG %d\n", aux3->address);     //para o drawline
-					  }	
+Statement 		: Turtle_Commands 
 			| Assignment
 			| Conditional_Statement
 			| Iterative_Statement
@@ -164,7 +160,12 @@ Turtle_Commands 	: Step
 			| Location
 			;
 
-Step 			: FORWARD Expression 	{
+Step 			: FORWARD 		{	
+							VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
+							printf("PUSHG %d\n", aux2->address);	//para o drawline
+							printf("PUSHG %d\n", aux3->address);     //para o drawline
+					 	}	
+			Expression 	{
 						VarData aux = NULL;
 						if (direccao == up || direccao == down)
 							aux = searchVar("ypos");
@@ -194,7 +195,12 @@ Step 			: FORWARD Expression 	{
 						drawLine();							
 						drawTurtle();
 					}
-			| BACKWARD Expression	{
+			| BACKWARD	{	
+							VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
+							printf("PUSHG %d\n", aux2->address);	//para o drawline
+							printf("PUSHG %d\n", aux3->address);     //para o drawline
+					 } 
+			 Expression 	 {
 						VarData aux = NULL;
 			
 						if (direccao == up || direccao == down)
@@ -270,6 +276,9 @@ Dialogue 		: Say_Statement
 			;
 	
 Location 		: GOTO NUMBER ',' NUMBER		{
+									VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
+									printf("PUSHG %d\n", aux2->address);	//para o drawline
+									printf("PUSHG %d\n", aux3->address);	//para o drawline
 									VarData aux = searchVar("xpos"), aux1 = searchVar("ypos");
 									printf("PUSHI %s\n", $2);
 									printf("STOREG %d\n", aux->address);
@@ -279,13 +288,14 @@ Location 		: GOTO NUMBER ',' NUMBER		{
 									drawTurtle();
 									
 								}	
-			| WHERE '?'				{
+			| WHERE	 '?'				{
 									VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
+									printf("PUSHG %d\n", aux2->address);	//para o drawline
+									printf("PUSHG %d\n", aux3->address);     //para o drawline
+									aux2 = searchVar("xpos"), searchVar("ypos");
 									printf("PUSHG %d\n", aux2->address);
-									//printf("ATOI\n");
 									printf("WRITEI\n");
 									printf("PUSHG %d\n", aux3->address);
-									//printf("ATOI\n");
 									printf("WRITEI\n");
 								}
 			;
