@@ -2135,7 +2135,7 @@ yyreduce:
 								  if(!searchVar((yyvsp[(5) - (6)].varTipo).id)) printf("Error Variavel %s não existe",(yyvsp[(5) - (6)].varTipo).id);
 								  else {
 								  	VarData var = searchVar((yyvsp[(5) - (6)].varTipo).id);
-								  	printf("store %d\n",var->address); local								  
+								  	printf("storeg %d\n",var->address);
 								  }
 								}
     break;

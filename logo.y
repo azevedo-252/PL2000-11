@@ -470,7 +470,7 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
 								  if(!searchVar($5.id)) printf("Error Variavel %s não existe",$5.id);
 								  else {
 								  	VarData var = searchVar($5.id);
-								  	printf("store %d\n",var->address); local								  
+								  	printf("storeg %d\n",var->address);
 								  }
 								}
 			;
