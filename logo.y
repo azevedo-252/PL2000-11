@@ -9,14 +9,13 @@
 	int addressG = 0;
 	extern int height = 100, width = 100, xpos = 40, ypos = 40, raio = 5;
 	extern Direccao direccao = up;
+	extern int mode = 0; // PEN UP
+
 	extern char* yytext;
 	extern int yylineno;	
 
 	extern ListaVars *nodo;
 	extern VarHashTable varHashTable;
-
-	extern char *yytext;
-	extern int yylineno;
 
 %}
 %error-verbose
@@ -224,24 +223,28 @@ Step 			: FORWARD Expression 			{
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("ADD\n");
                                                                                 printf("STOREG %d\n", aux->address);
+										drawLine(xpos+$2,ypos);
                                                                                 break;
                                                                         case(down):
                                                                                 aux = searchVar("xpos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("SUB\n");
                                                                                 printf("STOREG %d\n", aux->address);
+										drawLine(xpos-$2,ypos);
                                                                                 break;
                                                                         case(right):
                                                                                 aux = searchVar("ypos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("SUB\n");
                                                                                 printf("STOREG %d\n", aux->address);
+										drawLine(xpos,ypos-$2);
                                                                                 break;
                                                                         case(left):
                                                                                 aux = searchVar("ypos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("ADD\n");
                                                                                 printf("STOREG %d\n", aux->address);
+										drawLine(xpos,ypos+$2);
                                                                                 break;
                                                                         default:
                                                                                 break;
@@ -584,6 +587,19 @@ void drawTurtle(){
 	printf("REFRESH\n");
 }
 
+void drawLine(int newx, int newy){
+	if(mode == 1){ // PEN DOWN
+		VarData aux1, aux2;
+		printf("PUSHI %d\n", newy);
+		printf("PUSHI %d\n", newx);
+		aux1 = searchVar("ypos");
+        	printf("PUSHG %d\n", aux1->address);
+		aux2 = searchVar("xpos");
+        	printf("PUSHG %d\n", aux2->address);
+		printf("DRAWLINE\n");
+		printf("REFRESH\n");	
+	}
+}
 
 void printListaVars(){
 	ListaVars *aux = nodo;
@@ -598,12 +614,7 @@ int yyerror(char *s){
        fprintf(stderr,"ERRO: %s na linha:%d antes de:%s\n",s,yylineno,yytext);
        return 0;
 }
-/*
-int yyerror(char *s){
-	fprintf(stderr, "ERRO: %s \n", s);
-	return 0;
-}
-*/
+
 int main() {
 	yyparse();
 	return 0;
