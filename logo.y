@@ -83,6 +83,11 @@ Body 			: DECLARATIONS 	{
 							var.value = (char*)malloc(sizeof(10));
 							sprintf(var.value, "%d", raio);
 							insertInListaVars(var, 0);
+
+							var.id = "direccao";
+							var.value = (char*)malloc(sizeof(10));
+							sprintf(var.value, "%d", 1);
+							insertInListaVars(var, 0);
 							
 							saveVars(0);
 							printf("START\n");
@@ -250,8 +255,38 @@ Step 			: FORWARD Expression 			{
 								}
 			;
 
-Rotate 			: RRIGHT
-			| RLEFT
+Rotate 			: RRIGHT				{
+								switch(direccao){
+									case(up):
+										direccao = right;
+										break;
+									case(right):
+										direccao = down;
+										break;
+									case(down):
+										direccao = left;
+										break;
+									default:
+										direccao = up;
+										break;
+								}
+								}
+			| RLEFT					{
+								switch(direccao){
+                                                                        case(up):
+                                                                                direccao = left;
+                                                                                break;
+                                                                        case(left):
+                                                                                direccao = down;
+                                                                                break;
+                                                                        case(down):
+                                                                                direccao = right;
+                                                                                break;
+                                                                        default:
+                                                                                direccao = up;
+                                                                                break;
+								}
+								}
 			;
 	
 Mode 			: PEN UP
