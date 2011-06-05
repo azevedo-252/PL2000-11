@@ -15,6 +15,9 @@
 	extern ListaVars *nodo;
 	extern VarHashTable varHashTable;
 
+	extern char *yytext;
+	extern int yylineno;
+
 %}
 %error-verbose
 
@@ -467,7 +470,7 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
 								  if(!searchVar($5.id)) printf("Error Variavel %s não existe",$5.id);
 								  else {
 								  	VarData var = searchVar($5.id);
-								  	printf("storeg %d\n",var->address); // pode ser storef se for uma variavel local								  
+								  	printf("store %d\n",var->address); local								  
 								  }
 								}
 			;
@@ -522,31 +525,26 @@ void saveVars(int type){
 				case 0://INTEGER
 					if (aux->type == -1) {//VAZIO
 						printf("PUSHI 0\n");
-						printf("address: %d\n", addressG);
 					}
 					else {
 						printf("PUSHI %d\n",atoi(aux->value));
-						printf("address: %d\n", addressG);
 					}
 				break;
 				case 1://BOOLEAN
 					if (aux->type==-1 || strcmp(aux->value,"TRUE")==0) {
 						printf("PUSHI 1\n");
-						printf("address: %d\n", addressG);
+
 					}
 					else if (strcmp(aux->value, "FALSE")==0) {
 						printf("PUSHI 0\n");
-						printf("address: %d\n", addressG);
 					}
 				break;
 				case 2://STRING
 					if (aux->type == -1) {
 						printf("pushs \"\"\n");
-						printf("address: %d\n", addressG);
 					}
 					else {
 						printf("pushs %s\n",aux->value);
-						printf("address: %d\n", addressG);
 					}
 				break;
 				// nao estamos a fazer arrays para ja
