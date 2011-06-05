@@ -42,7 +42,7 @@ void insertInListaVars(VarTipo var, int first);
 void saveVars(int type);
 //char *stringToupper(char* string);
 void printListaVars();
-void drawTurtle(int first);
+void drawTurtle();
 void drawLine();
 void init();
 void initWindow();

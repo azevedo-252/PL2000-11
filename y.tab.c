@@ -548,12 +548,12 @@ static const yytype_uint16 yyrline[] =
        0,    53,    53,    56,    67,    56,    73,    74,    77,    83,
       86,    88,    92,   101,   102,   105,   106,   107,   111,   112,
      116,   117,   118,   119,   141,   142,   145,   146,   147,   148,
-     155,   156,   157,   158,   159,   162,   162,   196,   196,   233,
-     249,   267,   268,   271,   272,   275,   276,   283,   290,   306,
-     307,   352,   353,   378,   379,   414,   415,   421,   422,   428,
-     429,   430,   433,   434,   435,   436,   439,   440,   441,   442,
-     443,   444,   451,   461,   462,   468,   483,   514,   517,   523,
-     526,   527,   533
+     155,   156,   157,   158,   159,   162,   162,   197,   197,   235,
+     251,   269,   270,   273,   274,   277,   287,   302,   309,   325,
+     326,   371,   372,   397,   398,   433,   434,   440,   441,   447,
+     448,   449,   452,   453,   454,   455,   458,   459,   460,   461,
+     462,   463,   470,   480,   481,   487,   502,   533,   536,   542,
+     545,   546,   552
 };
 #endif
 
@@ -1719,8 +1719,8 @@ yyreduce:
 #line 162 "logo.y"
     {	
 					VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
-					printf("PUSHG %d\n", aux3->address);	//para o drawline
-					printf("PUSHG %d\n", aux2->address);     //para o drawline
+					printf("PUSHG %d\n", aux2->address);	//para o drawline
+					printf("PUSHG %d\n", aux3->address);     //para o drawline
 					}
     break;
 
@@ -1755,25 +1755,26 @@ yyreduce:
 								break;
 						}
 						printf("STOREG %d\n", aux->address);
-						drawTurtle(0);
+						drawLine();							
+						drawTurtle();
 					}
     break;
 
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 196 "logo.y"
+#line 197 "logo.y"
     {
 						VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
-						printf("PUSHG %d\n", aux3->address);	//para o drawline
-						printf("PUSHG %d\n", aux2->address);     //para o drawline
+						printf("PUSHG %d\n", aux2->address);	//para o drawline
+						printf("PUSHG %d\n", aux3->address);     //para o drawline
 					}
     break;
 
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 201 "logo.y"
+#line 202 "logo.y"
     {
 						VarData aux = NULL;
 			
@@ -1802,14 +1803,15 @@ yyreduce:
                                                                 break;
 						}
 						printf("STOREG %d\n", aux->address);
-						drawTurtle(0);
+						drawLine();
+						drawTurtle();
 						}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 233 "logo.y"
+#line 235 "logo.y"
     {
 								switch(direccao){
 									case(up):
@@ -1831,7 +1833,7 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 249 "logo.y"
+#line 251 "logo.y"
     {
 								switch(direccao){
 									case(up):
@@ -1853,21 +1855,52 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 267 "logo.y"
+#line 269 "logo.y"
     { mode = 0; }
     break;
 
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 268 "logo.y"
+#line 270 "logo.y"
     { mode = 1; }
+    break;
+
+  case 45:
+
+/* Line 1455 of yacc.c  */
+#line 277 "logo.y"
+    {
+									VarData aux = searchVar("xpos"), aux1 = searchVar("ypos");
+									printf("PUSHI %s\n", (yyvsp[(2) - (4)].stringvalue));
+									printf("STOREG %d\n", aux->address);
+									printf("PUSHI %s\n", (yyvsp[(4) - (4)].stringvalue));
+									printf("STOREG %d\n", aux1->address);
+									drawLine();									
+									drawTurtle();
+									
+								}
+    break;
+
+  case 46:
+
+/* Line 1455 of yacc.c  */
+#line 287 "logo.y"
+    {
+									VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
+									printf("PUSHG %d\n", aux2->address);
+									printf("ATOI\n");
+									printf("WRITEI\n");
+									printf("PUSHG %d\n", aux3->address);
+									printf("ATOI\n");
+									printf("WRITEI\n");
+								}
     break;
 
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 283 "logo.y"
+#line 302 "logo.y"
     {
 								VarData var =  searchVar((yyvsp[(1) - (3)].varTipo).id);
 								if (var) printf("STOREG %d\n",var->address);
@@ -1878,7 +1911,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 290 "logo.y"
+#line 309 "logo.y"
     { 	VarData var = searchVar((yyvsp[(1) - (1)].stringvalue));
 								if(var){
 									(yyval.varTipo).id=(yyvsp[(1) - (1)].stringvalue);
@@ -1891,14 +1924,14 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 306 "logo.y"
+#line 325 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 307 "logo.y"
+#line 326 "logo.y"
     {/* TA MAL
 								switch($2){
 									case(1):
@@ -1944,14 +1977,14 @@ yyreduce:
   case 51:
 
 /* Line 1455 of yacc.c  */
-#line 352 "logo.y"
+#line 371 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 353 "logo.y"
+#line 372 "logo.y"
     {
 								//printf("PUSHI %d\n", $1);
 								//printf("PUSHI %d\n", $3);
@@ -1977,14 +2010,14 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 378 "logo.y"
+#line 397 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 379 "logo.y"
+#line 398 "logo.y"
     {
 								//printf("PUSHI %d\n", $1);
 								//printf("PUSHI %d\n", $3); 
@@ -2020,14 +2053,14 @@ yyreduce:
   case 55:
 
 /* Line 1455 of yacc.c  */
-#line 414 "logo.y"
+#line 433 "logo.y"
     {pushValues((yyvsp[(1) - (1)].constTipo).type,0,(yyvsp[(1) - (1)].constTipo).value); (yyval.intvalue) = (yyvsp[(1) - (1)].constTipo).type;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 415 "logo.y"
+#line 434 "logo.y"
     {
 								  VarData var = searchVar ((yyvsp[(1) - (1)].varTipo).id);
 								  if(var)printf("PUSHG %d\n", var->address);
@@ -2039,112 +2072,112 @@ yyreduce:
   case 57:
 
 /* Line 1455 of yacc.c  */
-#line 421 "logo.y"
+#line 440 "logo.y"
     { (yyval.intvalue) = (yyvsp[(1) - (1)].intvalue); }
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 422 "logo.y"
+#line 441 "logo.y"
     { (yyval.intvalue) = (yyvsp[(2) - (3)].intvalue); }
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 428 "logo.y"
+#line 447 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 429 "logo.y"
+#line 448 "logo.y"
     { (yyval.intvalue) = 2; }
     break;
 
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 430 "logo.y"
+#line 449 "logo.y"
     { (yyval.intvalue) = 3; }
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 433 "logo.y"
+#line 452 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 434 "logo.y"
+#line 453 "logo.y"
     { (yyval.intvalue) = 2; }
     break;
 
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 435 "logo.y"
+#line 454 "logo.y"
     { (yyval.intvalue) = 3; }
     break;
 
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 436 "logo.y"
+#line 455 "logo.y"
     { (yyval.intvalue) = 4; }
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 439 "logo.y"
+#line 458 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 67:
 
 /* Line 1455 of yacc.c  */
-#line 440 "logo.y"
+#line 459 "logo.y"
     { (yyval.intvalue) = 2; }
     break;
 
   case 68:
 
 /* Line 1455 of yacc.c  */
-#line 441 "logo.y"
+#line 460 "logo.y"
     { (yyval.intvalue) = 3; }
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 442 "logo.y"
+#line 461 "logo.y"
     { (yyval.intvalue) = 4; }
     break;
 
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 443 "logo.y"
+#line 462 "logo.y"
     { (yyval.intvalue) = 5; }
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 444 "logo.y"
+#line 463 "logo.y"
     { (yyval.intvalue) = 6; }
     break;
 
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 451 "logo.y"
+#line 470 "logo.y"
     { VarData var = searchVar((yyvsp[(2) - (2)].stringvalue));
 							  if (var) {
 							  	printf("store %d\n", var->address);
@@ -2158,21 +2191,21 @@ yyreduce:
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 461 "logo.y"
+#line 480 "logo.y"
     { (yyval.intvalue) = 1; }
     break;
 
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 462 "logo.y"
+#line 481 "logo.y"
     { (yyval.intvalue) = -1; }
     break;
 
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 468 "logo.y"
+#line 487 "logo.y"
     { switch ((yyvsp[(3) - (4)].intvalue)){ // Expression Type 
 									case 0:	// INTEGER							
 										printf("writei\n"); 
@@ -2190,9 +2223,9 @@ yyreduce:
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 483 "logo.y"
+#line 502 "logo.y"
     { 
-								  if((yyvsp[(5) - (6)].varTipo).type == -1) yyerror("Variable undeclared!\n");
+								  if(!(yyvsp[(5) - (6)].varTipo).type) yyerror("Variable undeclared!\n");
 								  else{
 									printf("pushs %s\n",(yyvsp[(3) - (6)].stringvalue)); 	// guardar na stack a STR a perguntar
 								  	printf("writes\n"); 		// escrever a STR a perguntar
@@ -2222,7 +2255,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2226 "y.tab.c"
+#line 2259 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2434,7 +2467,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 536 "logo.y"
+#line 555 "logo.y"
 
 
 void insertInListaVars(VarTipo var, int first){
@@ -2505,10 +2538,9 @@ void pushValues(int varType, int nullType, char* value){
 	return new;
 }*/
 
-void drawTurtle(int first){
+void drawTurtle(){
 	VarData aux, aux2, aux3;
-	printf("CLEARDRAWINGAREA\n");
-	if (!first)drawLine();
+	//if (!first) drawLine();
 	aux3 = searchVar("xpos");
         printf("PUSHG %d\n", aux3->address);
 	aux2 = searchVar("ypos");
@@ -2520,11 +2552,12 @@ void drawTurtle(int first){
 }
 
 void drawLine(){
+	//printf("CLEARDRAWINGAREA\n");
 	if(mode == 1){ // PEN DOWN
 		VarData aux1, aux2;
-		aux1 = searchVar("ypos");
+		aux1 = searchVar("xpos");
         	printf("PUSHG %d\n", aux1->address);
-		aux2 = searchVar("xpos");
+		aux2 = searchVar("ypos");
         	printf("PUSHG %d\n", aux2->address);
 		printf("DRAWLINE\n");
 	}
@@ -2564,7 +2597,7 @@ void init() {
 	saveVars(0);
 	printf("START\n");
 	initWindow();
-	drawTurtle(1);
+	drawTurtle();
 }
 
 void initWindow(){

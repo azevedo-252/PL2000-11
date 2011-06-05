@@ -161,8 +161,8 @@ Turtle_Commands 	: Step
 
 Step 			: FORWARD 	{	
 					VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
-					printf("PUSHG %d\n", aux3->address);	//para o drawline
-					printf("PUSHG %d\n", aux2->address);     //para o drawline
+					printf("PUSHG %d\n", aux2->address);	//para o drawline
+					printf("PUSHG %d\n", aux3->address);     //para o drawline
 					}				 
 			  Expression 	{
 						VarData aux = NULL;
@@ -191,12 +191,13 @@ Step 			: FORWARD 	{
 								break;
 						}
 						printf("STOREG %d\n", aux->address);
-						drawTurtle(0);
+						drawLine();							
+						drawTurtle();
 					}
 			| BACKWARD 	{
 						VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
-						printf("PUSHG %d\n", aux3->address);	//para o drawline
-						printf("PUSHG %d\n", aux2->address);     //para o drawline
+						printf("PUSHG %d\n", aux2->address);	//para o drawline
+						printf("PUSHG %d\n", aux3->address);     //para o drawline
 					}
 	  		  Expression	{
 						VarData aux = NULL;
@@ -226,7 +227,8 @@ Step 			: FORWARD 	{
                                                                 break;
 						}
 						printf("STOREG %d\n", aux->address);
-						drawTurtle(0);
+						drawLine();
+						drawTurtle();
 						}
 			;
 
@@ -272,8 +274,25 @@ Dialogue 		: Say_Statement
 			| Ask_Statement
 			;
 	
-Location 		: GOTO NUMBER ',' NUMBER
-			| WHERE '?'
+Location 		: GOTO NUMBER ',' NUMBER		{
+									VarData aux = searchVar("xpos"), aux1 = searchVar("ypos");
+									printf("PUSHI %s\n", $2);
+									printf("STOREG %d\n", aux->address);
+									printf("PUSHI %s\n", $4);
+									printf("STOREG %d\n", aux1->address);
+									drawLine();									
+									drawTurtle();
+									
+								}	
+			| WHERE '?'				{
+									VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
+									printf("PUSHG %d\n", aux2->address);
+									printf("ATOI\n");
+									printf("WRITEI\n");
+									printf("PUSHG %d\n", aux3->address);
+									printf("ATOI\n");
+									printf("WRITEI\n");
+								}
 			;
 	
 
@@ -481,7 +500,7 @@ Say_Statement 		: SAY '(' Expression ')'		{ switch ($3){ // Expression Type
 			
 	
 Ask_Statement 		: ASK '(' STR ',' Variable ')'		{ 
-								  if($5.type == -1) yyerror("Variable undeclared!\n");
+								  if(!$5.type) yyerror("Variable undeclared!\n");
 								  else{
 									printf("pushs %s\n",$3); 	// guardar na stack a STR a perguntar
 								  	printf("writes\n"); 		// escrever a STR a perguntar
@@ -603,10 +622,9 @@ void pushValues(int varType, int nullType, char* value){
 	return new;
 }*/
 
-void drawTurtle(int first){
+void drawTurtle(){
 	VarData aux, aux2, aux3;
-	printf("CLEARDRAWINGAREA\n");
-	if (!first)drawLine();
+	//if (!first) drawLine();
 	aux3 = searchVar("xpos");
         printf("PUSHG %d\n", aux3->address);
 	aux2 = searchVar("ypos");
@@ -618,11 +636,12 @@ void drawTurtle(int first){
 }
 
 void drawLine(){
+	//printf("CLEARDRAWINGAREA\n");
 	if(mode == 1){ // PEN DOWN
 		VarData aux1, aux2;
-		aux1 = searchVar("ypos");
+		aux1 = searchVar("xpos");
         	printf("PUSHG %d\n", aux1->address);
-		aux2 = searchVar("xpos");
+		aux2 = searchVar("ypos");
         	printf("PUSHG %d\n", aux2->address);
 		printf("DRAWLINE\n");
 	}
@@ -662,7 +681,7 @@ void init() {
 	saveVars(0);
 	printf("START\n");
 	initWindow();
-	drawTurtle(1);
+	drawTurtle();
 }
 
 void initWindow(){

@@ -1,15 +1,15 @@
 PROGRAM logolissExemplo 
 {
   DECLARATIONS 
-    x = (300) , y -> Integer ;
+    x = (100) , y -> Integer ;
     z -> Boolean ;
     w = FALSE -> Boolean ; 
     ww = "teste" -> String ;
   STATEMENTS
     PEN DOWN ;
-    FORWARD x ;
-    RRIGHT;
-    FORWARD x ;
-    RLEFT;
     BACKWARD x ;
+    RRIGHT ;
+    BACKWARD x ;
+    GOTO 200 , 50 ;
+    WHERE ? ;
 }
