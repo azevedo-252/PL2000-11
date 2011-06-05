@@ -6,7 +6,6 @@ PROGRAM logolissExemplo
     w = FALSE -> Boolean ; 
     ww = "teste", yy -> String ;
   STATEMENTS
-    SAY (h) ;
     SAY (x) ;
     SAY (ww) ;
     ASK ("qual é o numero?\n" , y ) ;
