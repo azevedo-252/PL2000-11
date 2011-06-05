@@ -1580,7 +1580,7 @@ yyreduce:
 							xpos = 300;
 							ypos = 200;
 							raio = 25;
-							mode = 0; //PEN UP
+							mode = 1; //PEN UP
 							direccao = up;
 							init();
 							}
