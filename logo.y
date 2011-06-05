@@ -272,7 +272,7 @@ Location 		: GOTO NUMBER ',' NUMBER
 
 Assignment 		: Variable '=' Expression 	{
 								VarData var =  searchVar($1.id);
-								if (var) printf("STOREG %d",var->address);
+								if (var) printf("STOREG %d\n",var->address);
 								else yyerror("Variable undeclared!\n");
 							}
 			;

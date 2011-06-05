@@ -1810,7 +1810,7 @@ yyreduce:
 #line 273 "logo.y"
     {
 								VarData var =  searchVar((yyvsp[(1) - (3)].varTipo).id);
-								if (var) printf("STOREG %d",var->address);
+								if (var) printf("STOREG %d\n",var->address);
 								else yyerror("Variable undeclared!\n");
 							}
     break;
