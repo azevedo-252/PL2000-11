@@ -44,6 +44,8 @@ void saveVars(int type);
 void printListaVars();
 void drawTurtle();
 void drawLine(int newx, int newy);
+void init();
+void initWindow();
 void pushValues(int varType, int nullType, char* value);
 
 #endif

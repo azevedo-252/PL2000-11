@@ -9,6 +9,9 @@ STOREG 3
 PUSHI 100
 STOREG 4
 START
+pushi 800
+pushi 600
+opendrawingarea
 PUSHG 0
 PUSHG 1
 PUSHG 2
