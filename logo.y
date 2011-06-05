@@ -62,38 +62,7 @@ Body 			: DECLARATIONS 	{
 							raio = 5;
 							mode = 0;
 							direccao = up;
-							varHashTable = initHash();
-							VarTipo var;
-							
-							var.id = "height";
-							var.value = (char*)malloc(sizeof(10));
-							sprintf(var.value, "%d", height);
-							insertInListaVars(var, 1);
-							
-							var.id = "width";
-							var.value = (char*)malloc(sizeof(10));
-							sprintf(var.value, "%d", width);
-							insertInListaVars(var, 0);
-							
-							var.id = "xpos";
-							var.value = (char*)malloc(sizeof(10));
-							sprintf(var.value, "%d", xpos);
-							insertInListaVars(var, 0);
-
-							var.id = "ypos";
-							var.value = (char*)malloc(sizeof(10));
-							sprintf(var.value, "%d", ypos);
-							insertInListaVars(var, 0);
-
-							var.id = "raio";
-							var.value = (char*)malloc(sizeof(10));
-							sprintf(var.value, "%d", raio);
-							insertInListaVars(var, 0);
-							
-							saveVars(0);
-							printf("START\n");
-							drawTurtle();
-							printf("REFRESH\n");
+							init();
 							}Declarations
 
  			  STATEMENTS {/*printHash();*/} Statements
@@ -169,8 +138,8 @@ Elem 			: NUMBER
 
 /***************************Statements**************/
 
-Statements 		: Statement ';'
-			| Statements Statement ';'
+Statements 		: Statement ';' 
+			| Statements Statement ';'{/*printf(">>>>>>>>>>>>>>>>>Fim de uma Statement\n");*/}
 			;
 	
 Statement 		: Turtle_Commands
@@ -630,6 +599,48 @@ void drawLine(){
 		printf("DRAWLINE\n");
 		printf("REFRESH\n");	
 	}
+}
+
+void init() {
+	varHashTable = initHash();
+	VarTipo var;
+	
+	var.id = "height";
+	var.value = (char*)malloc(sizeof(10));
+	sprintf(var.value, "%d", height);
+	insertInListaVars(var, 1);
+	
+	var.id = "width";
+	var.value = (char*)malloc(sizeof(10));
+	sprintf(var.value, "%d", width);
+	insertInListaVars(var, 0);
+	
+	var.id = "xpos";
+	var.value = (char*)malloc(sizeof(10));
+	sprintf(var.value, "%d", xpos);
+	insertInListaVars(var, 0);
+
+	var.id = "ypos";
+	var.value = (char*)malloc(sizeof(10));
+	sprintf(var.value, "%d", ypos);
+	insertInListaVars(var, 0);
+
+	var.id = "raio";
+	var.value = (char*)malloc(sizeof(10));
+	sprintf(var.value, "%d", raio);
+	insertInListaVars(var, 0);
+	
+	saveVars(0);
+	printf("START\n");
+	initWindow();
+	drawTurtle();
+	printf("REFRESH\n");
+}
+
+void initWindow(){
+	printf("pushi %d\n",800);
+        printf("pushi %d\n",600);
+        printf("opendrawingarea\n");
 }
 
 void printListaVars(){
