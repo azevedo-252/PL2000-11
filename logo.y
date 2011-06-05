@@ -7,9 +7,9 @@
 	#include "hashFunctions.h"
 
 	int addressG = 0;
-	extern int height, width, xpos, ypos, raio;
-	extern Direccao direccao;
-	extern int mode; // PEN UP
+	int height, width, xpos, ypos, raio;
+	Direccao direccao;
+	int mode; // PEN UP
 
 	extern char* yytext;
 	extern int yylineno;	
@@ -31,7 +31,7 @@
 
 
 /* TODO verficiar depois o que é e nao é preciso */
-%type <intvalue>Type SuccOrPred Add_Op Mul_Op Rel_Op Factor Term Single_Expression Array_Acess Expression SuccPred
+%type <intvalue>Type SuccOrPred Add_Op Mul_Op Rel_Op Factor Term Single_Expression  Expression SuccPred //Array_Acess
 %type <varTipo>Var Variable
 %type <constTipo>Constant Value_Var Inic_Var
 
@@ -160,7 +160,9 @@ Turtle_Commands 	: Step
 			;
 
 Step 			: FORWARD Expression 			{
-								VarData aux;
+								VarData aux = searchVar("xpos"), aux2 = searchVar("ypos");
+								printf("PUSHI %d\n", aux2->address);	//para o drawline
+								printf("PUSHI %d\n", aux->address);     //para o drawline
 								switch(direccao){
 									case(up):
 										aux = searchVar("ypos");
@@ -190,42 +192,43 @@ Step 			: FORWARD Expression 			{
 										break;
 								}
 								drawTurtle();
+								drawLine();
 								}
+				;
 			| BACKWARD Expression			{
-								VarData aux;
+								VarData aux = searchVar("xpos"), aux2 = searchVar("ypos");
+								printf("PUSHI %d\n", aux2->address);	//para o drawline
+								printf("PUSHI %d\n", aux->address);     //para o drawline
                                                                 switch(direccao){
                                                                         case(up):
                                                                                 aux = searchVar("ypos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("SUB\n");
                                                                                 printf("STOREG %d\n", aux->address);
-										drawLine(xpos+$2,ypos);
                                                                                 break;
                                                                         case(down):
                                                                                 aux = searchVar("ypos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("ADD\n");
                                                                                 printf("STOREG %d\n", aux->address);
-										drawLine(xpos-$2,ypos);
                                                                                 break;
                                                                         case(right):
                                                                                 aux = searchVar("xpos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("SUB\n");
                                                                                 printf("STOREG %d\n", aux->address);
-										drawLine(xpos,ypos-$2);
                                                                                 break;
                                                                         case(left):
                                                                                 aux = searchVar("xpos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("ADD\n");
                                                                                 printf("STOREG %d\n", aux->address);
-										drawLine(xpos,ypos+$2);
                                                                                 break;
                                                                         default:
                                                                                 break;
 								}
 								drawTurtle();
+								drawLine();
 								}
 			;
 
@@ -263,8 +266,8 @@ Rotate 			: RRIGHT				{
 								}
 			;
 	
-Mode 			: PEN UP
-			| PEN DOWN
+Mode 			: PEN UP				{ mode = 0; }
+			| PEN DOWN				{ mode = 1; }
 			;
 	
 Dialogue 		: Say_Statement
@@ -286,13 +289,19 @@ Assignment 		: Variable '=' Expression 	{
 							}
 			;
 	
-Variable 		: IDENTIFIER Array_Acess {$$.id = $1;}
+Variable 		: IDENTIFIER 	 		{ 	VarData var = searchVar($1);
+								if(var){
+									$$.id=$1;
+									$$.type=var->type;
+								}
+								else $$.type = -1;	
+					       		}
 			;
-	
+/*	
 Array_Acess 		:
 			| '[' Single_Expression ']'		{ $$ = $2; }
 			;
-	
+*/	
 
 /***************************Expression**************/
 
@@ -404,11 +413,12 @@ Term 			: Factor				{ $$ = $1; }
 
 /***************************Factor**************/
 
-Factor 			: Constant				{pushValues($1.type,0,$1.value);}
+Factor 			: Constant				{pushValues($1.type,0,$1.value); $$ = $1.type;}
 			| Variable				{
 								  VarData var = searchVar ($1.id);
 								  if(var)printf("PUSHG %d\n", var->address);
 								  else yyerror("Variable undeclared!\n");
+								  $$ = var->type;
 								}
 			| SuccOrPred		{ $$ = $1; }
 			| '(' Expression ')'	{ $$ = $2; }
@@ -457,23 +467,47 @@ SuccPred 		: SUCC				{ $$ = 1; }
 
 /***************************IO Statements***********/
 	
-Say_Statement 		: SAY '(' Expression ')'		{ printf("writei\n"); }
-			;
+Say_Statement 		: SAY '(' Expression ')'		{ switch ($3){ // Expression Type 
+									case 0:	// INTEGER							
+										printf("writei\n"); 
+										break;
+									case 1: // BOOLEAN
+										printf("writei\n");
+										break;
+									case 2: // STRING
+										printf("writes\n");
+										break;
+									}
+								}
+			;						
+			
 	
 Ask_Statement 		: ASK '(' STR ',' Variable ')'		{ 
-							          printf("pushs %s\n",$3); 	// guardar na stack a STR a perguntar
-								  printf("writes\n"); 		// escrever a STR a perguntar
-							 	  printf("read\n"); 		/* lê uma string do teclado (concluída por um "\n") 
+								  if($5.type == -1) yyerror("Variable undeclared!\n");
+								  else{
+									printf("pushs %s\n",$3); 	// guardar na stack a STR a perguntar
+								  	printf("writes\n"); 		// escrever a STR a perguntar
+									printf("read\n"); 	/* lê uma string do teclado (concluída por um "\n") 
 										       		   e arquiva esta string (sem o "\n") na heap e coloca
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
-								  printf("atoi\n"); 		// variaveis só podem ser integer ou boolean 	
-								  if(!searchVar($5.id)) yyerror("Variable undeclared!\n");
-								  else {
-								  	VarData var = searchVar($5.id);
-								  	printf("storeg %d\n",var->address);
+									switch ($5.type){ // Expression Type
+										case 0:	// INTEGER							
+											printf("atoi\n"); 
+											break;
+										case 1: // BOOLEAN
+											printf("atoi\n");
+											break;
+										case 2: // STRING
+											break;
+										default :
+											yyerror("Variable undeclared!\n");
+											break;
+									  }
+									  VarData var = searchVar($5.id);
+									  printf("storeg %d\n",var->address);
+									}
 								  }
-								}
 			;
 	
 
@@ -583,15 +617,13 @@ void drawTurtle(){
 	printf("REFRESH\n");
 }
 
-void drawLine(int newx, int newy){
+void drawLine(){
 	if(mode == 1){ // PEN DOWN
 		VarData aux1, aux2;
-		printf("PUSHI %d\n", newy);
-		printf("PUSHI %d\n", newx);
-		aux1 = searchVar("ypos");
-        	printf("PUSHG %d\n", aux1->address);
-		aux2 = searchVar("xpos");
+		aux2 = searchVar("ypos");
         	printf("PUSHG %d\n", aux2->address);
+		aux1 = searchVar("xpos");
+        	printf("PUSHG %d\n", aux1->address);
 		printf("DRAWLINE\n");
 		printf("REFRESH\n");	
 	}
