@@ -56,9 +56,9 @@ Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 Body 			: DECLARATIONS 	{
 							height = 100;
 							width = 100;
-							xpos = 50;
-							ypos = 60;
-							raio = 5;
+							xpos = 300;
+							ypos = 200;
+							raio = 25;
 							mode = 0;
 							direccao = up;
 							init();
@@ -163,25 +163,25 @@ Step 			: FORWARD Expression 			{
 								VarData aux;
 								switch(direccao){
 									case(up):
-										aux = searchVar("xpos");
-										printf("PUSHG %d\n", aux->address);
-										printf("SUB\n");
-										printf("STOREG %d\n", aux->address);
-										break;
-									case(down):
-										aux = searchVar("xpos");
+										aux = searchVar("ypos");
 										printf("PUSHG %d\n", aux->address);
 										printf("ADD\n");
 										printf("STOREG %d\n", aux->address);
 										break;
-									case(right):
+									case(down):
 										aux = searchVar("ypos");
+										printf("PUSHG %d\n", aux->address);
+										printf("SUB\n");
+										printf("STOREG %d\n", aux->address);
+										break;
+									case(right):
+										aux = searchVar("xpos");
 										printf("PUSHG %d\n", aux->address);
 										printf("ADD\n");
 										printf("STOREG %d\n", aux->address);
 										break;
 									case(left):
-										aux = searchVar("ypos");
+										aux = searchVar("xpos");
 										printf("PUSHG %d\n", aux->address);
 										printf("SUB\n");
 										printf("STOREG %d\n", aux->address);
@@ -195,28 +195,28 @@ Step 			: FORWARD Expression 			{
 								VarData aux;
                                                                 switch(direccao){
                                                                         case(up):
-                                                                                aux = searchVar("xpos");
+                                                                                aux = searchVar("ypos");
                                                                                 printf("PUSHG %d\n", aux->address);
-                                                                                printf("ADD\n");
+                                                                                printf("SUB\n");
                                                                                 printf("STOREG %d\n", aux->address);
 										drawLine(xpos+$2,ypos);
                                                                                 break;
                                                                         case(down):
-                                                                                aux = searchVar("xpos");
+                                                                                aux = searchVar("ypos");
                                                                                 printf("PUSHG %d\n", aux->address);
-                                                                                printf("SUB\n");
+                                                                                printf("ADD\n");
                                                                                 printf("STOREG %d\n", aux->address);
 										drawLine(xpos-$2,ypos);
                                                                                 break;
                                                                         case(right):
-                                                                                aux = searchVar("ypos");
+                                                                                aux = searchVar("xpos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("SUB\n");
                                                                                 printf("STOREG %d\n", aux->address);
 										drawLine(xpos,ypos-$2);
                                                                                 break;
                                                                         case(left):
-                                                                                aux = searchVar("ypos");
+                                                                                aux = searchVar("xpos");
                                                                                 printf("PUSHG %d\n", aux->address);
                                                                                 printf("ADD\n");
                                                                                 printf("STOREG %d\n", aux->address);
