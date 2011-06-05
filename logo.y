@@ -140,7 +140,7 @@ Elem 			: NUMBER
 /***************************Statements**************/
 
 Statements 		: Statement ';' 
-			| Statements Statement ';'{/*printf(">>>>>>>>>>>>>>>>>Fim de uma Statement\n");*/}
+			| Statements Statement ';'
 			;
 	
 Statement 		: Turtle_Commands
@@ -162,8 +162,8 @@ Turtle_Commands 	: Step
 
 Step 			: FORWARD 	{	
 					VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
-					printf("PUSHG %d\n", aux3->address);	//para o drawline
-					printf("PUSHG %d\n", aux2->address);     //para o drawline
+					printf("PUSHG %d\n", aux2->address);	//para o drawline
+					printf("PUSHG %d\n", aux3->address);     //para o drawline
 					}				 
 			  Expression 	{
 						VarData aux = NULL;
@@ -192,12 +192,13 @@ Step 			: FORWARD 	{
 								break;
 						}
 						printf("STOREG %d\n", aux->address);
-						drawTurtle(0);
+						drawLine();							
+						drawTurtle();
 					}
 			| BACKWARD 	{
 						VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
-						printf("PUSHG %d\n", aux3->address);	//para o drawline
-						printf("PUSHG %d\n", aux2->address);     //para o drawline
+						printf("PUSHG %d\n", aux2->address);	//para o drawline
+						printf("PUSHG %d\n", aux3->address);     //para o drawline
 					}
 	  		  Expression	{
 						VarData aux = NULL;
@@ -227,7 +228,8 @@ Step 			: FORWARD 	{
                                                                 break;
 						}
 						printf("STOREG %d\n", aux->address);
-						drawTurtle(0);
+						drawLine();
+						drawTurtle();
 						}
 			;
 
@@ -273,8 +275,25 @@ Dialogue 		: Say_Statement
 			| Ask_Statement
 			;
 	
-Location 		: GOTO NUMBER ',' NUMBER
-			| WHERE '?'
+Location 		: GOTO NUMBER ',' NUMBER		{
+									VarData aux = searchVar("xpos"), aux1 = searchVar("ypos");
+									printf("PUSHI %s\n", $2);
+									printf("STOREG %d\n", aux->address);
+									printf("PUSHI %s\n", $4);
+									printf("STOREG %d\n", aux1->address);
+									drawLine();									
+									drawTurtle();
+									
+								}	
+			| WHERE '?'				{
+									VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
+									printf("PUSHG %d\n", aux2->address);
+									printf("ATOI\n");
+									printf("WRITEI\n");
+									printf("PUSHG %d\n", aux3->address);
+									printf("ATOI\n");
+									printf("WRITEI\n");
+								}
 			;
 	
 
@@ -492,11 +511,10 @@ void saveVars(int type){
 
 	ListaVars *aux = nodo;
 	while(aux) {
-		if(!searchVar(aux->id)){//printf("AQUI\t%s\thash:%d\n",aux->id,hash(aux->id));
+		if(!searchVar(aux->id)){
 			// insere nome, tipo e address na hashtable
 			insertVar(aux->id, type, addressG);
 			pushValues(type,aux->type, aux->value);
-			//printf("STOREG %d\n",addressG);
 			addressG++;
 		}
 		aux=aux->next;
@@ -536,18 +554,9 @@ void pushValues(int varType, int nullType, char* value){
 	}
 }
 
-/*char *stringToUpper(char* string){
-	int i;
-	char* new;
-	for (i=0; i<strlen(string); i++)
-		new[i]=toupper(string[i]);
-	return new;
-}*/
-
-void drawTurtle(int first){
+void drawTurtle(){
 	VarData aux, aux2, aux3;
-	printf("CLEARDRAWINGAREA\n");
-	if (!first)drawLine();
+	//if (!first) drawLine();
 	aux3 = searchVar("xpos");
         printf("PUSHG %d\n", aux3->address);
 	aux2 = searchVar("ypos");
@@ -559,11 +568,12 @@ void drawTurtle(int first){
 }
 
 void drawLine(){
+	//printf("CLEARDRAWINGAREA\n");
 	if(mode == 1){ // PEN DOWN
 		VarData aux1, aux2;
-		aux1 = searchVar("ypos");
+		aux1 = searchVar("xpos");
         	printf("PUSHG %d\n", aux1->address);
-		aux2 = searchVar("xpos");
+		aux2 = searchVar("ypos");
         	printf("PUSHG %d\n", aux2->address);
 		printf("DRAWLINE\n");
 	}
@@ -603,7 +613,7 @@ void init() {
 	saveVars(0);
 	printf("START\n");
 	initWindow();
-	drawTurtle(1);
+	drawTurtle();
 }
 
 void initWindow(){
@@ -612,14 +622,6 @@ void initWindow(){
         printf("opendrawingarea\n");
 }
 
-void printListaVars(){
-	ListaVars *aux = nodo;
-	while(aux){
-		printf("NODO: id=%s\tvalue=%s\ttype=%d\n",aux->id,aux->value,aux->type);
-		aux = aux->next;
-	}
-	printf("ACABOU\n");
-}
 
 int yyerror(char *s){
        fprintf(stderr,"ERRO: %s na linha:%d antes de:%s\n",s,yylineno,yytext);
