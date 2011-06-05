@@ -1,0 +1,11 @@
+Declarations
+
+	Declarations: Variables
+		Percorre as declarações de variáveis e por cada declaração vai adicionando as variáveis a uma lista ligada de variáveis.
+		Cada nodo da lista ligada corresponde a uma estrutura de dados que guarda as informações de cada variável, o identificador, o valor e o tipo de dados. 
+		Chegando ao fim de uma declaração, as variáveis contidas na lista ligada são armazenadas na tabela de hash, os respectivos valores são "empilhados" na stack e a lista ligada é reinicializada para guardar novas variáveis.
+
+Statements
+		
+	Assignment Statement
+		Por cada Assignment encontrado, o valor da expressão (Expression) é calculado e colocado no topo da pilha. De seguida, o endereço do variável (Variable) é retornado da tabela de hash para que a atribuição do resultado da expressão à variável, mais especificamente, à posição de memória da stack associada à variável seja possível.

@@ -925,12 +925,12 @@ YY_RULE_SETUP
 case 10:
 YY_RULE_SETUP
 #line 57 "logo.l"
-{ yylval.stringvalue=(char*)strdup(yytext); return TRUE; }
+{ return TRUE; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
 #line 58 "logo.l"
-{ yylval.stringvalue=(char*)strdup(yytext); return FALSE; }
+{ return FALSE; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
@@ -1030,17 +1030,17 @@ YY_RULE_SETUP
 case 31:
 YY_RULE_SETUP
 #line 78 "logo.l"
-{return(yytext[0]);}
+{ return(yytext[0]);}
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
 #line 79 "logo.l"
-{ yylval.stringvalue=(char*)strdup(yytext); return SUCC; }
+{ return SUCC; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
 #line 80 "logo.l"
-{ yylval.stringvalue=(char*)strdup(yytext); return PRED; }
+{ return PRED; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP

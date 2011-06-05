@@ -1,3 +1,120 @@
++++++++++++++++++++++++++++++++++++++   logo.l  +++++++++++++++++++++++++++++++++++++
+
+%{
+#include "structures.h"
+#include "hashFunctions.h"
+#include "y.tab.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+%}
+
+%option yylineno
+
+PROGRAM 	[Pp][Rr][Oo][Gg][Rr][Aa][Mm]
+DECLARATIONS 	[Dd][Ee][Cc][Ll][Aa][Rr][Aa][Tt][Ii][Oo][Nn][Ss]
+STATEMENTS 	[Ss][Tt][Aa][Tt][Ee][Mm][Ee][Nn][Tt][Ss]
+SUCC 		[Ss][Uu][Cc][Cc]
+PRED 		[Pp][Rr][Ee][Dd]
+IF 			[Ii][Ff]
+ELSE		[Ee][Ll][Ss][Ee]
+THEN		[Tt][Hh][Ee][Nn]
+WHILE		[Ww][Hh][Ii][Ll][Ee]
+INTEGER		[Ii][Nn][Tt][Ee][Gg][Ee][Rr]
+BOOLEAN		[Bb][Oo][Oo][Ll][Ee][Aa][Nn]
+STRING		[Ss][Tt][Rr][Ii][Nn][Gg]
+ARRAY		[Aa][Rr][Rr][Aa][Yy]
+SIZE		[Ss][Ii][Zz][Ee]
+TRUE		[T][R][U][E]
+FALSE		[F][A][L][S][E]
+FORWARD		[Ff][Oo][Rr][Ww][Aa][Rr][Dd]
+BACKWARD	[Bb][Aa][Cc][Kk][Ww][Aa][Rr][Dd]
+RRIGHT		[Rr][Rr][Ii][Gg][Hh][Tt]
+RLEFT		[Rr][Ll][Ee][Ff][Tt]
+PEN			[Pp][Ee][Nn]
+UP			[Uu][Pp]
+DOWN		[Dd][Oo][Ww][Nn]
+GOTO		[Gg][Oo][Tt][Oo]
+WHERE		[Ww][Hh][Ee][Rr][Ee]
+SAY			[Ss][Aa][Yy]
+ASK			[Aa][Ss][Kk]
+IN			[Ii][Nn]
+
+NUMBER 						[0-9]+
+IDENTIFIER 					[a-zA-Z][a-zA-Z0-9]*
+STR						\"([^"\n]|\\\")*\"
+
+%%
+
+{PROGRAM}					{ return PROGRAM; }
+{DECLARATIONS}					{ return DECLARATIONS; }
+{STATEMENTS}					{ return STATEMENTS; }
+"->"						{ return ARROW; }
+{INTEGER}					{ return INTEGER; }
+{BOOLEAN}					{ return BOOLEAN; }
+{STRING}					{ return STRING; }
+{ARRAY}						{ /*return ARRAY;*/ }
+{SIZE}						{ /*return SIZE;*/ }
+{TRUE}						{ return TRUE; }
+{FALSE}						{ return FALSE; }
+{FORWARD}					{ return FORWARD; }
+{BACKWARD}					{ return BACKWARD; }
+{RRIGHT}					{ return RRIGHT; }
+{RLEFT}						{ return RLEFT; }
+{PEN}						{ return PEN; }
+{UP}						{ return UP; }
+{DOWN}						{ return DOWN; }
+{GOTO}						{ return GOTO; }
+{WHERE}						{ return WHERE; }
+"||"						{ return OR; }
+"&&"						{ return AND; }
+"**"						{ return POW; }
+"=="						{ return EQUAL; }
+"!="						{ return DIF; }
+"<"						{ return MINOR; }
+">"						{ return MAJOR; }
+"<="						{ return MINOREQUAL; }
+">="						{ return MAJOREQUAL; }
+{IN}						{ return IN; }
+[=\-,;!?/()\[\]\{\}*+]				{return(yytext[0]);}
+{SUCC}						{ return SUCC; }
+{PRED}						{ return PRED; }
+{SAY}						{ return SAY; }
+{ASK}						{ return ASK; }
+{IF}						{ return IF; }
+{THEN}						{ return THEN; }
+{ELSE}						{ return ELSE; }
+{WHILE}						{ return WHILE; }
+
+{NUMBER}					{ yylval.stringvalue = strdup(yytext); return NUMBER; }
+{IDENTIFIER}					{ yylval.stringvalue = strdup(yytext); return IDENTIFIER; }
+{STR}						{ yylval.stringvalue = strdup(yytext); return STR; }
+
+[\ \n\t\r]+					{;}
+
+<*>.|\n						{ fprintf(stderr,"ERRO: %d '%s'\n",yylineno, yytext);}
+
+%%
+
+int yywrap() {
+ return 1;
+}
+
+/*int yyerror(char *s){
+	fprintf(stderr,"ERRO: %d %s\n",yylineno, s);
+	return 0;
+}*/
+
+
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++   logo.y  +++++++++++++++++++++++++++++++++++++
+
 %{
 	#include <stdlib.h>
 	#include <stdio.h>
@@ -23,7 +140,7 @@
 /*%token ARRAY SIZE*/
 %token PROGRAM DECLARATIONS STATEMENTS ARROW INTEGER BOOLEAN STRING FORWARD BACKWARD RRIGHT RLEFT
 %token PEN UP DOWN GOTO WHERE OR AND POW EQUAL DIF MINOREQUAL MAJOREQUAL IN SAY ASK IF THEN ELSE WHILE TRUE FALSE SUCC PRED
-%token <stringvalue> IDENTIFIER NUMBER STR 
+%token <stringvalue>IDENTIFIER NUMBER STR 
 
 %left MINOR MAJOR MINOREQUAL MAJOREQUAL EQUAL AND POW DIF OR
 %left '+' '-'
@@ -59,7 +176,7 @@ Body 			: DECLARATIONS 	{
 						xpos = 300;
 						ypos = 200;
 						raio = 25;
-						mode = 1; //PEN DOWN
+						mode = 1; //PEN UP
 						direccao = up;
 						init();
 					}Declarations
@@ -290,6 +407,9 @@ Location 		: GOTO NUMBER ',' NUMBER		{
 			| WHERE	 '?'				{
 									VarData aux2 = searchVar("xpos"), aux3 = searchVar("ypos");
 									printf("PUSHG %d\n", aux2->address);	//para o drawline
+									printf("PUSHG %d\n", aux3->address);     //para o drawline
+									aux2 = searchVar("xpos"), searchVar("ypos");
+									printf("PUSHG %d\n", aux2->address);
 									printf("WRITEI\n");
 									printf("PUSHG %d\n", aux3->address);
 									printf("WRITEI\n");
@@ -611,3 +731,167 @@ int main() {
 	yyparse();
 	return 0;
 }	
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++   structures.h  +++++++++++++++++++++++++++++++++++++
+
+#ifndef _STRUCTS
+#define _STRUCTS
+
+typedef enum Direccoes{
+	up,
+	down,
+	right,
+	left
+} Direccao;
+
+typedef struct VarTipos {
+	char* id;
+	char* value;
+	int type;
+} VarTipo;
+
+typedef struct ConstTipos {
+	char* value;
+	int type;
+} ConstTipo;
+
+typedef struct NodoVar {
+	char* id;
+	char* value;
+	int type;
+	struct NodoVar *next;
+} ListaVars;
+
+
+int height, width, xpos, ypos, raio, mode;
+Direccao direccao;
+ListaVars *nodo;
+
+void insertInListaVars(VarTipo var, int first);
+void saveVars(int type);
+void drawTurtle();
+void drawLine();
+void init();
+void initWindow();
+void pushValues(int varType, int nullType, char* value);
+
+#endif
+
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++  hashFunctions.c   +++++++++++++++++++++++++++++++++++++
+
+#include "hashFunctions.h"
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+
+
+VarHashTable varHashTable;
+
+VarHashTable initHash(){
+	int i;
+	VarHashTable v;
+	v = (VarHashTable)malloc(sizeof(VarData)*HASH_SIZE);
+	for (i = 0; i < HASH_SIZE; i++)
+		v[i]=NULL;
+	return v;
+}
+
+int hash(char* s) {
+	int h = 0, i, n=strlen(s);
+	for (i = 0; i < n; i++) {
+		h = 31*h + s[i];
+	}
+	return abs(h%HASH_SIZE);
+}
+
+VarData searchVar(char* id){
+	int h = hash(id);
+	VarData varData = varHashTable[h];
+	while (varData && strcmp(varData->id, id)!=0){
+		varData = varData->next;
+	}
+	return varData;
+}
+
+int insertVar(char* id, int type, int address) {
+	int h = hash(id);
+	VarData new, var;
+	new = (VarData)malloc(sizeof(struct varData));
+	var = varHashTable[h];
+	varHashTable[h]=new;
+	new->id=id;
+	new->type=type;
+	new->address=address;
+	new->next=var;
+	return 1;
+}
+
+
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++  hashFunctions.h   +++++++++++++++++++++++++++++++++++++
+
+#ifndef _HASH
+#define _HASH
+
+#define HASH_SIZE 30
+
+typedef struct varData {
+	char* id;
+	int type;
+	int address;
+	struct varData *next;
+} *VarData, **VarHashTable;
+
+VarHashTable initHash();
+int hash(char* s);
+VarData searchVar(char* id);
+int insertVar(char* id, int type, int address);
+void printHash();
+
+#endif
+
+
+
+
+
+
+
++++++++++++++++++++++++++++++++++++++  Makefile   +++++++++++++++++++++++++++++++++++++
+
+logoliss: y.tab.o lex.yy.o hashFunctions.o structures.h
+	cc -o logoliss y.tab.o lex.yy.o hashFunctions.o -lfl
+
+y.tab.o: y.tab.c
+	cc -c y.tab.c
+
+lex.yy.o: lex.yy.c
+	cc -c lex.yy.c
+
+
+lex.yy.c: logo.l y.tab.h structures.h
+	flex logo.l
+
+y.tab.c y.tab.h: logo.y
+	yacc -d -v logo.y
+
+hashFunctions.o: hashFunctions.h hashFunctions.c
+	cc -c hashFunctions.c
+
+clean : 
+	rm -Rf *.o y.* lex.yy.c

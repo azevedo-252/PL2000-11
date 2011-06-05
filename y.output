@@ -181,11 +181,11 @@ ELSE (286) 81
 WHILE (287) 82
 TRUE (288) 21
 FALSE (289) 22
-IDENTIFIER (290) 1 11 47 71
-NUMBER (291) 19 44
-STR (292) 20 75
-SUCC (293) 72
-PRED (294) 73
+SUCC (290) 72
+PRED (291) 73
+IDENTIFIER (292) 1 11 47 71
+NUMBER (293) 19 44
+STR (294) 20 75
 MAJOR (295) 67
 MINOR (296) 68
 
@@ -680,11 +680,11 @@ estado 45
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant           ir para o estado 77
@@ -873,11 +873,11 @@ estado 66
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant           ir para o estado 77
@@ -896,11 +896,11 @@ estado 67
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant           ir para o estado 77
@@ -947,11 +947,11 @@ estado 72
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant           ir para o estado 77
@@ -991,11 +991,11 @@ estado 76
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant           ir para o estado 77
@@ -1096,11 +1096,11 @@ estado 85
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant           ir para o estado 77
@@ -1133,11 +1133,11 @@ estado 88
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant           ir para o estado 77
@@ -1278,11 +1278,11 @@ estado 101
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant           ir para o estado 77
@@ -1328,11 +1328,11 @@ estado 106
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant    ir para o estado 77
@@ -1377,11 +1377,11 @@ estado 111
 
     TRUE        fazer shift, e ir para o estado 22
     FALSE       fazer shift, e ir para o estado 23
+    SUCC        fazer shift, e ir para o estado 74
+    PRED        fazer shift, e ir para o estado 75
     IDENTIFIER  fazer shift, e ir para o estado 47
     NUMBER      fazer shift, e ir para o estado 24
     STR         fazer shift, e ir para o estado 25
-    SUCC        fazer shift, e ir para o estado 74
-    PRED        fazer shift, e ir para o estado 75
     '('         fazer shift, e ir para o estado 76
 
     Constant    ir para o estado 77

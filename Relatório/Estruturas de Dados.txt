@@ -1,0 +1,23 @@
+Estruturas de dados
+
+	VarHashTable
+		A máquina virtual sendo uma máquina de pilhas que vai acumulando valores de diversos tipos, precisa de um mecanismo para associar, em runtime, esses valores a um tipo, um identificador e o respectivo endereço na pilha. 
+		Decidimos que tal mecanismo seria composto por uma tabela de hash que a cada identificador associa um nodo da tabela. Cada nodo contem a informação enunciada acima, o próprio identificador, o tipo do valor ao qual o identificador está associado e a endereço na stack onde esse valor foi alocado.
+		Esta tabela, permite, em runtime, verificar se determinado identificador existe, e se existir, obtém informação suficiente para poder aceder ao seu valor na stack. Também poderá validar os valores de input verificando o tipo do identificador.
+		
+		As funções associadas à tabela de hash correspondem às funcionalidades básicas de inserção e procura:
+			. initHash() - inicializa a tabela de hash
+			. hash() - função de hash que cria uma chave dado um identificador
+			. searchVar(char* id) - procura a variável na tabela e retorna caso exista
+			. insertVar(char* id, int type, int address) - insere uma nova variável na tabela hash
+		
+	VarTipo
+		Estrutura que no decorrer do parsing, quando encontra uma variável, guarda o identificador, o valor e o tipo de dados.
+		
+	ConstTipo
+		Estrutura que no decorrer do parsing, quando encontra uma constante, guarda o valor e o tipo. Tipo este que pode representar valor nulo.
+		
+	ListaVars
+		Lista ligada que, no decorrer do parsing, na Declaração de Variáveis, guarda as variáveis por declaração. Esta lista ligada é posteriormente utilizada para armazenar as variáveis na tabela de hash.
+		
+	

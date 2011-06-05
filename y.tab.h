@@ -71,11 +71,11 @@
      WHILE = 287,
      TRUE = 288,
      FALSE = 289,
-     IDENTIFIER = 290,
-     NUMBER = 291,
-     STR = 292,
-     SUCC = 293,
-     PRED = 294,
+     SUCC = 290,
+     PRED = 291,
+     IDENTIFIER = 292,
+     NUMBER = 293,
+     STR = 294,
      MAJOR = 295,
      MINOR = 296
    };
@@ -113,11 +113,11 @@
 #define WHILE 287
 #define TRUE 288
 #define FALSE 289
-#define IDENTIFIER 290
-#define NUMBER 291
-#define STR 292
-#define SUCC 293
-#define PRED 294
+#define SUCC 290
+#define PRED 291
+#define IDENTIFIER 292
+#define NUMBER 293
+#define STR 294
 #define MAJOR 295
 #define MINOR 296
 

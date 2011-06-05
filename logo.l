@@ -54,8 +54,8 @@ STR						\"([^"\n]|\\\")*\"
 {STRING}					{ return STRING; }
 {ARRAY}						{ /*return ARRAY;*/ }
 {SIZE}						{ /*return SIZE;*/ }
-{TRUE}						{ yylval.stringvalue=(char*)strdup(yytext); return TRUE; }
-{FALSE}						{ yylval.stringvalue=(char*)strdup(yytext); return FALSE; }
+{TRUE}						{ return TRUE; }
+{FALSE}						{ return FALSE; }
 {FORWARD}					{ return FORWARD; }
 {BACKWARD}					{ return BACKWARD; }
 {RRIGHT}					{ return RRIGHT; }
@@ -75,9 +75,9 @@ STR						\"([^"\n]|\\\")*\"
 "<="						{ return MINOREQUAL; }
 ">="						{ return MAJOREQUAL; }
 {IN}						{ return IN; }
-[=\-,;!?/()\[\]\{\}*+]				{return(yytext[0]);}
-{SUCC}						{ yylval.stringvalue=(char*)strdup(yytext); return SUCC; }
-{PRED}						{ yylval.stringvalue=(char*)strdup(yytext); return PRED; }
+[=\-,;!?/()\[\]\{\}*+]				{ return(yytext[0]);}
+{SUCC}						{ return SUCC; }
+{PRED}						{ return PRED; }
 {SAY}						{ return SAY; }
 {ASK}						{ return ASK; }
 {IF}						{ return IF; }

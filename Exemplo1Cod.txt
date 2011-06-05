@@ -2,10 +2,12 @@ PROGRAM logolissExemplo
 {
   DECLARATIONS 
     x = (50) , y -> Integer ;
+    a -> Boolean ;
   STATEMENTS
     FORWARD x ;
     RRIGHT ;
     y = 3 || 0 ;
+    a = x != y ;
     FORWARD y ;
     RRIGHT ;
     x = x - (10 * 6 + (50/2) * 3 );

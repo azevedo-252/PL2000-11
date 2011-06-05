@@ -45,20 +45,3 @@ int insertVar(char* id, int type, int address) {
 	return 1;
 }
 
-// TODO Tirar isto daqui quando ja nao for preciso fazer debug
-void printHash(){
-        int i;
-        VarData var;
-        for(i=0;i<HASH_SIZE;i++){
-                if(varHashTable[i]==NULL)
-                        printf("()\n");
-                else{
-                        var=varHashTable[i];
-                        printf("(");
-                        for(;var!=NULL;var=var->next)
-                                printf("(%s.%d.%d)\t ",var->id,var->type,var->address);
-                        printf(")\n");
-                }
-        }
-}
-
