@@ -57,8 +57,8 @@ Liss 			: PROGRAM IDENTIFIER '{' Body '}' {printf("STOP\n");}
 Body 			: DECLARATIONS 	{
 							height = 100;
 							width = 100;
-							xpos = 40;
-							ypos = 40;
+							xpos = 100;
+							ypos = 100;
 							raio = 5;
 							mode = 0;
 							direccao = up;
