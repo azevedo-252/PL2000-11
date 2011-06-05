@@ -43,7 +43,7 @@ void saveVars(int type);
 //char *stringToupper(char* string);
 void printListaVars();
 void drawTurtle();
-void drawLine();
+void drawLine(int newx, int newy);
 void init();
 void initWindow();
 void pushValues(int varType, int nullType, char* value);

@@ -523,7 +523,7 @@ void saveVars(int type){
 			// insere nome, tipo e address na hashtable
 			insertVar(aux->id, type, addressG);
 			pushValues(type,aux->type, aux->value);
-			printf("STOREG %d\n",addressG);
+			//printf("STOREG %d\n",addressG);
 			addressG++;
 		}
 		aux=aux->next;
@@ -573,12 +573,12 @@ void pushValues(int varType, int nullType, char* value){
 
 void drawTurtle(){
 	VarData aux, aux2, aux3;
-	aux = searchVar("raio");
-	printf("PUSHG %d\n", aux->address);
-	aux2 = searchVar("ypos");
-        printf("PUSHG %d\n", aux2->address);
 	aux3 = searchVar("xpos");
         printf("PUSHG %d\n", aux3->address);
+	aux2 = searchVar("ypos");
+        printf("PUSHG %d\n", aux2->address);
+	aux = searchVar("raio");
+	printf("PUSHG %d\n", aux->address);
 	printf("DRAWCIRCLE\n");
 	printf("REFRESH\n");
 }
@@ -600,7 +600,7 @@ void drawLine(int newx, int newy){
 void init() {
 	varHashTable = initHash();
 	VarTipo var;
-	
+/*	
 	var.id = "height";
 	var.value = (char*)malloc(sizeof(10));
 	sprintf(var.value, "%d", height);
@@ -610,11 +610,13 @@ void init() {
 	var.value = (char*)malloc(sizeof(10));
 	sprintf(var.value, "%d", width);
 	insertInListaVars(var, 0);
-	
+*/	
+
+
 	var.id = "xpos";
 	var.value = (char*)malloc(sizeof(10));
 	sprintf(var.value, "%d", xpos);
-	insertInListaVars(var, 0);
+	insertInListaVars(var, 1);
 
 	var.id = "ypos";
 	var.value = (char*)malloc(sizeof(10));
