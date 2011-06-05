@@ -31,7 +31,8 @@
 
 
 /* TODO verficiar depois o que é e nao é preciso */
-%type <intvalue>Type SuccOrPred Add_Op Mul_Op Rel_Op Factor Term Single_Expression  Expression SuccPred /*Array_Acess*/
+%type <stringvalue>Add_Op Mul_Op Rel_Op
+%type <intvalue>Type SuccOrPred Factor Term Single_Expression  Expression SuccPred /*Array_Acess*/
 %type <varTipo>Var Variable
 %type <constTipo>Constant Value_Var Inic_Var
 
@@ -289,7 +290,7 @@ Assignment 		: Variable '=' Expression 	{
 	
 Variable 		: IDENTIFIER 	 		{ 	VarData var = searchVar($1);
 								if(var){
-									$$.id=$1;
+									$$.id=var->id;
 									$$.type=var->type;
 								}
 								else $$.type = -1;	
@@ -304,45 +305,13 @@ Array_Acess 		:
 /***************************Expression**************/
 
 Expression 		: Single_Expression			{ $$ = $1; }
-			| Expression Rel_Op Single_Expression	{/* TA MAL
-								switch($2){
-									case(1):
-										printf("PUSHI %d\n", ($1 == $3));
-										$$ = ($1 == $3);
-										break;
-									case(2):
-										printf("PUSHI %d\n", ($1 != $3));
-										$$ = ($1 != $3);
-										break;
-									case(3):
-										printf("PUSHI %d\n", $1);
-										printf("PUSHI %d\n", $3);
-										printf("SUP\n");
-										$$ = ($1 > $3);
-										break;
-									case(4):
-										printf("PUSHI %d\n", $1);
-										printf("PUSHI %d\n", $3);
-										printf("INF\n");
-										$$ = ($1 < $3);
-										break;
-									case(5):
-										printf("PUSHI %d\n", $1);
-										printf("PUSHI %d\n", $3);
-										printf("SUPEQ\n");
-										$$ = ($1 >= $3);
-										break;
-									case(6):
-										printf("PUSHI %d\n", $1);
-										printf("PUSHI %d\n", $3);
-										printf("INFEQ\n");
-										$$ = ($1 <= $3);
-										break;
-									default:				//TODO ver o que faz o in, que acho que e para arrays...
-										yyerror("Unknown operation\n");
-										break;
-									
-								}*/
+			| Expression Rel_Op Single_Expression	{
+									if (strcmp($2,"DIF")!=0)
+										printf("%s\n",$2);
+									else{	
+										printf("EQUAL\n");
+										printf("NOT\n");
+									}	
 								}
 			;
 	
@@ -351,24 +320,14 @@ Expression 		: Single_Expression			{ $$ = $1; }
 
 Single_Expression 	: Term					{ $$ = $1; }
 			| Single_Expression Add_Op Term		{
-								//printf("PUSHI %d\n", $1);
-								//printf("PUSHI %d\n", $3);
-								switch($2){
-									case(1):
-										printf("add\n");
-										break;
-									case(2):
-										printf("sub\n");
-										break;
-									case(3):/*TA MAL
-										printf("pop 2\n");
-										if($1 > 0 || $3 > 0) printf("PUSHI 1\n");
-										else printf("PUSHI 0\n");*/
-										break;
-									default:
-										yyerror("Unknown operation\n");
-										break;
-								}
+									if (strcmp($2,"OR")!=0)
+									printf("%s\n",$2);
+									else{
+										printf("ADD\n");
+										printf("PUSHI 0\n");
+										printf("EQUAL\n");
+										printf("NOT\n");
+									}
 								}
 			;
 
@@ -377,34 +336,16 @@ Single_Expression 	: Term					{ $$ = $1; }
 
 Term 			: Factor				{ $$ = $1; }
 			| Term Mul_Op Factor			{
-								//printf("PUSHI %d\n", $1);
-								//printf("PUSHI %d\n", $3); 
-								switch($2){
-									case(1):
-										printf("mul\n");
-										break;
-									case(2):
-										if($3 == 0){
-											yyerror("Divide by 0\n");
-											exit(0);
-										}
-										printf("div \n");
-										break;
-									/*case(3): TA MAL
-										printf("pop 2\n");
-										if($1 > 0 && $3 > 0) printf("PUSHI 1\n");    //Maior que 0 ou diferente de 0???
-										else printf("PUSHI 0\n");
-									case(4):
-										printf("pop 1\n");  //Para retirar o $3
-										while($3 > 1){
-											printf("PUSHI %d\n", $1);
-											printf("mul\n");
-											$3--;
-										}*/
-									default:
-										yyerror("Unknown operation\n");
-										break;
+									if(strcmp($2,"AND")==0){
+										printf("MULL\n");
+										printf("PUSHI 0\n");
+										printf("EQUAL\n");
+									        printf("NOT\n");
 									}
+									else if (strcmp($2,"POW")==0){
+										// TODO calcular a potencia
+									}
+									else printf("%s\n",$2);
 								}
 			;	
 
@@ -425,23 +366,23 @@ Factor 			: Constant				{pushValues($1.type,0,$1.value); $$ = $1.type;}
 
 /***************************Operators**************/
 
-Add_Op  		: '+'			{ $$ = 1; }
-			| '-'			{ $$ = 2; }
-			| OR			{ $$ = 3; }
+Add_Op  		: '+'			{ $$ = "ADD"; }
+			| '-'			{ $$ = "SUB"; }
+			| OR			{ $$ = "OR"; }
 			;
 	
-Mul_Op 			: '*'			{ $$ = 1; }
-			| '/'			{ $$ = 2; }
-			| AND			{ $$ = 3; }
-			| POW			{ $$ = 4; }
+Mul_Op 			: '*'			{ $$ = "MUL"; }
+			| '/'			{ $$ = "DIV"; }
+			| AND			{ $$ = "AND"; }
+			| POW			{ $$ = "POW"; }
 			;
 	 
-Rel_Op 			: EQUAL			{ $$ = 1; }
-			| DIF 			{ $$ = 2; }
-			| MAJOR 		{ $$ = 3; }
-			| MINOR			{ $$ = 4; }
-			| MAJOREQUAL		{ $$ = 5; }
-			| MINOREQUAL		{ $$ = 6; }
+Rel_Op 			: EQUAL			{ $$ = "EQUAL"; }
+			| DIF 			{ $$ = "DIF"; }
+			| MAJOR 		{ $$ = "SUP"; }
+			| MINOR			{ $$ = "INF"; }
+			| MAJOREQUAL		{ $$ = "SUPEQ"; }
+			| MINOREQUAL		{ $$ = "INFEQ"; }
 			/*| IN			{ $$ = $1; }*/       //PENSO QUE SEJA SO PARA ARRAYS
 			;
 	
@@ -450,9 +391,9 @@ Rel_Op 			: EQUAL			{ $$ = 1; }
 
 SuccOrPred 		: SuccPred IDENTIFIER		{ VarData var = searchVar($2);
 							  if (var) {
-							  	printf("store %d\n", var->address);
+							  	  printf("PUSHG %d\n", var->address);
 								  printf("PUSHI %d\n", $1);
-								  printf("add\n");
+								  printf("ADD\n");
 							  }
 							  else yyerror("Variable undeclared!\n");
 							}
@@ -467,13 +408,13 @@ SuccPred 		: SUCC				{ $$ = 1; }
 	
 Say_Statement 		: SAY '(' Expression ')'		{ switch ($3){ // Expression Type 
 									case 0:	// INTEGER							
-										printf("writei\n"); 
+										printf("WRITEI\n"); 
 										break;
 									case 1: // BOOLEAN
-										printf("writei\n");
+										printf("WRITEI\n");
 										break;
 									case 2: // STRING
-										printf("writes\n");
+										printf("WRITES\n");
 										break;
 									}
 								}
@@ -481,11 +422,12 @@ Say_Statement 		: SAY '(' Expression ')'		{ switch ($3){ // Expression Type
 			
 	
 Ask_Statement 		: ASK '(' STR ',' Variable ')'		{ 
-								  if($5.type == -1) yyerror("Variable undeclared!\n");
+								  VarData var = searchVar($5.id);
+								  if(!var) yyerror("Variable undeclared!\n");
 								  else{
-									printf("pushs %s\n",$3); 	// guardar na stack a STR a perguntar
-								  	printf("writes\n"); 		// escrever a STR a perguntar
-									printf("read\n"); 	/* lê uma string do teclado (concluída por um "\n") 
+									printf("PUSHS %s\n",$3); 	// guardar na stack a STR a perguntar
+								  	printf("WRITES\n"); 		// escrever a STR a perguntar
+									printf("READ\n"); 	/* lê uma string do teclado (concluída por um "\n") 
 										       		   e arquiva esta string (sem o "\n") na heap e coloca
                                                                                        		   (empilha) o endereço na pilha..
 									            		*/
@@ -502,8 +444,7 @@ Ask_Statement 		: ASK '(' STR ',' Variable ')'		{
 											yyerror("Variable undeclared!\n");
 											break;
 									  }
-									  VarData var = searchVar($5.id);
-									  printf("storeg %d\n",var->address);
+									  printf("STOREG %d\n",var->address);
 									}
 								  }
 			;
