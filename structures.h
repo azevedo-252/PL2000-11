@@ -33,7 +33,7 @@ typedef struct NodoVar {
 //} Expression;
 
 
-int height, width, xpos, ypos, raio;
+int height, width, xpos, ypos, raio, mode;
 Direccao direccao;
 ListaVars *nodo;
 
