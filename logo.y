@@ -31,8 +31,7 @@
 
 
 /* TODO verficiar depois o que é e nao é preciso */
-%type <stringvalue>SuccPred
-%type <intvalue>Type SuccOrPred Add_Op Mul_Op Rel_Op Factor Term Single_Expression Array_Acess Expression
+%type <intvalue>Type SuccOrPred Add_Op Mul_Op Rel_Op Factor Term Single_Expression Array_Acess Expression SuccPred
 %type <varTipo>Var Variable
 %type <constTipo>Constant Value_Var Inic_Var
 
@@ -110,10 +109,11 @@ Type 			: INTEGER {$$ = 0;}
 			;
 	
 Inic_Var 		: Constant {$$ = $1;}
+			| '(' Constant ')' {$$ = $2;} 
 			/*| Array_Definition*/
 			;
 	
-Constant	 	: '(' NUMBER ')' {$$.value = $2; $$.type=0;}/* TODO so pus estes parentises aqui porque ha exemplos em que aparecem la */
+Constant	 	: NUMBER {$$.value = $1; $$.type=0;}
 			| STR 	 {$$.value = $1; $$.type=2;}
 			| TRUE   {$$.value = $1; $$.type=1;}
 			| FALSE  {$$.value = $1; $$.type=1;}
@@ -404,18 +404,8 @@ Term 			: Factor				{ $$ = $1; }
 
 /***************************Factor**************/
 
-Factor 			: Constant				{pushValues($1.type,0,$1.value); 
-								/*TabelaHash *const = procuraLista($1);    ->   PROCURAR A VARIAVEL NA TABELA DE HASH*/
-								  //printf("PUSHI %d\n", $1.value);
-								  //$$ = atoi($1.value);       //atoi(const.value);
-
-
-
-								  /*$$->consttipo.value = $1.value;
-								  $$->consttipo.type = $1.type;*/
-								}
-			| Variable				{ /*TabelaHash *var = procuraLista($1);*/
-
+Factor 			: Constant				{pushValues($1.type,0,$1.value);}
+			| Variable				{
 								  VarData var = searchVar ($1.id);
 								  if(var)printf("PUSHG %d\n", var->address);
 								  else yyerror("Variable undeclared!\n");
@@ -453,15 +443,15 @@ Rel_Op 			: EQUAL			{ $$ = 1; }
 SuccOrPred 		: SuccPred IDENTIFIER		{ VarData var = searchVar($2);
 							  if (var) {
 							  	printf("store %d\n", var->address);
-								  printf("PUSHI %d\n", atoi($1));
+								  printf("PUSHI %d\n", $1);
 								  printf("add\n");
 							  }
 							  else yyerror("Variable undeclared!\n");
 							}
 			;
 	
-SuccPred 		: SUCC				{ $$ = "1"; }
-			| PRED				{ $$ = "-1"; }
+SuccPred 		: SUCC				{ $$ = 1; }
+			| PRED				{ $$ = -1; }
 			;
 
 
